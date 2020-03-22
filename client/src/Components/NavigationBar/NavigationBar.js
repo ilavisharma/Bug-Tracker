@@ -8,7 +8,7 @@ const NavigationBar = () => {
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand>Bug Tracker</Navbar.Brand>
       <Navbar.Text>
-        Signed in as: <Link to="/account">Mark Otto</Link>
+        Signed in as: <Link to="/account">Felicity Smoak</Link>
       </Navbar.Text>
       <Navbar.Collapse className="justify-content-end">
         <Button variant="warning">Sign Out</Button>
