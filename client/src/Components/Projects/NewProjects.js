@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 import api from '../../utils/api';
 
 const NewProjects = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onFormSubmit = e => {
+  const { push } = useHistory();
+
+  const onFormSubmit = async e => {
     e.preventDefault();
-    api
-      .post('/projects/new', { name, description })
-      .then(res => console.log(res.data, res.status))
-      .catch(err => console.log(err));
+    setIsLoading(true);
+    try {
+      const res = await api.post('/projects/new', { name, description });
+      setIsLoading(false);
+      alert('Project Created');
+      push(`/home/projects/${res.data.id}`);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -36,9 +47,22 @@ const NewProjects = () => {
           rows="3"
         />
       </Form.Group>
-      <Button variant="info" type="submit">
-        Create new project
-      </Button>
+      {isLoading ? (
+        <Button variant="info" disabled>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          <span className="sr-only">Creating...</span>
+        </Button>
+      ) : (
+        <Button variant="info" type="submit">
+          Create new project
+        </Button>
+      )}
     </Form>
   );
 };

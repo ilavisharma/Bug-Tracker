@@ -11,6 +11,7 @@ import Tickets from '../Tickets/Tickets';
 import Users from '../Users/Users';
 import Account from '../Auth/Account';
 import NewProjects from '../Projects/NewProjects';
+import Error404 from '../../utils/Error404';
 
 const Homepage = ({ match }) => {
   return (
@@ -29,10 +30,15 @@ const Homepage = ({ match }) => {
                 path={`${match.url}/projects/new`}
                 component={NewProjects}
               />
-              <Route path={`${match.url}/projects`} component={Projects} />
+              <Route
+                exact
+                path={`${match.url}/projects`}
+                component={Projects}
+              />
               <Route path={`${match.url}/tickets`} component={Tickets} />
               <Route path={`${match.url}/users`} component={Users} />
               <Route path={`${match.url}/account`} component={Account} />
+              <Route component={Error404} />
             </Switch>
           </Col>
         </Row>
