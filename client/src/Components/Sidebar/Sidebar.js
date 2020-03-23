@@ -4,7 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 const Sidebar = () => {
   return (
-    <Nav variant="pills" defaultActiveKey="/home" className="flex-column">
+    <Nav variant="pills" className="flex-column">
       <LinkContainer exact to="/home">
         <Nav.Link>Dashboard</Nav.Link>
       </LinkContainer>

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "now-start": "node index.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

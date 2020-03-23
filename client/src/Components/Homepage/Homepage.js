@@ -10,6 +10,7 @@ import Projects from '../Projects/Projects';
 import Tickets from '../Tickets/Tickets';
 import Users from '../Users/Users';
 import Account from '../Auth/Account';
+import NewProjects from '../Projects/NewProjects';
 
 const Homepage = ({ match }) => {
   return (
@@ -23,6 +24,11 @@ const Homepage = ({ match }) => {
           <Col xs={10}>
             <Switch>
               <Route exact path={match.url} component={Dashboard} />
+              <Route
+                exact
+                path={`${match.url}/projects/new`}
+                component={NewProjects}
+              />
               <Route path={`${match.url}/projects`} component={Projects} />
               <Route path={`${match.url}/tickets`} component={Tickets} />
               <Route path={`${match.url}/users`} component={Users} />
