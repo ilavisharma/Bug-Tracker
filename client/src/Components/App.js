@@ -1,5 +1,4 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LandingPage from './Landing/LandingPage';
 import Homepage from './Homepage/Homepage';

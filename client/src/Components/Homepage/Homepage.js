@@ -12,6 +12,7 @@ import Users from '../Users/Users';
 import Account from '../Auth/Account';
 import NewProjects from '../Projects/NewProjects';
 import Error404 from '../../utils/Error404';
+import ProjectDetail from '../Projects/ProjectDetail';
 
 const Homepage = ({ match }) => {
   return (
@@ -34,6 +35,11 @@ const Homepage = ({ match }) => {
                 exact
                 path={`${match.url}/projects`}
                 component={Projects}
+              />
+              <Route
+                exact
+                path={`${match.url}/projects/:id`}
+                component={ProjectDetail}
               />
               <Route path={`${match.url}/tickets`} component={Tickets} />
               <Route path={`${match.url}/users`} component={Users} />

@@ -56,7 +56,7 @@ const NewProjects = () => {
             role="status"
             aria-hidden="true"
           />
-          <span className="sr-only">Creating...</span>
+          Creating...
         </Button>
       ) : (
         <Button variant="info" type="submit">

@@ -7,7 +7,7 @@ router.get('/', async (_, res) => {
     res.json(query).status(200);
   } catch (err) {
     console.log(err);
-    res.json({ message: 'Project creation failed' }).status(500);
+    res.json({ message: 'Unable to fetch projects' }).status(500);
   }
 });
 
@@ -24,12 +24,28 @@ router.post('/new', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const query = await db('projects')
-      .select('*')
+      .select('name', 'description')
       .where('id', '=', req.params.id);
-    res.json(query).status(200);
+    if (query.length === 0) {
+      res.status(204).send({ message: 'No Content' });
+    } else {
+      res.json(query[0]).status(200);
+    }
   } catch (err) {
     console.log(err);
     res.json({ message: 'Unable to fetch the projects' }).status(500);
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = await db('projects')
+      .where({ id })
+      .delete();
+  } catch (err) {
+    console.log(err);
+    res.json({ message: 'Unable to delete the projects' }).status(500);
   }
 });
 

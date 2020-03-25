@@ -13,7 +13,7 @@ const Error404 = () => {
           <Link to="/" className="btn btn-success">
             Home
           </Link>
-          <Link to="/home" className="btn btn-info">
+          <Link to="/home" className="btn btn-info mx-4">
             Dashboard
           </Link>
         </p>
