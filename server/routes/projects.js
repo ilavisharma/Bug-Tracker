@@ -37,12 +37,26 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const query = await db('projects')
+    db('projects')
       .where({ id })
-      .delete();
+      .update(req.body)
+      .then(() => res.status(200).send('Success'));
+  } catch (err) {
+    console.log(err);
+    res.json({ message: 'Unable to update the projects' }).status(500);
+  }
+});
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  try {
+    db('projects')
+      .where({ id })
+      .delete()
+      .then(() => res.status(200).send('Success'));
   } catch (err) {
     console.log(err);
     res.json({ message: 'Unable to delete the projects' }).status(500);

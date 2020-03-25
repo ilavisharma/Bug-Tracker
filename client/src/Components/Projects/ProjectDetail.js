@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
+import EditProjectModal from './EditProjectModal';
 
 const ProjectDetail = ({
   match: {
@@ -13,8 +14,9 @@ const ProjectDetail = ({
   const [isLoading, setIsLoading] = useState(true);
   const [project, setProject] = useState(null);
   const [isFound, setIsFound] = useState(true);
+  const [showModal, setshowModal] = useState(false);
 
-  const { push } = useHistory();
+  const { push, replace } = useHistory();
 
   useEffect(() => {
     (async function() {
@@ -36,14 +38,31 @@ const ProjectDetail = ({
     })();
   }, [id]);
 
-  const handleDeleteClick = async () => {
+  const handleDeleteClick = async name => {
+    const confirm = window.confirm(`Delete the project: ${name} ?`);
+    if (confirm) {
+      try {
+        const res = await api.delete(`/projects/${id}`);
+        if (res.status === 200) {
+          alert('Project Deleted');
+          push('/home/projects');
+        } else {
+          alert('Unable to delete the project');
+        }
+      } catch (err) {
+        alert(err);
+      }
+    }
+  };
+
+  const handleEdit = async (name, description) => {
     try {
-      const res = await api.delete(`/projects/${id}`);
+      const res = await api.put(`/projects/${id}`, { name, description });
       if (res.status === 200) {
-        alert('Project Deleted');
-        push('/home/projects');
+        alert('Project Updated');
+        replace(`/home/projects`);
       } else {
-        alert('Unable to delete the project');
+        alert('Unable to update the project');
       }
     } catch (err) {
       alert(err);
@@ -55,17 +74,33 @@ const ProjectDetail = ({
     if (!isFound) return <h4 className="display-4">Project does not exist</h4>;
 
     return (
-      <Col xs={11}>
-        <h4 className="display-4">{project.name}</h4>
-        <hr />
-        <p className="lead">{project.description}</p>
-        <Button variant="danger" onClick={handleDeleteClick}>
-          Delete
-        </Button>
-        <Link className="btn btn-info mx-3" to={`/home/projects/${id}/edit`}>
-          Edit this project
-        </Link>
-      </Col>
+      <>
+        <Col xs={11}>
+          <h4 className="display-4">{project.name}</h4>
+          <hr />
+          <p className="lead">{project.description}</p>
+          <Button
+            variant="danger"
+            onClick={() => handleDeleteClick(project.name)}
+          >
+            Delete
+          </Button>
+          <Button
+            variant="info"
+            onClick={() => {
+              setshowModal(true);
+            }}
+          >
+            Edit this project
+          </Button>
+        </Col>
+        <EditProjectModal
+          show={showModal}
+          handleClose={() => setshowModal(false)}
+          handleEdit={handleEdit}
+          project={project}
+        />
+      </>
     );
   }
 };
