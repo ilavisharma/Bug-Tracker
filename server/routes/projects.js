@@ -14,10 +14,10 @@ router.get('/', async (_, res) => {
 router.post('/new', async (req, res) => {
   try {
     const query = await db('projects').insert(req.body);
-    res.json({ id: query[0] }).status(200);
+    res.json({ id: query[0] }).status(201);
   } catch (err) {
     console.log(err);
-    res.json({ message: 'Project creation failed' }).status(500);
+    res.sendStatus(500);
   }
 });
 
@@ -27,13 +27,13 @@ router.get('/:id', async (req, res) => {
       .select('name', 'description')
       .where('id', '=', req.params.id);
     if (query.length === 0) {
-      res.status(204).send({ message: 'No Content' });
+      res.sendStatus(204);
     } else {
       res.json(query[0]).status(200);
     }
   } catch (err) {
     console.log(err);
-    res.json({ message: 'Unable to fetch the projects' }).status(500);
+    res.sendStatus(500);
   }
 });
 
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
       .then(() => res.status(200).send('Success'));
   } catch (err) {
     console.log(err);
-    res.json({ message: 'Unable to update the projects' }).status(500);
+    res.sendStatus(500);
   }
 });
 
@@ -59,7 +59,7 @@ router.delete('/:id', (req, res) => {
       .then(() => res.status(200).send('Success'));
   } catch (err) {
     console.log(err);
-    res.json({ message: 'Unable to delete the projects' }).status(500);
+    res.sendStatus(500);
   }
 });
 

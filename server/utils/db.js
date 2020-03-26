@@ -6,12 +6,16 @@ const knex = require('knex')({
     password: process.env.db_password,
     database: 'bugtracker'
   },
-  debug: false
+  debug: false,
+  pool: {
+    max: 7,
+    min: 0
+  }
 });
 
 knex
   .raw('SELECT NOW()')
-  .then(data => console.log(new Date(data[0][0]['NOW()']).toTimeString()))
+  .then(() => console.log('Connected to DB'))
   .catch(err => {
     console.log(err);
     throw err;

@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LandingPage from './Landing/LandingPage';
 import Homepage from './Homepage/Homepage';
 import SignIn from './Auth/SignIn';
-import SignUp from './Auth/SignUp';
+import Error404 from '../utils/Error404';
+import AuthContext from '../Context/AuthContext';
 
 const App = () => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+
+  const signIn = (user, token) => {
+    setUser(user);
+    localStorage.setItem('token', token);
+    setToken(token);
+  };
+  const signOut = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setToken(null);
+  };
+
   return (
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={LandingPage} />
-        <Route path="/home" component={Homepage} />
-        <Route path="/signin" component={SignIn} />
-        <Route path="/signup" component={SignUp} />
-      </Switch>
+      <AuthContext.Provider value={{ user, token, signIn, signOut }}>
+        <Switch>
+          <Route exact path="/" component={LandingPage} />
+          <Route path="/home" component={Homepage} />
+          <Route exact path="/signin" component={SignIn} />
+          <Route component={Error404} />
+        </Switch>
+      </AuthContext.Provider>
     </BrowserRouter>
   );
 };

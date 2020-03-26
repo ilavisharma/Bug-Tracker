@@ -13,6 +13,7 @@ import Account from '../Auth/Account';
 import NewProjects from '../Projects/NewProjects';
 import Error404 from '../../utils/Error404';
 import ProjectDetail from '../Projects/ProjectDetail';
+import NewTicket from '../Tickets/NewTicket';
 
 const Homepage = ({ match }) => {
   return (
@@ -41,6 +42,7 @@ const Homepage = ({ match }) => {
                 path={`${match.url}/projects/:id`}
                 component={ProjectDetail}
               />
+              <Route path={`${match.url}/tickets/new`} component={NewTicket} />
               <Route path={`${match.url}/tickets`} component={Tickets} />
               <Route path={`${match.url}/users`} component={Users} />
               <Route path={`${match.url}/account`} component={Account} />
