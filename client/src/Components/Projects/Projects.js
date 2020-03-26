@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import api from '../../utils/api';
 import LoadingSpinner from '../../utils/LoadingSpinner';
@@ -36,9 +35,7 @@ const Projects = () => {
       <div style={{ marginBottom: '20px' }} />
 
       {isLoading ? (
-        <Row className="justify-content-md-center">
-          <LoadingSpinner />
-        </Row>
+        <LoadingSpinner />
       ) : (
         <Col xs={9}>
           <Table stripped="true" hover>
