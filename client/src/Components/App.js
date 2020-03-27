@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LandingPage from './Landing/LandingPage';
 import Homepage from './Homepage/Homepage';

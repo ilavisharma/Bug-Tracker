@@ -35,62 +35,64 @@ const SignIn = () => {
   };
 
   return (
-    <Container>
-      <Col xs={6}>
-        <h3 className="display-3">Sign In</h3>
-        <Form onSubmit={onFormSubmit}>
-          <Form.Group>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              type="email"
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              type="password"
-            />
-          </Form.Group>
+    <>
+      <Container>
+        <Col xs={6}>
+          <h3 className="display-3">Sign In</h3>
+          <Form onSubmit={onFormSubmit}>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                type="email"
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                type="password"
+              />
+            </Form.Group>
 
-          {isLoading ? (
-            <>
-              <Button variant="primary" disabled>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="mx-1"
-                />
-                Hang On!
-              </Button>
-              <hr />
-              <Link
-                className="btn btn-outline-success disabled"
-                to="/signin/demo"
-              >
-                Login as Demo user
-              </Link>
-            </>
-          ) : (
-            <>
-              <Button variant="primary" type="submit">
-                Continue
-              </Button>
-              <hr />
-              <Link className="btn btn-outline-success" to="/signin/demo">
-                Login as Demo user
-              </Link>
-            </>
-          )}
-        </Form>
-      </Col>
-    </Container>
+            {isLoading ? (
+              <>
+                <Button variant="primary" disabled>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="mx-1"
+                  />
+                  Hang On!
+                </Button>
+                <hr />
+                <Link
+                  className="btn btn-outline-success disabled"
+                  to="/signin/demo"
+                >
+                  Login as Demo user
+                </Link>
+              </>
+            ) : (
+              <>
+                <Button variant="primary" type="submit">
+                  Continue
+                </Button>
+                <hr />
+                <Link className="btn btn-outline-success" to="/signin/demo">
+                  Login as Demo user
+                </Link>
+              </>
+            )}
+          </Form>
+        </Col>
+      </Container>
+    </>
   );
 };
 

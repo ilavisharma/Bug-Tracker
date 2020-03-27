@@ -90,6 +90,7 @@ const ProjectDetail = ({
             onClick={() => {
               setshowModal(true);
             }}
+            className="mx-1"
           >
             Edit this project
           </Button>

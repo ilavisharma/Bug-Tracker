@@ -12,6 +12,11 @@ const hashPassword = async password => {
   }
 };
 
+router.post('/currentUser', async (req, res) => {
+  const user = jwt.decode(req.body.token);
+  res.json({ token: jwt.sign(user, 'rpmgetingear'), user });
+});
+
 router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   try {
