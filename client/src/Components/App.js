@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { LastLocationProvider } from 'react-router-last-location';
 import LandingPage from './Landing/LandingPage';
 import Homepage from './Homepage/Homepage';
 import SignIn from './Auth/SignIn';
@@ -23,14 +24,16 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <AuthContext.Provider value={{ user, token, signIn, signOut }}>
-        <Switch>
-          <Route exact path="/" component={LandingPage} />
-          <Route path="/home" component={Homepage} />
-          <Route exact path="/signin" component={SignIn} />
-          <Route component={Error404} />
-        </Switch>
-      </AuthContext.Provider>
+      <LastLocationProvider>
+        <AuthContext.Provider value={{ user, token, signIn, signOut }}>
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <Route path="/home" component={Homepage} />
+            <Route exact path="/signin" component={SignIn} />
+            <Route component={Error404} />
+          </Switch>
+        </AuthContext.Provider>
+      </LastLocationProvider>
     </BrowserRouter>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useLastLocation } from 'react-router-last-location';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -13,8 +14,9 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { push } = useHistory();
+  const { push, goBack } = useHistory();
   const { signIn } = useContext(AuthContext);
+  const last = useLastLocation();
 
   const onFormSubmit = async e => {
     e.preventDefault();
@@ -26,7 +28,9 @@ const SignIn = () => {
         // correct
         const { user, token } = res.data;
         signIn(user, token);
-        push('/home');
+        // redirect
+        if (last.pathname === '/') push('/home');
+        else goBack();
       }
       // TODO: check other status codes
     } catch (err) {
@@ -35,64 +39,62 @@ const SignIn = () => {
   };
 
   return (
-    <>
-      <Container>
-        <Col xs={6}>
-          <h3 className="display-3">Sign In</h3>
-          <Form onSubmit={onFormSubmit}>
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                type="email"
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                type="password"
-              />
-            </Form.Group>
+    <Container>
+      <Col xs={6}>
+        <h3 className="display-3">Sign In</h3>
+        <Form onSubmit={onFormSubmit}>
+          <Form.Group>
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              type="email"
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              type="password"
+            />
+          </Form.Group>
 
-            {isLoading ? (
-              <>
-                <Button variant="primary" disabled>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    className="mx-1"
-                  />
-                  Hang On!
-                </Button>
-                <hr />
-                <Link
-                  className="btn btn-outline-success disabled"
-                  to="/signin/demo"
-                >
-                  Login as Demo user
-                </Link>
-              </>
-            ) : (
-              <>
-                <Button variant="primary" type="submit">
-                  Continue
-                </Button>
-                <hr />
-                <Link className="btn btn-outline-success" to="/signin/demo">
-                  Login as Demo user
-                </Link>
-              </>
-            )}
-          </Form>
-        </Col>
-      </Container>
-    </>
+          {isLoading ? (
+            <>
+              <Button variant="primary" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="mx-1"
+                />
+                Hang On!
+              </Button>
+              <hr />
+              <Link
+                className="btn btn-outline-success disabled"
+                to="/signin/demo"
+              >
+                Login as Demo user
+              </Link>
+            </>
+          ) : (
+            <>
+              <Button variant="primary" type="submit">
+                Continue
+              </Button>
+              <hr />
+              <Link className="btn btn-outline-success" to="/signin/demo">
+                Login as Demo user
+              </Link>
+            </>
+          )}
+        </Form>
+      </Col>
+    </Container>
   );
 };
 
