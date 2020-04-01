@@ -4,7 +4,12 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 const Sidebar = () => {
   return (
-    <Nav variant="pills" fill className="flex-column">
+    <Nav
+      variant="pills"
+      fill
+      className="flex-column"
+      style={{ height: '60vh' }}
+    >
       <LinkContainer exact to="/home">
         <Nav.Link>Dashboard</Nav.Link>
       </LinkContainer>
