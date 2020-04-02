@@ -42,8 +42,12 @@ const Homepage = ({ match }) => {
                 path={`${match.url}/projects/:id`}
                 component={ProjectDetail}
               />
-              <Route path={`${match.url}/tickets/new`} component={NewTicket} />
-              <Route path={`${match.url}/tickets`} component={Tickets} />
+              <Route
+                exact
+                path={`${match.url}/tickets/new`}
+                component={NewTicket}
+              />
+              <Route exact path={`${match.url}/tickets`} component={Tickets} />
               <Route path={`${match.url}/users`} component={Users} />
               <Route path={`${match.url}/account`} component={Account} />
               <Route component={Error404} />

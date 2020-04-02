@@ -1,28 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import Spinner from 'react-bootstrap/Spinner';
+import Image from 'react-bootstrap/Image';
 import api from '../../utils/api';
 
 const NewTicket = () => {
   const [projectList, setProjectList] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [name, setName] = useState('');
-  const [project, setProject] = useState(1);
+  const [project, setProject] = useState(0);
   const [type, setType] = useState('bug');
   const [priority, setPriority] = useState('low');
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const { push } = useHistory();
+
   const onDrop = useCallback(async files => {
     const data = new FormData();
     data.append('file', files[0]);
-    // TODO: something here
     const res = await api.post('/tickets/uploadImage', data, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -36,11 +41,12 @@ const NewTicket = () => {
         setTimeout(() => {
           setUploadProgress(0);
           setShowProgress(false);
-        }, 10000);
+        }, 500);
       }
     });
-    console.log(res.data);
+    setImageUrl(res.data.url);
   }, []);
+
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: 'image/*',
     onDrop
@@ -60,9 +66,26 @@ const NewTicket = () => {
     })();
   }, []);
 
-  const onFormSubmit = e => {
+  const onFormSubmit = async e => {
     e.preventDefault();
-    alert(JSON.stringify({ name, project, type, priority, description }));
+    setIsLoading(true);
+    try {
+      const res = await api.post('/tickets/new', {
+        name,
+        project_id: project,
+        type,
+        priority,
+        description,
+        imageUrl
+      });
+      // console.log(res.data.id);
+      setIsLoading(false);
+      push(`/home/tickets/${res.data.id}`);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+      alert(err);
+    }
   };
 
   return (
@@ -91,6 +114,7 @@ const NewTicket = () => {
               value={project}
               onChange={e => setProject(e.target.value)}
             >
+              <option value="0">Select project</option>
               {projectList.map(({ id, name }) => (
                 <option value={id} key={id}>
                   {name}
@@ -132,13 +156,14 @@ const NewTicket = () => {
           {...getRootProps()}
           style={{
             border: '2px dashed gray',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            margin: 'auto'
           }}
           className="my-3"
         >
           <input {...getInputProps()} />
           {isDragActive ? (
-            <p>Drop the files here ...</p>
+            <p className="lead">Drop the files here ...</p>
           ) : (
             <center>
               <p className="lead">
@@ -154,6 +179,7 @@ const NewTicket = () => {
             label={`${uploadProgress}%`}
           />
         )}
+        {imageUrl !== null && <Image src={imageUrl} fluid />}
         <Form.Group>
           <Form.Label>Description</Form.Label>
           <Form.Control
@@ -163,9 +189,22 @@ const NewTicket = () => {
             rows="2"
           />
         </Form.Group>
-        <Button type="submit" varient="info">
-          Create new ticket
-        </Button>
+        {isLoading ? (
+          <Button variant="info" disabled>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            Creating...
+          </Button>
+        ) : (
+          <Button variant="primary" type="submit">
+            Create New Ticket
+          </Button>
+        )}
       </Form>
     </Col>
   );

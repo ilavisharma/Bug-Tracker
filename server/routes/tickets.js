@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const multer = require('multer');
 const admin = require('firebase-admin');
+const fs = require('fs');
 const db = require('../utils/db');
 const serviceAccount = require('../firebase/adminsdk.json');
 
@@ -21,12 +22,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/new', async (req, res) => {
-  const {} = req.body;
   try {
-    const query = await db('tickets').insert();
+    const query = await db('tickets').insert({
+      dateAdded: db.fn.now(),
+      ...req.body
+    });
     res.json({ id: query[0] }).status(201);
   } catch (err) {
     console.log(err);
+    alert(err);
     res.sendStatus(500);
   }
 });
@@ -37,12 +41,16 @@ router.post('/uploadImage', upload.single('file'), async (req, res) => {
   const bucket = admin.storage().bucket(`gs://${bucketName}/`);
 
   try {
-    const result = await bucket.upload(path, { gzip: true, resumable: false });
+    const [uploadedFile] = await bucket.upload(path, {
+      gzip: true,
+      resumable: false
+    });
     res
       .json({
-        url: `https://storage.googleapis.com/${bucketName}/` + result[0].name
+        url: `https://storage.googleapis.com/${bucketName}/` + uploadedFile.name
       })
       .status(200);
+    fs.unlinkSync(path);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
