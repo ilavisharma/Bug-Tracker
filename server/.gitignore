@@ -4,3 +4,4 @@ nodemon.json
 .env
 public/images
 firebase
+utils/config.js

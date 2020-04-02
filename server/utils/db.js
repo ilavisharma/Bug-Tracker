@@ -1,12 +1,16 @@
+const config = require('./config');
+const { database, host, password, port, user } = config;
+
 const knex = require('knex')({
-  client: 'mysql',
+  client: 'pg',
   connection: {
-    host: process.env.db_host,
-    user: process.env.db_user,
-    password: process.env.db_password,
-    database: 'bugtracker'
+    host,
+    user,
+    password,
+    database,
+    port,
+    ssl: true
   },
-  debug: false,
   pool: {
     max: 7,
     min: 0
