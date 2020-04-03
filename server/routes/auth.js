@@ -51,12 +51,13 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
+  console.log(req.body);
   const newUser = {
     name,
     email,
-    password: await hashPassword(password)
+    password: bcrypt.hashSync(password, 10)
   };
 
   try {

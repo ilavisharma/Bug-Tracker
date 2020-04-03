@@ -10,10 +10,6 @@ const knex = require('knex')({
     database,
     port,
     ssl: true
-  },
-  pool: {
-    max: 7,
-    min: 0
   }
 });
 

@@ -9,7 +9,7 @@ const upload = multer({ storage });
 router.post('/new', async (req, res) => {
   try {
     const query = await db('tickets').insert({
-      dateAdded: db.fn.now(),
+      dateadded: db.fn.now(),
       ...req.body
     });
     res.json({ id: query[0] }).status(201);

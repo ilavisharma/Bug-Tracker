@@ -31,6 +31,7 @@ const SignIn = () => {
         // redirect
         if (last.pathname === '/') push('/home');
         else goBack();
+        push('/home');
       }
       // TODO: check other status codes
     } catch (err) {

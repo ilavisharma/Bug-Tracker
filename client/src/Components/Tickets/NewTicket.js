@@ -76,7 +76,7 @@ const NewTicket = () => {
         type,
         priority,
         description,
-        imageUrl
+        imageurl: imageUrl
       });
       // console.log(res.data.id);
       setIsLoading(false);
@@ -95,7 +95,7 @@ const NewTicket = () => {
 
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
-          <Form.Label>Project Name</Form.Label>
+          <Form.Label>Name</Form.Label>
           <Form.Control
             value={name}
             onChange={e => setName(e.target.value)}
