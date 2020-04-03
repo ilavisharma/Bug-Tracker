@@ -12,14 +12,13 @@ const bucket = admin.storage().bucket(`gs://${bucketName}/`);
 
 const uploadImage = file =>
   new Promise((resolve, reject) => {
-    const { originalname, buffer, mimetype, encoding } = file;
+    const { originalname, buffer } = file;
 
-    const blob = bucket.file(Date.now() + originalname.replace(/ /g, '_'));
+    const blob = bucket.file(Date.now() + '.' + originalname.split('.')[1]);
 
     const blobStream = blob.createWriteStream({
       resumable: false,
-      gzip: true,
-      metadata: { mimetype, encoding }
+      gzip: true
     });
     blobStream
       .on('finish', () => {
