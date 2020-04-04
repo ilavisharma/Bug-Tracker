@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const jwt = require('jsonwebtoken');
 const serviceAccount = require('../firebase/adminsdk.json');
 const { firebaseDatabaseURL } = require('./config');
 
@@ -31,4 +32,11 @@ const uploadImage = file =>
       .end(buffer);
   });
 
-module.exports = { uploadImage };
+const signToken = user =>
+  jwt.sign(user, 'rpmgetingear', {
+    expiresIn: '1d'
+  });
+
+const verifyToken = token => jwt.verify(token, 'rpmgetingear');
+
+module.exports = { uploadImage, signToken, verifyToken };

@@ -1,16 +1,8 @@
 const router = require('express').Router();
-const db = require('../utils/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const hashPassword = async password => {
-  try {
-    const hash = await bcrypt.hash(password, 10);
-    return hash;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
+const db = require('../utils/db');
+const { signToken } = require('../utils/helpers');
 
 router.post('/currentUser', async (req, res) => {
   const user = jwt.decode(req.body.token);
@@ -40,9 +32,7 @@ router.post('/signin', async (req, res) => {
     }
     // console.log(foundUser);
     res.json({
-      token: jwt.sign(foundUser, 'rpmgetingear', {
-        expiresIn: '1d'
-      }),
+      token: signToken(foundUser),
       user: foundUser
     });
   } catch (err) {

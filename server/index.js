@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
+const { verifyToken } = require('./utils/helpers');
 
 const projectRoutes = require('./routes/projects');
 const authRoutes = require('./routes/auth');
@@ -13,6 +14,17 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json());
 const PORT = process.env.PORT || 4000;
+
+app.use((req, _, next) => {
+  const token = req.headers.authorization;
+  if (token !== null) {
+    try {
+      const currentUser = verifyToken(token);
+      req.currentUser = currentUser;
+    } catch (e) {}
+  }
+  next();
+});
 
 app.use('/static', express.static('public'));
 app.use('/projects', projectRoutes);
