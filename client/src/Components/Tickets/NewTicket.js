@@ -70,14 +70,22 @@ const NewTicket = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post('/tickets/new', {
-        name,
-        project_id: project,
-        type,
-        priority,
-        description,
-        imageurl: imageUrl
-      });
+      const res = await api.post(
+        '/tickets/new',
+        {
+          name,
+          project_id: project,
+          type,
+          priority,
+          description,
+          imageurl: imageUrl
+        },
+        {
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        }
+      );
       // console.log(res.data.id);
       setIsLoading(false);
       push(`/home/tickets/${res.data.id}`);

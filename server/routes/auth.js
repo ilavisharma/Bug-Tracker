@@ -1,12 +1,15 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const db = require('../utils/db');
 const { signToken } = require('../utils/helpers');
 
-router.post('/currentUser', async (req, res) => {
-  const user = jwt.decode(req.body.token);
-  res.json({ token: jwt.sign(user, 'rpmgetingear'), user });
+router.get('/currentUser', ({ currentUser }, res) => {
+  if (currentUser) {
+    const { id, name, email } = currentUser;
+    res.json({ id, name, email });
+  } else {
+    res.sendStatus(204);
+  }
 });
 
 router.post('/signin', async (req, res) => {

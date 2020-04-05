@@ -6,7 +6,7 @@ const { uploadImage } = require('../utils/helpers');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/', async (_, res) => {
+router.get('/', async (req, res) => {
   try {
     const query = await db('tickets')
       .select(

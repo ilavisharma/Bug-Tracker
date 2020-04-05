@@ -16,8 +16,8 @@ app.use(express.json());
 const PORT = process.env.PORT || 4000;
 
 app.use((req, _, next) => {
-  const token = req.headers.authorization;
-  if (token !== null) {
+  const token = req.headers['authorization'];
+  if (token !== 'null') {
     try {
       const currentUser = verifyToken(token);
       req.currentUser = currentUser;

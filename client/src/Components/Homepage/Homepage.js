@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,8 +15,41 @@ import Error404 from '../../utils/Error404';
 import ProjectDetail from '../Projects/ProjectDetail';
 import NewTicket from '../Tickets/NewTicket';
 import TicketDetail from '../Tickets/TicketDetail';
+import api from '../../utils/api';
+import AuthContext from '../../Context/AuthContext';
 
 const Homepage = ({ match }) => {
+  const { push } = useHistory();
+  const { signIn } = useContext(AuthContext);
+
+  useEffect(() => {
+    const localToken = localStorage.getItem('token');
+    if (localToken) {
+      api
+        .get('/auth/currentUser', {
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        })
+        .then(res => {
+          if (res.status === 200) {
+            // const { id, name, email } = res.data;
+            signIn(res.data, localStorage.getItem('token'));
+          } else {
+            push('/signin');
+            alert('You need to sign in');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      alert('You need to sign in');
+      push('/signin');
+    }
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <>
       <NavigationBar />

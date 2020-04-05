@@ -15,7 +15,11 @@ const Tickets = () => {
   useEffect(() => {
     (async function() {
       try {
-        const res = await api.get(`/tickets`);
+        const res = await api.get(`/tickets`, {
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        });
         setIsLoading(false);
         setTickets(res.data);
       } catch (err) {
@@ -35,7 +39,7 @@ const Tickets = () => {
       {isLoading ? (
         <LoadingSpinner />
       ) : (
-        <Col xs={9}>
+        <Col xs={11}>
           <Table stripped="true" hover>
             <thead>
               <tr>
