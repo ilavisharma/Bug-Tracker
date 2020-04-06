@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
 import EditProjectModal from './EditProjectModal';
+import AuthContext from '../../Context/AuthContext';
 
 const ProjectDetail = ({
   match: {
@@ -17,6 +18,7 @@ const ProjectDetail = ({
   const [showModal, setshowModal] = useState(false);
 
   const { push, replace } = useHistory();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     (async function() {
@@ -79,21 +81,25 @@ const ProjectDetail = ({
           <h4 className="display-4">{project.name}</h4>
           <hr />
           <p className="lead">{project.description}</p>
-          <Button
-            variant="danger"
-            onClick={() => handleDeleteClick(project.name)}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="info"
-            onClick={() => {
-              setshowModal(true);
-            }}
-            className="mx-1"
-          >
-            Edit this project
-          </Button>
+          {project.user_id === user.id && (
+            <>
+              <Button
+                variant="danger"
+                onClick={() => handleDeleteClick(project.name)}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="info"
+                onClick={() => {
+                  setshowModal(true);
+                }}
+                className="mx-1"
+              >
+                Edit this project
+              </Button>
+            </>
+          )}
         </Col>
         <EditProjectModal
           show={showModal}

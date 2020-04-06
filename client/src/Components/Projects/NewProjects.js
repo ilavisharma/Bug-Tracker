@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 import api from '../../utils/api';
+import { toTitleCase } from '../../utils/helpers';
 
 const NewProjects = () => {
   const [name, setName] = useState('');
@@ -17,12 +18,21 @@ const NewProjects = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post('/projects/new', { name, description });
+      const res = await api.post(
+        '/projects/new',
+        { name, description },
+        {
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        }
+      );
       setIsLoading(false);
       alert('Project Created');
       push(`/home/projects/${res.data.id}`);
     } catch (err) {
       console.log(err);
+      alert(err);
       setIsLoading(false);
     }
   };
@@ -37,7 +47,7 @@ const NewProjects = () => {
           <Form.Label>Project Name</Form.Label>
           <Form.Control
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => setName(toTitleCase(e.target.value))}
             type="text"
             placeholder="My Awesome Project"
           />
@@ -46,7 +56,7 @@ const NewProjects = () => {
           <Form.Label>Project Description</Form.Label>
           <Form.Control
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={e => setDescription(toTitleCase(e.target.value))}
             as="textarea"
             placeholder="This project is about..."
             rows="3"

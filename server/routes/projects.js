@@ -12,19 +12,29 @@ router.get('/', async (_, res) => {
 });
 
 router.post('/new', async (req, res) => {
-  try {
-    const query = await db('projects').insert(req.body);
-    res.json({ id: query[0] }).status(201);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
+  const { currentUser } = req;
+  if (currentUser) {
+    try {
+      const query = await db('projects')
+        .insert({
+          user_id: currentUser.id,
+          ...req.body
+        })
+        .returning('id');
+      res.json({ id: query[0] }).status(201);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  } else {
+    res.sendStatus(403);
   }
 });
 
 router.get('/:id', async (req, res) => {
   try {
     const query = await db('projects')
-      .select('name', 'description')
+      .select('*')
       .where('id', '=', req.params.id);
     if (query.length === 0) {
       res.sendStatus(204);

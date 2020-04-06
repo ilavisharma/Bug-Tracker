@@ -15,11 +15,7 @@ const Tickets = () => {
   useEffect(() => {
     (async function() {
       try {
-        const res = await api.get(`/tickets`, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        });
+        const res = await api.get(`/tickets`);
         setIsLoading(false);
         setTickets(res.data);
       } catch (err) {
@@ -43,27 +39,35 @@ const Tickets = () => {
           <Table stripped="true" hover>
             <thead>
               <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Type</th>
                 <th>Priority</th>
                 <th>Project Name</th>
+                <th>Created by</th>
                 <th>Date</th>
               </tr>
             </thead>
             <tbody>
               {tickets.map(
-                ({ id, name, type, priority, projectName, dateadded }) => (
+                ({
+                  id,
+                  name,
+                  type,
+                  priority,
+                  projectName,
+                  dateadded,
+                  user
+                }) => (
                   <tr
                     style={{ cursor: 'pointer' }}
                     key={id}
                     onClick={() => push(`/home/tickets/${id}`)}
                   >
-                    <td>{id}</td>
                     <td>{name}</td>
                     <td>{type}</td>
                     <td>{priority}</td>
                     <td>{projectName}</td>
+                    <td>{user}</td>
                     <td>{new Date(dateadded).toDateString()}</td>
                   </tr>
                 )

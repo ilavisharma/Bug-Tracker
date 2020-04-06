@@ -9,6 +9,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import api from '../../utils/api';
+import { toTitleCase } from '../../utils/helpers';
 
 const NewTicket = () => {
   const [projectList, setProjectList] = useState([]);
@@ -86,7 +87,6 @@ const NewTicket = () => {
           }
         }
       );
-      // console.log(res.data.id);
       setIsLoading(false);
       push(`/home/tickets/${res.data.id}`);
     } catch (err) {
@@ -106,7 +106,7 @@ const NewTicket = () => {
           <Form.Label>Name</Form.Label>
           <Form.Control
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => setName(toTitleCase(e.target.value))}
             type="text"
           />
         </Form.Group>
@@ -192,7 +192,7 @@ const NewTicket = () => {
           <Form.Label>Description</Form.Label>
           <Form.Control
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={e => setDescription(toTitleCase(e.target.value))}
             as="textarea"
             rows="2"
           />
