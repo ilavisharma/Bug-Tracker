@@ -1,10 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Col from 'react-bootstrap/Col';
 
 const Users = () => {
   return (
-    <div>
-      <h2 className="display-2">Use the users</h2>
-    </div>
+    <Col>
+      <Link to="/home/users/new" className="btn btn-success">
+        Create new user
+      </Link>
+    </Col>
   );
 };
 

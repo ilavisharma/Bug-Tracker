@@ -9,7 +9,7 @@ import Dashboard from '../Dashboard/Dashboard';
 import Projects from '../Projects/Projects';
 import Tickets from '../Tickets/Tickets';
 import Users from '../Users/Users';
-import Account from '../Auth/Account';
+import Account from '../Account/Account';
 import NewProjects from '../Projects/NewProjects';
 import Error404 from '../../utils/Error404';
 import ProjectDetail from '../Projects/ProjectDetail';
@@ -17,6 +17,7 @@ import NewTicket from '../Tickets/NewTicket';
 import TicketDetail from '../Tickets/TicketDetail';
 import api from '../../utils/api';
 import AuthContext from '../../Context/AuthContext';
+import CreateUser from '../Users/CreateUser';
 
 const Homepage = ({ match }) => {
   const { push } = useHistory();
@@ -87,7 +88,12 @@ const Homepage = ({ match }) => {
                 path={`${match.url}/tickets/:id`}
                 component={TicketDetail}
               />
-              <Route path={`${match.url}/users`} component={Users} />
+              <Route
+                exact
+                path={`${match.url}/users/new`}
+                component={CreateUser}
+              />
+              <Route exact path={`${match.url}/users`} component={Users} />
               <Route path={`${match.url}/account`} component={Account} />
               <Route component={Error404} />
             </Switch>
