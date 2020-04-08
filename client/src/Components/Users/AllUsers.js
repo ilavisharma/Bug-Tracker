@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Col from 'react-bootstrap/Col';
 import api from '../../utils/api';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import { toTitleCase } from '../../utils/helpers';
 
 const AllUsers = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState(null);
+
+  const { push } = useHistory();
 
   useEffect(() => {
     (async function() {
@@ -16,10 +20,8 @@ const AllUsers = () => {
             authorization: localStorage.getItem('token')
           }
         });
-        //   setIsLoading(false);
         setUsers(res.data);
         setIsLoading(false);
-        console.log(res.data);
       } catch (err) {
         setIsLoading(false);
         alert(err);
@@ -41,10 +43,16 @@ const AllUsers = () => {
         </thead>
         <tbody>
           {users.map(({ id, name, email, role }) => (
-            <tr key={id} style={{ cursor: 'pointer' }}>
+            <tr
+              key={id}
+              style={{ cursor: 'pointer' }}
+              onClick={() => push(`/home/users/${id}`)}
+            >
               <td>{name}</td>
               <td>{email}</td>
-              <td>{role === null ? <>Not Assigned</> : <>{role}</>}</td>
+              <td>
+                {role === null ? <>Not Assigned</> : <>{toTitleCase(role)}</>}
+              </td>
             </tr>
           ))}
         </tbody>

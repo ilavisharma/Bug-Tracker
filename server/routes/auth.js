@@ -100,6 +100,38 @@ router.get('/allUsers', async ({ currentUser }, res) => {
   }
 });
 
+router.get('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = await db('users')
+      .select('*')
+      .innerJoin('roles', 'users.id', 'roles.user_id')
+      .where({ id });
+    res.json({
+      ...query[0],
+      password: undefined,
+      user_id: undefined
+    });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post('/updateRole', async (req, res) => {
+  const { id, role } = req.body;
+  try {
+    await db('roles')
+      .where({ user_id: id })
+      .update({ role })
+      .returning('*');
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.post('/uploadImage', upload.single('file'), async (req, res) => {
   try {
     const url = await uploadImage(req.file);

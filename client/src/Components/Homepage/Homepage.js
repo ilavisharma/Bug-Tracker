@@ -18,6 +18,7 @@ import TicketDetail from '../Tickets/TicketDetail';
 import api from '../../utils/api';
 import AuthContext from '../../Context/AuthContext';
 import CreateUser from '../Users/CreateUser';
+import UserDetail from '../Users/UserDetail';
 
 const Homepage = ({ match }) => {
   const { push } = useHistory();
@@ -94,6 +95,11 @@ const Homepage = ({ match }) => {
                 component={CreateUser}
               />
               <Route exact path={`${match.url}/users`} component={Users} />
+              <Route
+                exact
+                path={`${match.url}/users/:id`}
+                component={UserDetail}
+              />
               <Route path={`${match.url}/account`} component={Account} />
               <Route component={Error404} />
             </Switch>

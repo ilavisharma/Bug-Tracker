@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
 import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 
@@ -24,6 +23,7 @@ const Account = () => {
             height="180"
             style={{ cursor: 'pointer' }}
             onTouchStart={() => console.log('touch start')}
+            alt={user.name}
           />
         </Col>
       </Row>
