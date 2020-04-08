@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -17,6 +18,8 @@ const CreateUser = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { goBack } = useHistory();
 
   const onDrop = useCallback(async files => {
     const data = new FormData();
@@ -49,7 +52,7 @@ const CreateUser = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post(
+      await api.post(
         '/auth/signup',
         { name, email, password, photourl },
         {
@@ -59,8 +62,8 @@ const CreateUser = () => {
         }
       );
       setIsLoading(false);
-      // push(`/home/tickets/${res.data.id}`);
       alert('User Created');
+      goBack();
     } catch (err) {
       console.log(err);
       setIsLoading(false);

@@ -10,8 +10,8 @@ const upload = multer({ storage });
 
 router.get('/currentUser', ({ currentUser }, res) => {
   if (currentUser) {
-    const { id, name, email, photourl } = currentUser;
-    res.json({ id, name, email, photourl });
+    const { id, name, email, photourl, role } = currentUser;
+    res.json({ id, name, email, photourl, role });
   } else {
     res.sendStatus(204);
   }
@@ -23,6 +23,7 @@ router.post('/signin', async (req, res) => {
     // fetch the user
     const query = await db('users')
       .select('*')
+      .innerJoin('roles', 'user.id', 'roles.user_id')
       .where({ email });
     if (query.length === 0) {
       return res.sendStatus(204);
@@ -39,10 +40,15 @@ router.post('/signin', async (req, res) => {
     if (!isCorrectPassword) {
       return res.sendStatus(401);
     }
-    // console.log(foundUser);
+    // get the user role
+    const roleQuery = await db('roles')
+      .select('role')
+      .where({ user_id: foundUser.id });
+    const { role } = roleQuery[0];
     res.json({
-      token: signToken(foundUser),
-      user: foundUser
+      token: signToken({ role, ...foundUser }),
+      user: foundUser,
+      role
     });
   } catch (err) {
     console.log(err);
@@ -75,6 +81,22 @@ router.post('/signup', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
+  }
+});
+
+router.get('/allUsers', async ({ currentUser }, res) => {
+  if (currentUser.role === 'admin') {
+    try {
+      const query = await db('users')
+        .select('id', 'name', 'email', 'role')
+        .innerJoin('roles', 'users.id', 'roles.user_id');
+      res.json(query);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  } else {
+    res.sendStatus(401);
   }
 });
 

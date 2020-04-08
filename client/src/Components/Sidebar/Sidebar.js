@@ -20,10 +20,10 @@ const Sidebar = () => {
         <Nav.Link>Tickets</Nav.Link>
       </LinkContainer>
       <LinkContainer to="/home/users">
-        <Nav.Link>Users</Nav.Link>
+        <Nav.Link>Users/Roles</Nav.Link>
       </LinkContainer>
       <LinkContainer to="/home/account">
-        <Nav.Link>Account</Nav.Link>
+        <Nav.Link>My Account</Nav.Link>
       </LinkContainer>
     </Nav>
   );
