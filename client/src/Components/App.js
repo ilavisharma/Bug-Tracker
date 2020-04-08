@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { LastLocationProvider } from 'react-router-last-location';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from './Landing/LandingPage';
 import Homepage from './Homepage/Homepage';
 import SignIn from './Auth/SignIn';
