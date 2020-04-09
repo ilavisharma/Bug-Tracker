@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import api from '../../utils/api';
 import Spinner from 'react-bootstrap/Spinner';
 
-const EditRoleModal = ({ show, handleClose, user }) => {
+const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
   const [role, setRole] = useState(user.role === null ? '' : user.role);
   const [isLoading, setIsLoading] = useState(false);
-
-  const { push } = useHistory();
 
   const handleRoleUpdate = async role => {
     try {
       setIsLoading(true);
-      const res = await api.post('/auth/updateRole', {
+      const res = await api.put('/auth/updateRole', {
         id: user.id,
         role
       });
+      setIsLoading(false);
       if (res.status === 200) {
         alert('User role updated');
+        updateRoleInUI(role);
         handleClose();
-        push('/home/users');
       }
     } catch (err) {
       setIsLoading(false);

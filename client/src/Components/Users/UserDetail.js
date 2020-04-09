@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -27,6 +27,10 @@ const UserDetail = () => {
       }
     })();
   }, [id]);
+
+  const updateRoleInUI = role => {
+    setUser({ ...user, role });
+  };
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -68,6 +72,7 @@ const UserDetail = () => {
         show={showEditRoleModal}
         handleClose={() => setShowEditRoleModal(false)}
         user={user}
+        updateRoleInUI={updateRoleInUI}
       />
       <hr />
       <h4>Projects Assigned</h4>

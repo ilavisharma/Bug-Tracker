@@ -23,7 +23,7 @@ router.post('/signin', async (req, res) => {
     // fetch the user
     const query = await db('users')
       .select('*')
-      .innerJoin('roles', 'user.id', 'roles.user_id')
+      .innerJoin('roles', 'users.id', 'roles.user_id')
       .where({ email });
     if (query.length === 0) {
       return res.sendStatus(204);
@@ -118,7 +118,7 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
-router.post('/updateRole', async (req, res) => {
+router.put('/updateRole', async (req, res) => {
   const { id, role } = req.body;
   try {
     await db('roles')

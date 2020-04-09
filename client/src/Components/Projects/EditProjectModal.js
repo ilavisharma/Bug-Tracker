@@ -66,7 +66,10 @@ const EditProjectModal = ({ show, handleClose, project, handleEdit }) => {
         ) : (
           <Button
             variant="success"
-            onClick={() => handleEdit(projectName, projectDescription)}
+            onClick={() => {
+              setIsLoading(true);
+              handleEdit(projectName, projectDescription);
+            }}
           >
             Save Changes
           </Button>
