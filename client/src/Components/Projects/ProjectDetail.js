@@ -83,7 +83,7 @@ const ProjectDetail = () => {
           </h5>
           <hr />
           <div className="my-3">
-            {project.user_id === user.id && (
+            {(project.user_id === user.id || user.role === 'admin') && (
               <>
                 <Button
                   variant="danger"

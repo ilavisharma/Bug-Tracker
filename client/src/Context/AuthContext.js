@@ -8,6 +8,7 @@ export default createContext({
     photourl: ''
   },
   token: null,
+  role: null,
   signIn: (user, token) => {},
   signOut: () => {},
   api: () => {}

@@ -7,6 +7,7 @@ import Homepage from './Homepage/Homepage';
 import SignIn from './Auth/SignIn';
 import Error404 from '../utils/Error404';
 import GlobalState from './GlobalState';
+import DemoUserSignIn from './Auth/DemoUserSignIn';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <Route exact path="/" component={LandingPage} />
             <Route path="/home" component={Homepage} />
             <Route exact path="/signin" component={SignIn} />
+            <Route exact path="/signin/demo" component={DemoUserSignIn} />
             <Route component={Error404} />
           </Switch>
         </LastLocationProvider>
