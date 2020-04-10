@@ -35,7 +35,6 @@ const Homepage = ({ match }) => {
         })
         .then(res => {
           if (res.status === 200) {
-            // const { id, name, email } = res.data;
             signIn(res.data, localStorage.getItem('token'));
           } else {
             push('/signin');
