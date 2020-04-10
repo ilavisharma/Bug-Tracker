@@ -1,24 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
-import api from '../../utils/api';
 import EditProjectModal from './EditProjectModal';
 import AuthContext from '../../Context/AuthContext';
 
-const ProjectDetail = ({
-  match: {
-    params: { id }
-  }
-}) => {
+const ProjectDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [project, setProject] = useState(null);
   const [isFound, setIsFound] = useState(true);
   const [showModal, setshowModal] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const { user, api } = useContext(AuthContext);
   const { push } = useHistory();
+  const { id } = useParams();
 
   useEffect(() => {
     (async function() {
@@ -38,7 +34,7 @@ const ProjectDetail = ({
         setIsLoading(false);
       }
     })();
-  }, [id]);
+  }, [id, api]);
 
   const handleDeleteClick = async name => {
     const confirm = window.confirm(`Delete the project: ${name} ?`);

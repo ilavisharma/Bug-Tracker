@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import api from '../../utils/api';
 import EditRoleModal from './EditRoleModal';
 import { toTitleCase } from '../../utils/helpers';
+import AuthContext from '../../Context/AuthContext';
 
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,6 +14,7 @@ const UserDetail = () => {
   const [showEditRoleModal, setShowEditRoleModal] = useState(false);
 
   const { id } = useParams();
+  const { api } = useContext(AuthContext);
 
   useEffect(() => {
     (async function() {
@@ -26,7 +27,7 @@ const UserDetail = () => {
         alert(err);
       }
     })();
-  }, [id]);
+  }, [id, api]);
 
   const updateRoleInUI = role => {
     setUser({ ...user, role });

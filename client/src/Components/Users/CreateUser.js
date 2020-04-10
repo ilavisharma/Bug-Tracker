@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
@@ -8,7 +8,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import { toTitleCase } from '../../utils/helpers';
-import api from '../../utils/api';
+import AuthContext from '../../Context/AuthContext';
 
 const CreateUser = () => {
   const [name, setName] = useState('');
@@ -20,28 +20,32 @@ const CreateUser = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { goBack } = useHistory();
+  const { api } = useContext(AuthContext);
 
-  const onDrop = useCallback(async files => {
-    const data = new FormData();
-    data.append('file', files[0]);
-    const res = await api.post('/auth/uploadImage', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      onUploadProgress: progress => {
-        setShowProgress(true);
-        setUploadProgress(
-          parseInt(Math.round((progress.loaded * 100) / progress.total))
-        );
-        // Clear percentage
-        setTimeout(() => {
-          setUploadProgress(0);
-          setShowProgress(false);
-        }, 250);
-      }
-    });
-    setPhotourl(res.data.url);
-  }, []);
+  const onDrop = useCallback(
+    async files => {
+      const data = new FormData();
+      data.append('file', files[0]);
+      const res = await api.post('/auth/uploadImage', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progress => {
+          setShowProgress(true);
+          setUploadProgress(
+            parseInt(Math.round((progress.loaded * 100) / progress.total))
+          );
+          // Clear percentage
+          setTimeout(() => {
+            setUploadProgress(0);
+            setShowProgress(false);
+          }, 250);
+        }
+      });
+      setPhotourl(res.data.url);
+    },
+    [api]
+  );
 
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: 'image/*',

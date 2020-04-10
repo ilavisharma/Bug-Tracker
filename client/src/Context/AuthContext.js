@@ -9,5 +9,6 @@ export default createContext({
   },
   token: null,
   signIn: (user, token) => {},
-  signOut: () => {}
+  signOut: () => {},
+  api: () => {}
 });

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
-import api from '../../utils/api';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import AuthContext from '../../Context/AuthContext';
 
 const Tickets = () => {
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { push } = useHistory();
+  const { api } = useContext(AuthContext);
 
   useEffect(() => {
     (async function() {
@@ -23,6 +24,7 @@ const Tickets = () => {
         alert(err);
       }
     })();
+    // eslint-disable-next-line
   }, []);
 
   return (

@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
-import api from '../../utils/api';
 import AuthContext from '../../Context/AuthContext';
 
-const TicketDetail = ({
-  match: {
-    params: { id }
-  }
-}) => {
+const TicketDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [ticket, setTicket] = useState(null);
 
-  const { user } = useContext(AuthContext);
+  const { user, api } = useContext(AuthContext);
+  const { id } = useParams();
 
   useEffect(() => {
     (async function() {
@@ -26,7 +23,7 @@ const TicketDetail = ({
         alert(err);
       }
     })();
-  }, [id]);
+  }, [id, api]);
 
   if (isLoading) return <LoadingSpinner />;
 

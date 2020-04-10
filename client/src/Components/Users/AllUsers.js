@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Col from 'react-bootstrap/Col';
-import api from '../../utils/api';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
+import AuthContext from '../../Context/AuthContext';
 
 const AllUsers = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState(null);
 
   const { push } = useHistory();
+  const { api } = useContext(AuthContext);
 
   useEffect(() => {
     (async function() {
@@ -23,13 +24,21 @@ const AllUsers = () => {
         setUsers(res.data);
         setIsLoading(false);
       } catch (err) {
+        console.log(err.response.status);
         setIsLoading(false);
         alert(err);
       }
     })();
-  }, []);
+  }, [api]);
 
   if (isLoading) return <LoadingSpinner />;
+
+  if (users == null)
+    return (
+      <Col xs={9} className="mt-4">
+        <h4 className="display-4">Not Allowed</h4>
+      </Col>
+    );
 
   return (
     <Col xs={9} className="mt-4">

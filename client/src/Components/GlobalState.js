@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import AuthContext from '../Context/AuthContext';
+
+const baseURL =
+  process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:4000'
+    : 'https://api.bugtracker.lavisharma.me';
 
 const GlobalState = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -15,8 +21,22 @@ const GlobalState = ({ children }) => {
     setUser(null);
     setToken(null);
   };
+
   return (
-    <AuthContext.Provider value={{ user, token, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        signIn,
+        signOut,
+        api: axios.create({
+          baseURL,
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        })
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

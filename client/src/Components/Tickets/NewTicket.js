@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import Form from 'react-bootstrap/Form';
@@ -8,8 +8,8 @@ import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
-import api from '../../utils/api';
 import { toTitleCase } from '../../utils/helpers';
+import AuthContext from '../../Context/AuthContext';
 
 const NewTicket = () => {
   const [projectList, setProjectList] = useState([]);
@@ -25,28 +25,32 @@ const NewTicket = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { push } = useHistory();
+  const { api } = useContext(AuthContext);
 
-  const onDrop = useCallback(async files => {
-    const data = new FormData();
-    data.append('file', files[0]);
-    const res = await api.post('/tickets/uploadImage', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      onUploadProgress: progress => {
-        setShowProgress(true);
-        setUploadProgress(
-          parseInt(Math.round((progress.loaded * 100) / progress.total))
-        );
-        // Clear percentage
-        setTimeout(() => {
-          setUploadProgress(0);
-          setShowProgress(false);
-        }, 500);
-      }
-    });
-    setImageUrl(res.data.url);
-  }, []);
+  const onDrop = useCallback(
+    async files => {
+      const data = new FormData();
+      data.append('file', files[0]);
+      const res = await api.post('/tickets/uploadImage', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progress => {
+          setShowProgress(true);
+          setUploadProgress(
+            parseInt(Math.round((progress.loaded * 100) / progress.total))
+          );
+          // Clear percentage
+          setTimeout(() => {
+            setUploadProgress(0);
+            setShowProgress(false);
+          }, 500);
+        }
+      });
+      setImageUrl(res.data.url);
+    },
+    [api]
+  );
 
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: 'image/*',
@@ -65,7 +69,7 @@ const NewTicket = () => {
         setProjectsLoaded(false);
       }
     })();
-  }, []);
+  }, [api]);
 
   const onFormSubmit = async e => {
     e.preventDefault();

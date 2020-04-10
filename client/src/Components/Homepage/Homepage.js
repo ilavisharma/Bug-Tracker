@@ -15,14 +15,13 @@ import Error404 from '../../utils/Error404';
 import ProjectDetail from '../Projects/ProjectDetail';
 import NewTicket from '../Tickets/NewTicket';
 import TicketDetail from '../Tickets/TicketDetail';
-import api from '../../utils/api';
 import AuthContext from '../../Context/AuthContext';
 import CreateUser from '../Users/CreateUser';
 import UserDetail from '../Users/UserDetail';
 
 const Homepage = ({ match }) => {
   const { push } = useHistory();
-  const { signIn } = useContext(AuthContext);
+  const { signIn, api } = useContext(AuthContext);
 
   useEffect(() => {
     const localToken = localStorage.getItem('token');

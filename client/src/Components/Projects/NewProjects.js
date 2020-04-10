@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import AuthContext from '../../Context/AuthContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
-import api from '../../utils/api';
 import { toTitleCase } from '../../utils/helpers';
 
 const NewProjects = () => {
@@ -13,20 +13,13 @@ const NewProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { push } = useHistory();
+  const { api } = useContext(AuthContext);
 
   const onFormSubmit = async e => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post(
-        '/projects/new',
-        { name, description },
-        {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        }
-      );
+      const res = await api.post('/projects/new', { name, description });
       setIsLoading(false);
       alert('Project Created');
       push(`/home/projects/${res.data.id}`);
