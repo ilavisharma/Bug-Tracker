@@ -24,7 +24,7 @@ const AllUsers = () => {
         setUsers(res.data);
         setIsLoading(false);
       } catch (err) {
-        console.log(err.response.status);
+        // console.log(err.response.status);
         setIsLoading(false);
         alert(err);
       }

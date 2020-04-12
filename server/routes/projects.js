@@ -21,6 +21,11 @@ router.post('/new', async (req, res) => {
           ...req.body
         })
         .returning('id');
+      // aslo create a record in project_managers with manager as null
+      await db('project_managers').insert({
+        manager_id: null,
+        project_id: query[0]
+      });
       res.json({ id: query[0] }).status(201);
     } catch (err) {
       console.log(err);
@@ -32,14 +37,27 @@ router.post('/new', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
+    // TODO: fetch details of the project with user who created it
     const query = await db('projects')
       .select('*')
-      .where('id', '=', req.params.id);
+      .innerJoin(
+        'project_managers',
+        'projects.id',
+        'project_managers.project_id'
+      )
+      .where({ id });
+    // TODO: fetch the project manager details
+    const managerQuery = await db('users')
+      .select('name')
+      .where({ id: query[0].manager_id });
+
     if (query.length === 0) {
       res.sendStatus(204);
     } else {
-      res.json(query[0]).status(200);
+      if (managerQuery.length === 0) res.send({ ...query[0], manager: null });
+      else res.send({ ...query[0], manager: managerQuery[0].name });
     }
   } catch (err) {
     console.log(err);
@@ -71,6 +89,10 @@ router.delete('/:id', (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
+});
+
+router.post('/assign', async (req, res) => {
+  const {} = req.body;
 });
 
 module.exports = router;

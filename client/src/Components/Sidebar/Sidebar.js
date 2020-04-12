@@ -60,6 +60,8 @@ const Sidebar = () => {
         </LinkContainer>
       </Nav>
     );
+  } else {
+    return <LoadingSpinner />;
   }
 };
 

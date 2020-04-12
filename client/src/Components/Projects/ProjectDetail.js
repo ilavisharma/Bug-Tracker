@@ -78,8 +78,14 @@ const ProjectDetail = () => {
           <h4 className="display-4">{project.name}</h4>
           <hr />
           <p className="lead">{project.description}</p>
+
           <h5>
-            <mark>Manager:</mark> Ray Palmer
+            {' '}
+            <mark>Manager:</mark>
+            {project.manager === null ? ' Not Assigned' : project.manager}
+            <Button variant="outline-dark" className="mx-2">
+              Assign this project
+            </Button>
           </h5>
           <hr />
           <div className="my-3">
