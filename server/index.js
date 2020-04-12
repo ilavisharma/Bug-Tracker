@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
 const { verifyToken } = require('./utils/helpers');
+const db = require('./utils/db');
 
 const projectRoutes = require('./routes/projects');
 const authRoutes = require('./routes/auth');
@@ -35,6 +36,18 @@ app.get('/', (_, res) => {
   res.send('API is working').status(200);
 });
 
-app.listen(PORT, () =>
-  console.log(`Server listening on http://localhost:${PORT}`)
-);
+app.on('ready', () => {
+  app.listen(PORT, () =>
+    console.log(`Server listening on http://localhost:${PORT}`)
+  );
+});
+
+db.raw('SELECT NOW()')
+  .then(() => {
+    console.log('Connected to DB');
+    app.emit('ready');
+  })
+  .catch(err => {
+    console.log(err);
+    app.emit('ready');
+  });

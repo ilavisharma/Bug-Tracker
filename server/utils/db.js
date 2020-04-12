@@ -13,12 +13,12 @@ const knex = require('knex')({
   }
 });
 
-knex
-  .raw('SELECT NOW()')
-  .then(() => console.log('Connected to DB'))
-  .catch(err => {
-    console.log(err);
-    throw err;
-  });
+// knex
+//   .raw('SELECT NOW()')
+//   .then(() => console.log('Connected to DB'))
+//   .catch(err => {
+//     console.log(err);
+//     throw err;
+//   });
 
 module.exports = knex;
