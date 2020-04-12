@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
     if (query.length === 0) {
       res.sendStatus(204);
     } else {
-      res.json(query[0]).status(200);
+      res.json(query[0]);
     }
   } catch (err) {
     console.log(err);
@@ -56,8 +56,7 @@ router.post('/new', async (req, res) => {
           user_id: currentUser.id
         })
         .returning('id');
-      console.log(query);
-      res.json({ id: query[0].id });
+      res.json({ id: query[0] });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);

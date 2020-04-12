@@ -3,6 +3,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import { toTitleCase } from '../../utils/helpers';
 
 const Account = () => {
   const { user } = useContext(AuthContext);
@@ -13,7 +14,14 @@ const Account = () => {
     <Col xs={10}>
       <Row xs={10}>
         <Col>
-          <h4 className="display-4 float-left">{user.name}</h4>
+          <h4 className="display-4">{user.name}</h4>
+          <h5>
+            <mark>Role:</mark>{' '}
+            {user.role === null ? 'Not Assigned' : toTitleCase(user.role)}
+          </h5>
+          <h5>
+            <mark>Email:</mark> {user.email}
+          </h5>
         </Col>
         <Col>
           <img

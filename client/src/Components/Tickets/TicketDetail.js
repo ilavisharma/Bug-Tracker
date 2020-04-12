@@ -35,21 +35,10 @@ const TicketDetail = () => {
       </p>
       <hr />
       <p className="lead">{ticket.description}</p>
-      {user.id === ticket.user_id && (
+      {(user.id === ticket.user_id || user.role === 'admin') && (
         <>
-          <Button
-            variant="danger"
-            // onClick={() => handleDeleteClick(project.name)}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="info"
-            // onClick={() => {
-            //   setshowModal(true);
-            // }}
-            className="mx-1"
-          >
+          <Button variant="danger">Delete</Button>
+          <Button variant="info" className="mx-1">
             Edit this ticket
           </Button>
         </>

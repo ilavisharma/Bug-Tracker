@@ -5,7 +5,8 @@ export default createContext({
     name: '',
     email: '',
     id: 0,
-    photourl: ''
+    photourl: '',
+    role: ''
   },
   token: null,
   role: null,
