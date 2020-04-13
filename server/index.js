@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-require('dotenv').config();
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+
+const swaggerDocument = YAML.load('./swagger.yaml');
 const { verifyToken } = require('./utils/helpers');
 const db = require('./utils/db');
 
@@ -32,9 +35,7 @@ app.use('/projects', projectRoutes);
 app.use('/auth', authRoutes);
 app.use('/tickets', ticketRoutes);
 
-app.get('/', (_, res) => {
-  res.send('API is working').status(200);
-});
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.on('ready', () => {
   app.listen(PORT, () =>
