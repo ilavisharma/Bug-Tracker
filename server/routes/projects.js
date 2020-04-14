@@ -3,7 +3,20 @@ const db = require('../utils/db');
 
 router.get('/', async (_, res) => {
   try {
-    const query = await db('projects').select('*');
+    const query = await db('projects')
+      .select(
+        'projects.id as id',
+        'projects.name as name',
+        'users.name as manager',
+        'users.id as manager_id'
+      )
+      .innerJoin(
+        'project_managers',
+        'projects.id',
+        'project_managers.project_id'
+      )
+      .innerJoin('users', 'project_managers.manager_id', 'users.id');
+
     res.json(query).status(200);
   } catch (err) {
     console.log(err);
