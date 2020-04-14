@@ -78,7 +78,7 @@ paths:
           description: 'Project Deleted'
         500:
           description: 'Internal Server Error'
-  /projects/assign:
+  /projects/assignManager:
     post:
       tags:
         - 'Project'
@@ -90,7 +90,7 @@ paths:
           description: 'Success'
         500:
           description: 'Internal Server Error'
-        403:
+        401:
           description: 'Not Allowed'
   /auth/currentUser:
     get:
@@ -165,7 +165,7 @@ paths:
           description: 'Success'
         500:
           description: 'Internal server error'
-  /uploadImage:
+  /auth/uploadImage:
     post:
       tags:
         - 'Auth'
@@ -177,3 +177,15 @@ paths:
           description: 'Image uploaded'
         500:
           description: 'Internal server error'
+  /auth/allManagers:
+    get:
+      tags:
+        - 'Auth'
+      summary: 'Fetch all project managers'
+      responses:
+        200:
+          description: 'Success'
+        500:
+          description: 'Internal server error'
+        401:
+          description: 'Not Allowed'
