@@ -95,6 +95,8 @@ const ProjectDetail = () => {
             <AssignProjectManagerModal
               showModal={showAssignManagerModal}
               closeModal={() => setShowAssignManagerModal(false)}
+              project={project}
+              setProject={setProject}
             />
           </h5>
           <hr />

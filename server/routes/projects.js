@@ -65,19 +65,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    db('projects')
-      .where({ id })
-      .update(req.body)
-      .then(() => res.status(200).send('Success'));
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
-});
-
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
   try {
@@ -91,8 +78,35 @@ router.delete('/:id', (req, res) => {
   }
 });
 
-router.post('/assign', async (req, res) => {
-  const {} = req.body;
+router.put('/assignManager', async (req, res) => {
+  const { manager_id, project_id } = req.body;
+  const { currentUser } = req;
+  if ((currentUser.role = 'admin' || currentUser.role === 'manager')) {
+    try {
+      const query = await db('project_managers')
+        .update({ manager_id })
+        .where({ project_id });
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  } else {
+    res.sendStatus(401);
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    db('projects')
+      .where({ id })
+      .update(req.body)
+      .then(() => res.status(200).send('Success'));
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
