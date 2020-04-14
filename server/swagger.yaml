@@ -1,91 +1,179 @@
-openapi: "3.0.0"
+openapi: '3.0.0'
 info:
-  title: "Bugtracker API"
-  description: "This is the backend for the bugtracker api."
-  version: "1.0.0"
+  title: 'Bugtracker API'
+  description: 'This is the backend for the bugtracker api.'
+  version: '1.0.0'
   contact:
-    email: "lavisharma796@gmail.com"
+    email: 'lavisharma796@gmail.com'
 x-servers:
-  - url: "http://localhost:4000"
-  - url: "https://api.bugtracker.lavisharma.me"
-basePath: "/"
+  - url: 'http://localhost:4000'
+  - url: 'https://api.bugtracker.lavisharma.me'
+basePath: '/'
 tags:
-  - name: "Project"
+  - name: 'Project'
+    description: 'Everything about Projects'
+  - name: 'Auth'
+    description: 'Everything about Authentication'
 paths:
   /projects:
     get:
       tags:
-        - "Project"
-      summary: "Get all the projects"
+        - 'Project'
+      summary: 'Get all the projects'
       responses:
         200:
-          description: "Success"
+          description: 'Success'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
   /projects/new:
     post:
       tags:
-        - "Project"
-      summary: "Create a new project"
+        - 'Project'
+      summary: 'Create a new project'
       requestBody:
         required: true
       responses:
         201:
-          description: "Project Created"
+          description: 'Project Created'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
         403:
-          description: "Not Allowed"
+          description: 'Not Allowed'
   /projects/{projectId}:
     get:
       tags:
-        - "Project"
-      summary: "Returns a project with that id"
+        - 'Project'
+      summary: 'Returns a project with that id'
       parameters:
-        - name: "projectId"
+        - name: 'projectId'
           required: true
       responses:
         200:
-          description: "Success"
+          description: 'Success'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
     put:
       tags:
-        - "Project"
-      summary: "Edit an existing project"
+        - 'Project'
+      summary: 'Edit an existing project'
       parameters:
-        - name: "projectId"
+        - name: 'projectId'
           required: true
       requestBody:
         required: true
       responses:
         200:
-          description: "Project Details Updated"
+          description: 'Project Details Updated'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
     delete:
       tags:
-        - "Project"
-      summary: "Delete project"
+        - 'Project'
+      summary: 'Delete project'
       parameters:
-        - name: "projectId"
+        - name: 'projectId'
           required: true
       responses:
         200:
-          description: "Project Deleted"
+          description: 'Project Deleted'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
   /projects/assign:
     post:
       tags:
-        - "Project"
-      summary: "Assign a project"
+        - 'Project'
+      summary: 'Assign a project'
       requestBody:
         required: true
       responses:
         200:
-          description: "Success"
+          description: 'Success'
         500:
-          description: "Internal Server Error"
+          description: 'Internal Server Error'
         403:
-          description: "Not Allowed"
+          description: 'Not Allowed'
+  /auth/currentUser:
+    get:
+      tags:
+        - 'Auth'
+      summary: 'Get the current logged in user'
+      responses:
+        200:
+          description: 'There exists a user'
+        204:
+          description: 'There is no user currently'
+  /auth/signin:
+    post:
+      tags:
+        - 'Auth'
+      summary: 'Sign In'
+      requestBody:
+        required: true
+      responses:
+        204:
+          description: 'User does not exist'
+        401:
+          description: 'Incorrect password'
+        200:
+          description: 'Succesfully Signed In'
+        500:
+          description: 'Internal server error'
+  /auth/signup:
+    post:
+      tags:
+        - 'Auth'
+      summary: 'Sign Up new user'
+      requestBody:
+        required: true
+      responses:
+        201:
+          description: 'Succesfully signed up'
+        500:
+          description: 'Internal server error'
+  /auth/allUsers:
+    get:
+      tags:
+        - 'Auth'
+      summary: 'Fetch all users'
+      responses:
+        200:
+          description: 'Success'
+        500:
+          description: 'Internal server error'
+        401:
+          description: 'Operation not allowed'
+  /auth/users/{id}:
+    get:
+      tags:
+        - 'Auth'
+      summary: 'Fetch details of a user'
+      parameters:
+        - name: 'id'
+          required: true
+      responses:
+        200:
+          description: 'Success'
+        500:
+          description: 'Internal server error'
+  /auth/updateRole:
+    put:
+      tags:
+        - 'Auth'
+      summary: 'Update of a user'
+      responses:
+        200:
+          description: 'Success'
+        500:
+          description: 'Internal server error'
+  /uploadImage:
+    post:
+      tags:
+        - 'Auth'
+      summary: 'Upload user profite picture'
+      requestBody:
+        required: true
+      responses:
+        200:
+          description: 'Image uploaded'
+        500:
+          description: 'Internal server error'
