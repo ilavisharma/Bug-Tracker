@@ -5,12 +5,14 @@ import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import EditProjectModal from './EditProjectModal';
 import AuthContext from '../../Context/AuthContext';
+import AssignProjectManagerModal from './AssignProjectManagerModal';
 
 const ProjectDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [project, setProject] = useState(null);
   const [isFound, setIsFound] = useState(true);
   const [showModal, setshowModal] = useState(false);
+  const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
 
   const { user, api } = useContext(AuthContext);
   const { push } = useHistory();
@@ -83,9 +85,17 @@ const ProjectDetail = () => {
             {' '}
             <mark>Manager:</mark>
             {project.manager === null ? ' Not Assigned' : project.manager}
-            <Button variant="outline-dark" className="mx-2">
+            <Button
+              variant="outline-dark"
+              className="mx-4"
+              onClick={() => setShowAssignManagerModal(true)}
+            >
               Assign this project
             </Button>
+            <AssignProjectManagerModal
+              showModal={showAssignManagerModal}
+              closeModal={() => setShowAssignManagerModal(false)}
+            />
           </h5>
           <hr />
           <div className="my-3">
