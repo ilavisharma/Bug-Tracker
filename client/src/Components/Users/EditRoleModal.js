@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 import AuthContext from '../../Context/AuthContext';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
   const [role, setRole] = useState(user.role === null ? '' : user.role);
@@ -36,21 +36,43 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
         <Modal.Title>Edit User Role</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Group controlId="exampleForm.SelectCustom">
-          <Form.Label>Select the new user role of {user.name}</Form.Label>
-          <Form.Control
-            as="select"
-            custom="true"
-            value={role}
-            onChange={e => setRole(e.target.value)}
+        <ListGroup>
+          <ListGroup.Item
+            active={role === ''}
+            action={true}
+            onClick={() => setRole('')}
           >
-            <option value="">Not Assigned</option>
-            <option value="developer">Developer</option>
-            <option value="manager">Project Manager</option>
-            <option value="submitter">Submitter</option>
-            <option value="admin">Admin</option>
-          </Form.Control>
-        </Form.Group>
+            None
+          </ListGroup.Item>
+          <ListGroup.Item
+            active={role === 'developer'}
+            action={true}
+            onClick={() => setRole('developer')}
+          >
+            Developer
+          </ListGroup.Item>
+          <ListGroup.Item
+            active={role === 'manager'}
+            action={true}
+            onClick={() => setRole('manager')}
+          >
+            Project Managetr
+          </ListGroup.Item>
+          <ListGroup.Item
+            active={role === 'submitter'}
+            action={true}
+            onClick={() => setRole('submitter')}
+          >
+            Submitter
+          </ListGroup.Item>
+          <ListGroup.Item
+            active={role === 'admin'}
+            action={true}
+            onClick={() => setRole('admin')}
+          >
+            Admin
+          </ListGroup.Item>
+        </ListGroup>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
