@@ -77,6 +77,9 @@ const UserDetail = () => {
       />
       <hr />
       <h4>Projects Assigned</h4>
+      {user.projects.map(({ id, name }) => (
+        <li key={id}>{name}</li>
+      ))}
     </Col>
   );
 };

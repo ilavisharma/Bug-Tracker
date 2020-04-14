@@ -107,11 +107,25 @@ router.get('/users/:id', async (req, res) => {
       .select('*')
       .innerJoin('roles', 'users.id', 'roles.user_id')
       .where({ id });
-    res.json({
-      ...query[0],
-      password: undefined,
-      user_id: undefined
-    });
+    if (query[0].role === 'manager') {
+      // fetch from managers table projects assigned to this user
+      const managerQuery = await db('project_managers')
+        .select('id', 'name')
+        .innerJoin('projects', 'project_managers.project_id', 'projects.id')
+        .where({ manager_id: id });
+      res.json({
+        ...query[0],
+        password: undefined,
+        user_id: undefined,
+        projects: managerQuery
+      });
+    } else {
+      res.json({
+        ...query[0],
+        password: undefined,
+        user_id: undefined
+      });
+    }
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

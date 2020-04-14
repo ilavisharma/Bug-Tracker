@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -90,10 +90,16 @@ const ProjectDetail = () => {
                 <>
                   <h5>
                     <mark>Manager:</mark>
-                    {project.manager.name}
+                    <Link
+                      style={{ textDecoration: 'none' }}
+                      to={`/home/users/${project.manager_id}`}
+                    >
+                      {project.manager.name}
+                    </Link>
                   </h5>
                   <h5>
                     <mark>Email:</mark>
+
                     {project.manager.email}
                   </h5>
                 </>
