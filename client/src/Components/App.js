@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { LastLocationProvider } from 'react-router-last-location';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,9 +9,9 @@ import Error404 from '../utils/Error404';
 import GlobalState from './GlobalState';
 import DemoUserSignIn from './Auth/DemoUserSignIn';
 
-const App = () => {
-  return (
-    <GlobalState>
+const MemoRouter = () =>
+  useMemo(
+    () => (
       <BrowserRouter>
         <LastLocationProvider>
           <Switch>
@@ -23,6 +23,14 @@ const App = () => {
           </Switch>
         </LastLocationProvider>
       </BrowserRouter>
+    ),
+    []
+  );
+
+const App = () => {
+  return (
+    <GlobalState>
+      <MemoRouter />
     </GlobalState>
   );
 };
