@@ -1,32 +1,91 @@
-swagger: '2.0'
+openapi: "3.0.0"
 info:
-  title: 'Bugtracker API'
-  description: 'This is the backend for the bugtracker api.'
-  version: '1.0.0'
+  title: "Bugtracker API"
+  description: "This is the backend for the bugtracker api."
+  version: "1.0.0"
   contact:
-    email: 'lavisharma796@gmail.com'
-servers:
-  - url: '{protocol}://{enviornment}'
-    variables:
-      protocol:
-        enum:
-          - http
-          - htps
-        default: http
-      enviornment:
-        enum:
-          - api.bugtracker.lavisharma.me
-          - localhost:4000
-        default: api.bugtracker.lavisharma.me
-basePath: '/'
+    email: "lavisharma796@gmail.com"
+x-servers:
+  - url: "http://localhost:4000"
+  - url: "https://api.bugtracker.lavisharma.me"
+basePath: "/"
 tags:
-  - name: 'Project'
+  - name: "Project"
 paths:
   /projects:
     get:
       tags:
-        - 'Project'
-      summary: 'Get all the projects'
+        - "Project"
+      summary: "Get all the projects"
       responses:
         200:
-          description: 'Success'
+          description: "Success"
+        500:
+          description: "Internal Server Error"
+  /projects/new:
+    post:
+      tags:
+        - "Project"
+      summary: "Create a new project"
+      requestBody:
+        required: true
+      responses:
+        201:
+          description: "Project Created"
+        500:
+          description: "Internal Server Error"
+        403:
+          description: "Not Allowed"
+  /projects/{projectId}:
+    get:
+      tags:
+        - "Project"
+      summary: "Returns a project with that id"
+      parameters:
+        - name: "projectId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+        500:
+          description: "Internal Server Error"
+    put:
+      tags:
+        - "Project"
+      summary: "Edit an existing project"
+      parameters:
+        - name: "projectId"
+          required: true
+      requestBody:
+        required: true
+      responses:
+        200:
+          description: "Project Details Updated"
+        500:
+          description: "Internal Server Error"
+    delete:
+      tags:
+        - "Project"
+      summary: "Delete project"
+      parameters:
+        - name: "projectId"
+          required: true
+      responses:
+        200:
+          description: "Project Deleted"
+        500:
+          description: "Internal Server Error"
+  /projects/assign:
+    post:
+      tags:
+        - "Project"
+      summary: "Assign a project"
+      requestBody:
+        required: true
+      responses:
+        200:
+          description: "Success"
+        500:
+          description: "Internal Server Error"
+        403:
+          description: "Not Allowed"

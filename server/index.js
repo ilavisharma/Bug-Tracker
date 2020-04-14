@@ -1,22 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+const { readFileSync } = require('fs');
+const { join } = require('path');
 
-const swaggerDocument = YAML.load('./swagger.yaml');
+const swagYml = readFileSync(join(__dirname, 'swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(swagYml);
+
+const generateHTML = require('./utils/redocHtml');
+
 const { verifyToken } = require('./utils/helpers');
 const db = require('./utils/db');
 
+// ROUTES
 const projectRoutes = require('./routes/projects');
 const authRoutes = require('./routes/auth');
 const ticketRoutes = require('./routes/tickets');
 
 const app = express();
-
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json());
+
 const PORT = process.env.PORT || 4000;
 
 app.use((req, _, next) => {
@@ -35,7 +41,14 @@ app.use('/projects', projectRoutes);
 app.use('/auth', authRoutes);
 app.use('/tickets', ticketRoutes);
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get('/', (req, res) => {
+  res.send(generateHTML(req.headers.host));
+});
+
+app.get('/swagger', (_, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerDocument);
+});
 
 app.on('ready', () => {
   app.listen(PORT, () =>
