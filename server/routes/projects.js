@@ -63,14 +63,14 @@ router.get('/:id', async (req, res) => {
       .where({ id });
     // TODO: fetch the project manager details
     const managerQuery = await db('users')
-      .select('name')
+      .select('name', 'email')
       .where({ id: query[0].manager_id });
 
     if (query.length === 0) {
       res.sendStatus(204);
     } else {
       if (managerQuery.length === 0) res.send({ ...query[0], manager: null });
-      else res.send({ ...query[0], manager: managerQuery[0].name });
+      else res.send({ ...query[0], manager: managerQuery[0] });
     }
   } catch (err) {
     console.log(err);

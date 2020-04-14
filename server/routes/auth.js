@@ -77,7 +77,7 @@ router.post('/signup', async (req, res) => {
       user_id: insertQuery[0],
       role: null
     });
-    res.sendStatus(201);
+    res.json({ id: insertQuery[0] });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -147,7 +147,7 @@ router.get('/allManagers', async (req, res) => {
   if (currentUser.role === 'admin' || currentUser.role === 'manager') {
     try {
       const query = await db('users')
-        .select('id', 'name')
+        .select('id', 'name', 'email')
         .innerJoin('roles', 'users.id', 'roles.user_id')
         .where({ role: 'manager' });
       res.json(query);

@@ -11,7 +11,7 @@ const Projects = () => {
         New Project
       </Link>
 
-      <div style={{ marginBottom: '20px' }} />
+      <div style={{ marginBottom: '40px' }} />
 
       <AllProjects />
     </Container>

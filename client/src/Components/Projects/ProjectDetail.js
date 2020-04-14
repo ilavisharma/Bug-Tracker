@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import EditProjectModal from './EditProjectModal';
 import AuthContext from '../../Context/AuthContext';
@@ -81,24 +82,39 @@ const ProjectDetail = () => {
           <hr />
           <p className="lead">{project.description}</p>
 
-          <h5>
-            {' '}
-            <mark>Manager:</mark>
-            {project.manager === null ? ' Not Assigned' : project.manager}
-            <Button
-              variant="outline-dark"
-              className="mx-4"
-              onClick={() => setShowAssignManagerModal(true)}
-            >
-              Assign this project
-            </Button>
-            <AssignProjectManagerModal
-              showModal={showAssignManagerModal}
-              closeModal={() => setShowAssignManagerModal(false)}
-              project={project}
-              setProject={setProject}
-            />
-          </h5>
+          <Row>
+            <Col>
+              {project.manager === null ? (
+                'This project is not assigned'
+              ) : (
+                <>
+                  <h5>
+                    <mark>Manager:</mark>
+                    {project.manager.name}
+                  </h5>
+                  <h5>
+                    <mark>Email:</mark>
+                    {project.manager.email}
+                  </h5>
+                </>
+              )}
+            </Col>
+            <Col>
+              <Button
+                variant="outline-dark"
+                onClick={() => setShowAssignManagerModal(true)}
+                className="float-right"
+              >
+                Assign this project
+              </Button>
+            </Col>
+          </Row>
+          <AssignProjectManagerModal
+            showModal={showAssignManagerModal}
+            closeModal={() => setShowAssignManagerModal(false)}
+            project={project}
+            setProject={setProject}
+          />
           <hr />
           <div className="my-3">
             {(project.user_id === user.id || user.role === 'admin') && (

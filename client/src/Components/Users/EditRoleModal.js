@@ -23,6 +23,9 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
         alert('User role updated');
         updateRoleInUI(role);
         handleClose();
+      } else {
+        alert('Failed to update user role');
+        console.log(res);
       }
     } catch (err) {
       setIsLoading(false);
@@ -38,13 +41,6 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
       <Modal.Body>
         <ListGroup>
           <ListGroup.Item
-            active={role === ''}
-            action={true}
-            onClick={() => setRole('')}
-          >
-            None
-          </ListGroup.Item>
-          <ListGroup.Item
             active={role === 'developer'}
             action={true}
             onClick={() => setRole('developer')}
@@ -56,7 +52,7 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
             action={true}
             onClick={() => setRole('manager')}
           >
-            Project Managetr
+            Project Manager
           </ListGroup.Item>
           <ListGroup.Item
             active={role === 'submitter'}

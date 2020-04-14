@@ -30,11 +30,11 @@ const AssignProjectManagerModal = ({
   }, [api]);
 
   const managerName = id => {
-    let name = '';
+    let search = '';
     managers.forEach(m => {
-      if (m.id === id) name = m.name;
+      if (m.id === id) search = m;
     });
-    return name;
+    return { name: search.name, email: search.email };
   };
 
   const handleAssign = async () => {

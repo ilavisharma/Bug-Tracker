@@ -19,7 +19,7 @@ const CreateUser = () => {
   const [showProgress, setShowProgress] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { goBack } = useHistory();
+  const { push } = useHistory();
   const { api } = useContext(AuthContext);
 
   const onDrop = useCallback(
@@ -56,7 +56,7 @@ const CreateUser = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await api.post(
+      const res = await api.post(
         '/auth/signup',
         { name, email, password, photourl },
         {
@@ -65,9 +65,10 @@ const CreateUser = () => {
           }
         }
       );
+      const { data } = res;
       setIsLoading(false);
       alert('User Created');
-      goBack();
+      push(`/home/users/${data.id}`);
     } catch (err) {
       console.log(err);
       setIsLoading(false);
