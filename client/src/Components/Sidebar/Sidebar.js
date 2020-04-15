@@ -52,9 +52,6 @@ const Sidebar = () => {
         <LinkContainer to="/home/tickets">
           <Nav.Link>Tickets</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/users">
-          <Nav.Link>User Roles</Nav.Link>
-        </LinkContainer>
         <LinkContainer to="/home/account">
           <Nav.Link>My Account</Nav.Link>
         </LinkContainer>

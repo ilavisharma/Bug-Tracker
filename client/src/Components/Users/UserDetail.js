@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -14,9 +14,15 @@ const UserDetail = () => {
   const [showEditRoleModal, setShowEditRoleModal] = useState(false);
 
   const { id } = useParams();
-  const { api } = useContext(AuthContext);
+  const { api, user: currentUser } = useContext(AuthContext);
+  const { goBack } = useHistory();
 
   useEffect(() => {
+    if (currentUser.role !== 'admin') {
+      alert('This action is not allowed!');
+      goBack();
+    }
+
     (async function() {
       try {
         const res = await api.get(`/auth/users/${id}`);
@@ -27,7 +33,7 @@ const UserDetail = () => {
         alert(err);
       }
     })();
-  }, [id, api]);
+  }, [id, api, goBack, currentUser.role]);
 
   const updateRoleInUI = role => {
     setUser({ ...user, role });

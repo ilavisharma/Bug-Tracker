@@ -90,12 +90,16 @@ const ProjectDetail = () => {
                 <>
                   <h5>
                     <mark>Manager:</mark>
-                    <Link
-                      style={{ textDecoration: 'none' }}
-                      to={`/home/users/${project.manager_id}`}
-                    >
-                      {project.manager.name}
-                    </Link>
+                    {user.role === 'admin' ? (
+                      <Link
+                        style={{ textDecoration: 'none' }}
+                        to={`/home/users/${project.manager_id}`}
+                      >
+                        {project.manager.name}
+                      </Link>
+                    ) : (
+                      project.manager.name
+                    )}
                   </h5>
                   <h5>
                     <mark>Email:</mark>
@@ -106,13 +110,15 @@ const ProjectDetail = () => {
               )}
             </Col>
             <Col>
-              <Button
-                variant="outline-dark"
-                onClick={() => setShowAssignManagerModal(true)}
-                className="float-right"
-              >
-                Assign this project
-              </Button>
+              {(project.manager_id === user.id || user.role === 'admin') && (
+                <Button
+                  variant="outline-dark"
+                  onClick={() => setShowAssignManagerModal(true)}
+                  className="float-right"
+                >
+                  Assign this project
+                </Button>
+              )}
             </Col>
           </Row>
           <AssignProjectManagerModal
@@ -123,7 +129,7 @@ const ProjectDetail = () => {
           />
           <hr />
           <div className="my-3">
-            {(project.user_id === user.id || user.role === 'admin') && (
+            {(project.manager_id === user.id || user.role === 'admin') && (
               <>
                 <Button
                   variant="danger"

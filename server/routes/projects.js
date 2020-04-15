@@ -122,4 +122,22 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.get('/manager/:id', async (req, res) => {
+  const { currentUser } = req;
+  if (currentUser.role === 'manager') {
+    try {
+      const query = await db('project_managers')
+        .select('id', 'name')
+        .innerJoin('projects', 'project_managers.project_id', 'projects.id')
+        .where({ manager_id: req.params.id });
+      res.json(query);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  } else {
+    res.sendStatus(403);
+  }
+});
+
 module.exports = router;
