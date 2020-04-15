@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
@@ -17,13 +17,8 @@ const UserDetail = () => {
   const { api, user: currentUser } = useContext(AuthContext);
   const { goBack } = useHistory();
 
-  useEffect(() => {
-    if (currentUser.role !== 'admin') {
-      alert('This action is not allowed!');
-      goBack();
-    }
-
-    (async function() {
+  const useFetchUser = () => {
+    const callback = useCallback(async () => {
       try {
         const res = await api.get(`/auth/users/${id}`);
         setUser(res.data);
@@ -32,11 +27,23 @@ const UserDetail = () => {
         setIsLoading(false);
         alert(err);
       }
-    })();
-  }, [id, api, goBack, currentUser.role]);
+    }, []);
+    return { callback };
+  };
+  const { callback } = useFetchUser();
 
-  const updateRoleInUI = role => {
-    setUser({ ...user, role });
+  useEffect(() => {
+    if (currentUser.role !== 'admin') {
+      alert('This action is not allowed!');
+      goBack();
+    } else {
+      callback();
+    }
+  }, [callback, goBack, currentUser.role]);
+
+  const updateRoleInUI = () => {
+    setIsLoading(true);
+    callback();
   };
 
   if (isLoading) return <LoadingSpinner />;

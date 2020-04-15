@@ -119,6 +119,17 @@ router.get('/users/:id', async (req, res) => {
         user_id: undefined,
         projects: managerQuery
       });
+    } else if (query[0].role === 'developer') {
+      const managerQuery = await db('project_developers')
+        .select('id', 'name')
+        .innerJoin('projects', 'project_developers.project_id', 'projects.id')
+        .where({ developer_id: id });
+      res.json({
+        ...query[0],
+        password: undefined,
+        user_id: undefined,
+        projects: managerQuery
+      });
     } else {
       res.json({
         ...query[0],
