@@ -8,17 +8,15 @@ router.get('/', async (_, res) => {
       .select(
         'projects.id as id',
         'projects.name as name',
-        'users.name as manager',
-        'users.id as manager_id'
+        'users.name as manager'
       )
       .innerJoin(
         'project_managers',
         'projects.id',
         'project_managers.project_id'
       )
-      .innerJoin('users', 'project_managers.manager_id', 'users.id');
-
-    res.json(query).status(200);
+      .leftJoin('users', 'users.id', 'project_managers.manager_id');
+    res.json(query);
   } catch (err) {
     console.log(err);
     res.json({ message: 'Unable to fetch projects' }).status(500);

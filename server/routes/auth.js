@@ -74,7 +74,6 @@ router.post('/signup', async (req, res) => {
     const insertQuery = await db('users')
       .insert(newUser)
       .returning('id');
-    console.log(insertQuery);
     await db('roles').insert({
       user_id: insertQuery[0],
       role: null
@@ -136,7 +135,8 @@ router.get('/users/:id', async (req, res) => {
       res.json({
         ...query[0],
         password: undefined,
-        user_id: undefined
+        user_id: undefined,
+        projects: []
       });
     }
   } catch (err) {

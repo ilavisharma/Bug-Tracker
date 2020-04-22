@@ -47,7 +47,7 @@ const Sidebar = () => {
           <Nav.Link>Dashboard</Nav.Link>
         </LinkContainer>
         <LinkContainer to="/home/projects">
-          <Nav.Link>My Projects</Nav.Link>
+          <Nav.Link>All Projects</Nav.Link>
         </LinkContainer>
         <LinkContainer to="/home/tickets">
           <Nav.Link>Tickets</Nav.Link>

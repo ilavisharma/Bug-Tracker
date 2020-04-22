@@ -46,7 +46,7 @@ const Projects = () => {
             >
               <td>{id}</td>
               <td>{name}</td>
-              <td>{manager}</td>
+              <td>{manager === null ? 'Not Assigned' : manager}</td>
             </tr>
           ))}
         </tbody>

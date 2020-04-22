@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import EditRoleModal from './EditRoleModal';
 import { toTitleCase } from '../../utils/helpers';
 import AuthContext from '../../Context/AuthContext';
-
+// If a manager has some projects then do no let change user role
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -89,10 +89,14 @@ const UserDetail = () => {
         updateRoleInUI={updateRoleInUI}
       />
       <hr />
-      <h4>Projects Assigned</h4>
-      {user.projects.map(({ id, name }) => (
-        <li key={id}>{name}</li>
-      ))}
+      {user.projects && (
+        <>
+          <h4>Projects Assigned</h4>
+          {user.projects.map(({ id, name }) => (
+            <li key={id}>{name}</li>
+          ))}
+        </>
+      )}
     </Col>
   );
 };
