@@ -42,7 +42,7 @@ const UserDetail = () => {
   }, [callback, goBack, currentUser.role]);
 
   const onEditClick = () => {
-    if (user.projects || user.projects.length > 0) {
+    if (!user.projects || user.projects.length > 0) {
       alert(
         `${user.name} has projects assigned. Please remove the assigned projects first.`
       );
@@ -55,7 +55,7 @@ const UserDetail = () => {
   };
 
   const onDeleteClick = () => {
-    if (user.projects || user.projects.length > 0) {
+    if (!user.projects || user.projects.length > 0) {
       alert(
         `${user.name} has projects assigned. Please remove the assigned projects first.`
       );
