@@ -169,6 +169,14 @@ router.post('/uploadImage', upload.single('file'), async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  await db('users')
+    .where({ id })
+    .delete();
+  res.sendStatus(200);
+});
+
 router.get('/allManagers', async (req, res) => {
   const { currentUser } = req;
   if (currentUser.role === 'admin' || currentUser.role === 'manager') {
