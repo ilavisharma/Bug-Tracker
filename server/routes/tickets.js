@@ -70,7 +70,7 @@ router.post('/new', async (req, res) => {
 
 router.post('/uploadImage', upload.single('file'), async (req, res) => {
   try {
-    const url = await uploadImage(req.file);
+    const url = await uploadImage(req.file, 'tickets');
     res.json({ url });
   } catch (err) {
     console.log(err);

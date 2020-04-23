@@ -1,35 +1,31 @@
-const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
-const serviceAccount = require('../firebase/adminsdk.json');
-const { firebaseDatabaseURL } = require('./config');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+const { cloudinaryConfig } = require('./config');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: firebaseDatabaseURL
-});
+cloudinary.config(cloudinaryConfig);
 
-const bucketName = 'bugtrackerfire.appspot.com';
-const bucket = admin.storage().bucket(`gs://${bucketName}/`);
-
-const uploadImage = file =>
+const uploadImage = (file, source) =>
   new Promise((resolve, reject) => {
-    const { originalname, buffer } = file;
-
-    const blob = bucket.file(Date.now() + '.' + originalname.split('.')[1]);
-
-    const blobStream = blob.createWriteStream({
-      resumable: false,
-      gzip: true
-    });
-    blobStream
-      .on('finish', () => {
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        resolve(publicUrl);
-      })
-      .on('error', () => {
-        reject('Unable to upload image, something went wrong');
-      })
-      .end(buffer);
+    const { buffer } = file;
+    let cld_upload_stream = cloudinary.uploader.upload_stream(
+      {
+        folder: source,
+        unique_filename: true,
+        transformation: {
+          width: 250,
+          height: 250,
+          crop: 'fit'
+        }
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else {
+          resolve(result.url);
+        }
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(cld_upload_stream);
   });
 
 const signToken = user =>

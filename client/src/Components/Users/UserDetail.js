@@ -41,9 +41,27 @@ const UserDetail = () => {
     }
   }, [callback, goBack, currentUser.role]);
 
+  const onEditClick = () => {
+    if (user.projects || user.projects.length > 0) {
+      alert(
+        `${user.name} has projects assigned. Please remove the assigned projects first.`
+      );
+    } else setShowEditRoleModal(true);
+  };
+
   const updateRoleInUI = () => {
     setIsLoading(true);
     callback();
+  };
+
+  const onDeleteClick = () => {
+    if (user.projects || user.projects.length > 0) {
+      alert(
+        `${user.name} has projects assigned. Please remove the assigned projects first.`
+      );
+    } else {
+      // TODO: delte the user here
+    }
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -60,7 +78,7 @@ const UserDetail = () => {
             <Button
               className="ml-4"
               variant="outline-dark"
-              onClick={() => setShowEditRoleModal(true)}
+              onClick={onEditClick}
             >
               Edit
             </Button>
@@ -88,6 +106,9 @@ const UserDetail = () => {
         user={user}
         updateRoleInUI={updateRoleInUI}
       />
+      <Button variant="danger" className="mt-4" onClick={onDeleteClick}>
+        Delete
+      </Button>
       <hr />
       {user.projects && (
         <>
