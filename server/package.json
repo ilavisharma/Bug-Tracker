@@ -23,6 +23,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "morgan": "^1.10.0"
   }
 }

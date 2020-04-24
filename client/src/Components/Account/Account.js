@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
+import TooltipComponent from '../../utils/TooltipComponent';
 
 const Account = () => {
   const { user } = useContext(AuthContext);
@@ -24,15 +25,20 @@ const Account = () => {
           </h5>
         </Col>
         <Col>
-          <img
-            src={user.photourl}
-            className="rounded img-thumbnail float-right"
-            width="171"
-            height="180"
-            style={{ cursor: 'pointer' }}
-            onTouchStart={() => console.log('touch start')}
-            alt={user.name}
-          />
+          <TooltipComponent
+            placement="bottom"
+            tooltipText="Click to change picture"
+          >
+            <img
+              src={user.photourl}
+              className="rounded img-thumbnail float-right"
+              width="171"
+              height="180"
+              style={{ cursor: 'pointer' }}
+              onTouchStart={() => console.log('touch start')}
+              alt={user.name}
+            />
+          </TooltipComponent>
         </Col>
       </Row>
     </Col>

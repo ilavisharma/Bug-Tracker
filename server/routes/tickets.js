@@ -33,8 +33,21 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const query = await db('tickets')
-      .select('*')
-      .where('id', '=', id);
+      .select(
+        'tickets.id as id',
+        'tickets.name as name',
+        'tickets.type',
+        'tickets.priority',
+        'tickets.description',
+        'tickets.imageurl',
+        'projects.name as projectName',
+        'tickets.dateadded',
+        'users.id as user_id',
+        'users.name as creator'
+      )
+      .innerJoin('projects', 'tickets.project_id', 'projects.id')
+      .innerJoin('users', 'tickets.user_id', 'users.id')
+      .where('tickets.id', '=', id);
     if (query.length === 0) {
       res.sendStatus(204);
     } else {
@@ -65,6 +78,19 @@ router.post('/new', async (req, res) => {
     }
   } else {
     res.sendStatus(403);
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    db('tickets')
+      .where({ id })
+      .delete()
+      .then(() => res.status(200).send('Success'));
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

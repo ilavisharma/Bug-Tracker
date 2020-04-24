@@ -92,6 +92,7 @@ const NewTicket = () => {
         }
       );
       setIsLoading(false);
+      alert('Ticket Created');
       push(`/home/tickets/${res.data.id}`);
     } catch (err) {
       console.log(err);

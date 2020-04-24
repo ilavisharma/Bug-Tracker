@@ -22,7 +22,7 @@ const NavigationBar = () => {
         <Navbar.Brand>Bug Tracker</Navbar.Brand>
       </LinkContainer>
       <Navbar.Text>
-        Signed in as: <Link to="/account">{user.name}</Link>
+        Signed in as: <Link to="/home/account">{user.name}</Link>
       </Navbar.Text>
       <Navbar.Collapse className="justify-content-end">
         <Button
@@ -31,8 +31,9 @@ const NavigationBar = () => {
             signOut();
             push('/');
           }}
+          style={{ display: 'flex' }}
         >
-          Sign Out
+          Sign Out <i className="ml-2 mt-1 mr-1 gg-log-out"></i>
         </Button>
       </Navbar.Collapse>
     </Navbar>

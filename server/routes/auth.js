@@ -161,7 +161,11 @@ router.put('/updateRole', async (req, res) => {
 
 router.post('/uploadImage', upload.single('file'), async (req, res) => {
   try {
-    const url = await uploadImage(req.file, 'users');
+    const url = await uploadImage(req.file, 'users', {
+      width: 250,
+      height: 250,
+      crop: 'fit'
+    });
     res.json({ url });
   } catch (err) {
     console.log(err);

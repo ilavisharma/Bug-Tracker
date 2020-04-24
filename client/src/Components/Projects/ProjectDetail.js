@@ -7,6 +7,7 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import EditProjectModal from './EditProjectModal';
 import AuthContext from '../../Context/AuthContext';
 import AssignProjectManagerModal from './AssignProjectManagerModal';
+import TooltipComponent from '../../utils/TooltipComponent';
 
 const ProjectDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,6 +15,7 @@ const ProjectDetail = () => {
   const [isFound, setIsFound] = useState(true);
   const [showModal, setshowModal] = useState(false);
   const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
+  const [copyText, setCopyText] = useState('Click to copy');
 
   const { user, api } = useContext(AuthContext);
   const { push } = useHistory();
@@ -71,6 +73,14 @@ const ProjectDetail = () => {
     }
   };
 
+  const copyEmail = email => {
+    navigator.clipboard.writeText(email);
+    setCopyText('Copied!');
+    setTimeout(() => {
+      setCopyText('Click to copy');
+    }, 500);
+  };
+
   if (isLoading) return <LoadingSpinner />;
   else {
     if (!isFound) return <h4 className="display-4">Project does not exist</h4>;
@@ -90,21 +100,33 @@ const ProjectDetail = () => {
                 <>
                   <h5>
                     <mark>Manager:</mark>
-                    {user.role === 'admin' ? (
-                      <Link
-                        style={{ textDecoration: 'none' }}
-                        to={`/home/users/${project.manager_id}`}
-                      >
-                        {project.manager.name}
-                      </Link>
-                    ) : (
-                      project.manager.name
-                    )}
+                    <span
+                      className="mx-2"
+                      onClick={() => copyEmail(project.manager.email)}
+                    >
+                      {user.role === 'admin' ? (
+                        <Link
+                          style={{ textDecoration: 'none' }}
+                          to={`/home/users/${project.manager_id}`}
+                        >
+                          {project.manager.name}
+                        </Link>
+                      ) : (
+                        project.manager.name
+                      )}
+                    </span>
                   </h5>
                   <h5>
                     <mark>Email:</mark>
-
-                    {project.manager.email}
+                    <TooltipComponent placement="right" tooltipText={copyText}>
+                      <span
+                        style={{ cursor: 'pointer' }}
+                        className="mx-2"
+                        onClick={() => copyEmail(project.manager.email)}
+                      >
+                        {project.manager.email}
+                      </span>
+                    </TooltipComponent>
                   </h5>
                 </>
               )}

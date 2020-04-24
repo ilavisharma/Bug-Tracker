@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,7 +11,6 @@ import TooltipComponent from '../../utils/TooltipComponent';
 import Spinner from 'react-bootstrap/Spinner';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-// If a manager has some projects then do no let change user role
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -142,8 +141,14 @@ const UserDetail = () => {
           Deleting...
         </Button>
       ) : (
-        <Button variant="danger" className="mt-4" onClick={onDeleteClick}>
+        <Button
+          variant="danger"
+          className="mt-4"
+          onClick={onDeleteClick}
+          style={{ display: 'flex' }}
+        >
           Delete
+          <i className="ml-2 gg-user-remove" />
         </Button>
       )}
       <hr />
@@ -161,7 +166,6 @@ const UserDetail = () => {
                   {name}
                 </ListGroup.Item>
               ))}
-              {/*  to={`/home/projects/${id}`}  */}
             </ListGroup>
           </Col>
         </>

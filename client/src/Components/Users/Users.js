@@ -1,14 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import AllUsers from './AllUsers';
 
 const Users = () => {
+  const { push } = useHistory();
+
   return (
     <Col>
-      <Link to="/home/users/new" className="btn btn-success">
+      <Button
+        style={{ display: 'flex' }}
+        onClick={() => push('/home/users/new')}
+        variant="success"
+      >
         Create new user
-      </Link>
+        <i className="ml-1 gg-user-add" />
+      </Button>
       <AllUsers />
     </Col>
   );

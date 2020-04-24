@@ -18,10 +18,11 @@ import TicketDetail from '../Tickets/TicketDetail';
 import AuthContext from '../../Context/AuthContext';
 import CreateUser from '../Users/CreateUser';
 import UserDetail from '../Users/UserDetail';
+import LoadingSpinner from '../../utils/LoadingSpinner';
 
 const Homepage = ({ match }) => {
   const { push } = useHistory();
-  const { signIn, api } = useContext(AuthContext);
+  const { signIn, api, user } = useContext(AuthContext);
 
   useEffect(() => {
     const localToken = localStorage.getItem('token');
@@ -49,6 +50,13 @@ const Homepage = ({ match }) => {
     }
     // eslint-disable-next-line
   }, []);
+
+  if (user === null)
+    return (
+      <Container>
+        <LoadingSpinner />
+      </Container>
+    );
 
   return (
     <>

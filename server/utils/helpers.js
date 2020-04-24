@@ -5,18 +5,14 @@ const { cloudinaryConfig } = require('./config');
 
 cloudinary.config(cloudinaryConfig);
 
-const uploadImage = (file, source) =>
+const uploadImage = (file, source, transformation = null) =>
   new Promise((resolve, reject) => {
     const { buffer } = file;
     let cld_upload_stream = cloudinary.uploader.upload_stream(
       {
         folder: source,
         unique_filename: true,
-        transformation: {
-          width: 250,
-          height: 250,
-          crop: 'fit'
-        }
+        transformation
       },
       (error, result) => {
         if (error) reject(error);
