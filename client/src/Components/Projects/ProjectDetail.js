@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -8,69 +8,57 @@ import EditProjectModal from './EditProjectModal';
 import AuthContext from '../../Context/AuthContext';
 import AssignProjectManagerModal from './AssignProjectManagerModal';
 import TooltipComponent from '../../utils/TooltipComponent';
+import useGet from '../../hooks/useGet';
+import usePut from '../../hooks/usePut';
+import useDelete from '../../hooks/useDelete';
+import Spinner from 'react-bootstrap/Spinner';
 
 const ProjectDetail = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [project, setProject] = useState(null);
-  const [isFound, setIsFound] = useState(true);
   const [showModal, setshowModal] = useState(false);
   const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
   const [copyText, setCopyText] = useState('Click to copy');
 
-  const { user, api } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { push } = useHistory();
   const { id } = useParams();
 
-  useEffect(() => {
-    (async function() {
-      try {
-        const res = await api.get(`/projects/${id}`);
-        if (res.status === 200) {
-          setProject(res.data);
-          setIsLoading(false);
-        } else {
-          setIsFound(false);
-          setIsLoading(false);
-          alert(res.statusText);
-        }
-      } catch (err) {
-        alert(err);
-        setIsFound(false);
-        setIsLoading(false);
-      }
-    })();
-  }, [id, api]);
+  const { response, isLoading, refetch: refetchProject } = useGet(
+    `/projects/${id}`
+  );
+
+  const { delete: deleteProject, isLoading: isDeleting } = useDelete(
+    `/projects/${id}`
+  );
 
   const handleDeleteClick = async name => {
     const confirm = window.confirm(`Delete the project: ${name} ?`);
     if (confirm) {
-      try {
-        const res = await api.delete(`/projects/${id}`);
-        if (res.status === 200) {
-          alert('Project Deleted');
-          push('/home/projects');
-        } else {
-          alert('Unable to delete the project');
+      deleteProject().then(res => {
+        if (res) {
+          if (res.status === 200) {
+            alert('Project Deleted');
+            push('/home/projects');
+          } else {
+            alert('Unable to delete the project');
+          }
         }
-      } catch (err) {
-        alert(err);
-      }
+      });
     }
   };
 
-  const handleEdit = async (name, description) => {
-    try {
-      const res = await api.put(`/projects/${id}`, { name, description });
-      if (res.status === 200) {
-        alert('Project Updated');
-        setProject({ ...project, name, description });
-        setshowModal(false);
-      } else {
-        alert('Unable to update the project');
+  const { put } = usePut(`/projects/${id}`);
+  const handleEdit = (name, description) => {
+    put({ name, description }).then(res => {
+      if (res) {
+        if (res.status === 200) {
+          alert('Project Updated');
+          refetchProject();
+          setshowModal(false);
+        } else {
+          alert('Unable to update the project');
+        }
       }
-    } catch (err) {
-      alert(err);
-    }
+    });
   };
 
   const copyEmail = email => {
@@ -82,9 +70,10 @@ const ProjectDetail = () => {
   };
 
   if (isLoading) return <LoadingSpinner />;
+  if (response.status !== 200)
+    return <h4 className="display-4">Project does not exist</h4>;
   else {
-    if (!isFound) return <h4 className="display-4">Project does not exist</h4>;
-
+    const { data: project } = response;
     return (
       <>
         <Col xs={11}>
@@ -147,18 +136,32 @@ const ProjectDetail = () => {
             showModal={showAssignManagerModal}
             closeModal={() => setShowAssignManagerModal(false)}
             project={project}
-            setProject={setProject}
+            refetch={refetchProject}
           />
           <hr />
           <div className="my-3">
             {(project.manager_id === user.id || user.role === 'admin') && (
               <>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDeleteClick(project.name)}
-                >
-                  Delete Project
-                </Button>
+                {isDeleting ? (
+                  <Button variant="danger" disabled>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Deleting...
+                  </Button>
+                ) : (
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDeleteClick(project.name)}
+                  >
+                    Delete Project
+                  </Button>
+                )}
+
                 <Button
                   variant="info"
                   onClick={() => {

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import AuthContext from '../../Context/AuthContext';
 import Form from 'react-bootstrap/Form';
@@ -6,28 +6,31 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 import { toTitleCase } from '../../utils/helpers';
+import usePost from '../../hooks/usePost';
 
 const NewProjects = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const name = createRef();
+  const description = createRef();
 
   const { push } = useHistory();
-  const { api } = useContext(AuthContext);
+
+  const { isLoading, post } = usePost('/projects/new');
 
   const onFormSubmit = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      const res = await api.post('/projects/new', { name, description });
-      setIsLoading(false);
-      alert('Project Created');
-      push(`/home/projects/${res.data.id}`);
-    } catch (err) {
-      console.log(err);
-      alert(err);
-      setIsLoading(false);
-    }
+    post({
+      name: toTitleCase(name.current.value),
+      description: description.current.value
+    }).then(res => {
+      if (res) {
+        if (res.status === 200) {
+          alert('Project Created');
+          push(`/home/projects/${res.data.id}`);
+        } else {
+          alert('Unable to create the project');
+        }
+      }
+    });
   };
 
   return (
@@ -39,8 +42,7 @@ const NewProjects = () => {
         <Form.Group>
           <Form.Label>Project Name</Form.Label>
           <Form.Control
-            value={name}
-            onChange={e => setName(toTitleCase(e.target.value))}
+            ref={name}
             type="text"
             placeholder="My Awesome Project"
           />
@@ -48,8 +50,7 @@ const NewProjects = () => {
         <Form.Group>
           <Form.Label>Project Description</Form.Label>
           <Form.Control
-            value={description}
-            onChange={e => setDescription(toTitleCase(e.target.value))}
+            ref={description}
             as="textarea"
             placeholder="This project is about..."
             rows="3"

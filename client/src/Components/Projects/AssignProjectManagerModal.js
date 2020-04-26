@@ -1,84 +1,61 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
-import AuthContext from '../../Context/AuthContext';
-import LoadingSpinner from '../../utils/LoadingSpinner';
 import Spinner from 'react-bootstrap/Spinner';
+import usePut from '../../hooks/usePut';
+import useGet from '../../hooks/useGet';
 
 const AssignProjectManagerModal = ({
   showModal,
   closeModal,
-  setProject,
-  project
+  refetch,
+  project: { id }
 }) => {
-  const [managers, setManagers] = useState(null);
   const [selected, setSelected] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { api } = useContext(AuthContext);
-  useEffect(() => {
-    (async function() {
-      try {
-        const res = await api.get('/auth/allManagers');
-        setManagers(res.data);
-      } catch (err) {
-        console.log(err);
-        alert('error');
+  const { response: managersResponse, isLoading: loadingManagers } = useGet(
+    '/auth/allManagers'
+  );
+
+  const { error, isLoading, put } = usePut('/projects/assignManager');
+  const handleAssign = () => {
+    put({
+      project_id: id,
+      manager_id: selected
+    }).then(res => {
+      if (res) {
+        if (res.status === 200) {
+          alert('Project assigned');
+        } else {
+          alert('Request failed');
+        }
+        refetch();
+        closeModal();
+        if (error) {
+          console.log(error);
+          alert('error');
+        }
       }
-    })();
-  }, [api]);
-
-  const managerName = id => {
-    let search = '';
-    managers.forEach(m => {
-      if (m.id === id) search = m;
     });
-    return { name: search.name, email: search.email };
   };
 
-  const handleAssign = async () => {
-    setIsLoading(true);
-    try {
-      const res = await api.put('/projects/assignManager', {
-        project_id: project.id,
-        manager_id: selected
-      });
-      if (res.status === 200) {
-        alert('Project assigned');
-      } else {
-        alert('Request failed');
-      }
-      setIsLoading(false);
-      setProject({
-        ...project,
-        manager: managerName(selected),
-        manager_id: selected
-      });
-      closeModal();
-    } catch (err) {
-      setIsLoading(false);
-      console.log(err);
-      alert('error');
-    }
-  };
-
-  return (
-    <Modal
-      size="lg"
-      show={showModal}
-      onHide={closeModal}
-      aria-labelledby="example-modal-sizes-title-lg"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="example-modal-sizes-title-lg">
-          Asign this project to
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {managers === null ? (
-          <LoadingSpinner />
-        ) : (
+  if (loadingManagers) return null;
+  else {
+    const { data: managers } = managersResponse;
+    return (
+      <Modal
+        size="lg"
+        show={showModal}
+        onHide={closeModal}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-modal-sizes-title-lg">
+            Asign this project to
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <ListGroup>
             {managers.map(({ id, name }) => (
               <ListGroup.Item
@@ -91,35 +68,35 @@ const AssignProjectManagerModal = ({
               </ListGroup.Item>
             ))}
           </ListGroup>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="dark" onClick={closeModal}>
-          Close
-        </Button>
-        {isLoading ? (
-          <Button variant="warning" disabled>
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />
-            Assigning...
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={closeModal}>
+            Close
           </Button>
-        ) : (
-          <Button
-            disabled={selected === null}
-            onClick={handleAssign}
-            variant="warning"
-          >
-            Save Changes
-          </Button>
-        )}
-      </Modal.Footer>
-    </Modal>
-  );
+          {isLoading ? (
+            <Button variant="warning" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Assigning...
+            </Button>
+          ) : (
+            <Button
+              disabled={selected === null}
+              onClick={handleAssign}
+              variant="warning"
+            >
+              Save Changes
+            </Button>
+          )}
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 };
 
 export default AssignProjectManagerModal;
