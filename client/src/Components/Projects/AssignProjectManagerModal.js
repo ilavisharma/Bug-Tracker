@@ -24,18 +24,16 @@ const AssignProjectManagerModal = ({
       project_id: id,
       manager_id: selected
     }).then(res => {
-      if (res) {
-        if (res.status === 200) {
-          alert('Project assigned');
-        } else {
-          alert('Request failed');
-        }
-        refetch();
-        closeModal();
-        if (error) {
-          console.log(error);
-          alert('error');
-        }
+      if (res.status === 200) {
+        alert('Project assigned');
+      } else {
+        alert('Request failed');
+      }
+      refetch();
+      closeModal();
+      if (error) {
+        console.log(error);
+        alert('error');
       }
     });
   };

@@ -34,13 +34,11 @@ const ProjectDetail = () => {
     const confirm = window.confirm(`Delete the project: ${name} ?`);
     if (confirm) {
       deleteProject().then(res => {
-        if (res) {
-          if (res.status === 200) {
-            alert('Project Deleted');
-            push('/home/projects');
-          } else {
-            alert('Unable to delete the project');
-          }
+        if (res.status === 200) {
+          alert('Project Deleted');
+          push('/home/projects');
+        } else {
+          alert('Unable to delete the project');
         }
       });
     }
@@ -49,14 +47,12 @@ const ProjectDetail = () => {
   const { put } = usePut(`/projects/${id}`);
   const handleEdit = (name, description) => {
     put({ name, description }).then(res => {
-      if (res) {
-        if (res.status === 200) {
-          alert('Project Updated');
-          refetchProject();
-          setshowModal(false);
-        } else {
-          alert('Unable to update the project');
-        }
+      if (res.status === 200) {
+        alert('Project Updated');
+        refetchProject();
+        setshowModal(false);
+      } else {
+        alert('Unable to update the project');
       }
     });
   };

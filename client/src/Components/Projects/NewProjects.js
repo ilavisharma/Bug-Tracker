@@ -1,6 +1,5 @@
-import React, { useContext, createRef } from 'react';
+import React, { createRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import AuthContext from '../../Context/AuthContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
@@ -22,13 +21,11 @@ const NewProjects = () => {
       name: toTitleCase(name.current.value),
       description: description.current.value
     }).then(res => {
-      if (res) {
-        if (res.status === 200) {
-          alert('Project Created');
-          push(`/home/projects/${res.data.id}`);
-        } else {
-          alert('Unable to create the project');
-        }
+      if (res.status === 200) {
+        alert('Project Created');
+        push(`/home/projects/${res.data.id}`);
+      } else {
+        alert('Unable to create the project');
       }
     });
   };
