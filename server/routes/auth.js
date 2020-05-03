@@ -58,7 +58,7 @@ router.post('/signin', async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-  const { name, email, password, photourl } = req.body;
+  let { name, email, password, photourl } = req.body;
   if (photourl === null) {
     photourl = '/defaultUser.png';
   }
@@ -78,10 +78,14 @@ router.post('/signup', async (req, res) => {
       user_id: insertQuery[0],
       role: null
     });
-    res.json({ id: insertQuery[0] });
+    res.json({ message: 'user created', user: { id: insertQuery[0] } });
   } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
+    if (err.code === '23505') {
+      res.json({ message: 'user already exists', user: null });
+    } else {
+      console.log(err);
+      res.sendStatus(500);
+    }
   }
 });
 
@@ -164,7 +168,8 @@ router.post('/uploadImage', upload.single('file'), async (req, res) => {
     const url = await uploadImage(req.file, 'users', {
       width: 250,
       height: 250,
-      crop: 'fit'
+      crop: 'fill',
+      gravity: 'face:auto'
     });
     res.json({ url });
   } catch (err) {

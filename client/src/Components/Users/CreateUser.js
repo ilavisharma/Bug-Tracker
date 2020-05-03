@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, createRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
@@ -9,15 +9,15 @@ import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import { toTitleCase } from '../../utils/helpers';
 import AuthContext from '../../Context/AuthContext';
+import usePost from '../../hooks/usePost';
 
 const CreateUser = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const name = createRef();
+  const email = createRef();
+  const password = createRef();
   const [photourl, setPhotourl] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const { push } = useHistory();
   const { api } = useContext(AuthContext);
@@ -35,7 +35,6 @@ const CreateUser = () => {
           setUploadProgress(
             parseInt(Math.round((progress.loaded * 100) / progress.total))
           );
-          // Clear percentage
           setTimeout(() => {
             setUploadProgress(0);
             setShowProgress(false);
@@ -52,28 +51,28 @@ const CreateUser = () => {
     onDrop
   });
 
-  const onFormSubmit = async e => {
+  const { isLoading, post } = usePost('/auth/signup');
+
+  const onFormSubmit = e => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      const res = await api.post(
-        '/auth/signup',
-        { name, email, password, photourl },
-        {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
+    post({
+      name: toTitleCase(name.current.value),
+      email: email.current.value,
+      password: password.current.value,
+      photourl
+    })
+      .then(res => {
+        if (res.data.message === 'user created') {
+          alert(toTitleCase(res.data.message));
+          push(`/home/users/${res.data.user.id}`);
+        } else if (res.data.message === 'user already exists') {
+          alert(toTitleCase(res.data.message));
         }
-      );
-      const { data } = res;
-      setIsLoading(false);
-      alert('User Created');
-      push(`/home/users/${data.id}`);
-    } catch (err) {
-      console.log(err);
-      setIsLoading(false);
-      alert(err);
-    }
+      })
+      .catch(err => {
+        console.log({ err });
+        alert(err);
+      });
   };
 
   return (
@@ -83,11 +82,7 @@ const CreateUser = () => {
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
           <Form.Label>Name</Form.Label>
-          <Form.Control
-            value={name}
-            onChange={e => setName(toTitleCase(e.target.value))}
-            type="text"
-          />
+          <Form.Control ref={name} type="text" />
         </Form.Group>
         <div
           {...getRootProps()}
@@ -119,19 +114,11 @@ const CreateUser = () => {
         {photourl !== null && <Image src={photourl} fluid />}
         <Form.Group>
           <Form.Label>Email</Form.Label>
-          <Form.Control
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            type="email"
-          />
+          <Form.Control ref={email} type="email" />
         </Form.Group>
         <Form.Group>
           <Form.Label>Password</Form.Label>
-          <Form.Control
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            type="password"
-          />
+          <Form.Control ref={password} type="password" />
         </Form.Group>
 
         {isLoading ? (

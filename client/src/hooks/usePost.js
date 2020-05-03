@@ -1,27 +1,24 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import api from '../utils/api';
 
 export default url => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const post = useCallback(
-    async data => {
-      try {
-        setIsLoading(true);
-        const res = await api.post(url, data, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        });
-        setIsLoading(false);
-        return res;
-      } catch (err) {
-        setError(err);
-        setIsLoading(false);
-      }
-    },
-    [url]
-  );
-  return { isLoading, error, post };
+  const post = async data => {
+    try {
+      setIsLoading(true);
+      const res = await api.post(url, data, {
+        headers: {
+          authorization: localStorage.getItem('token')
+        }
+      });
+      setIsLoading(false);
+      return res;
+    } catch (err) {
+      setIsLoading(false);
+      throw new Error(err);
+    }
+  };
+
+  return { isLoading, post };
 };

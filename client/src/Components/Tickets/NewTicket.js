@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import Form from 'react-bootstrap/Form';
@@ -10,17 +10,17 @@ import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import { toTitleCase } from '../../utils/helpers';
 import AuthContext from '../../Context/AuthContext';
+import useGet from '../../hooks/useGet';
+import usePost from '../../hooks/usePost';
+import { createRef } from 'react';
 
 const NewTicket = () => {
-  const [projectList, setProjectList] = useState([]);
-  const [projectsLoaded, setProjectsLoaded] = useState(false);
-  const [name, setName] = useState('');
-  const [project, setProject] = useState(0);
-  const [type, setType] = useState('bug');
-  const [priority, setPriority] = useState('low');
-  const [description, setDescription] = useState('');
+  const name = createRef();
+  const project = createRef();
+  const type = createRef();
+  const priority = createRef();
+  const description = createRef();
   const [imageUrl, setImageUrl] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -40,7 +40,6 @@ const NewTicket = () => {
           setUploadProgress(
             parseInt(Math.round((progress.loaded * 100) / progress.total))
           );
-          // Clear percentage
           setTimeout(() => {
             setUploadProgress(0);
             setShowProgress(false);
@@ -57,48 +56,26 @@ const NewTicket = () => {
     onDrop
   });
 
-  useEffect(() => {
-    (async function() {
-      try {
-        const res = await api.get('/projects');
-        setProjectList(res.data);
-        setProjectsLoaded(true);
-      } catch (err) {
-        console.log(err);
-        alert(err);
-        setProjectsLoaded(false);
-      }
-    })();
-  }, [api]);
+  const { response } = useGet('/projects');
+  const { post, isLoading } = usePost('/tickets/new');
 
   const onFormSubmit = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      const res = await api.post(
-        '/tickets/new',
-        {
-          name,
-          project_id: project,
-          type,
-          priority,
-          description,
-          imageurl: imageUrl
-        },
-        {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        }
-      );
-      setIsLoading(false);
-      alert('Ticket Created');
-      push(`/home/tickets/${res.data.id}`);
-    } catch (err) {
-      console.log(err);
-      setIsLoading(false);
-      alert(err);
-    }
+    post({
+      name: toTitleCase(name.current.value),
+      project_id: project.current.value,
+      type: type.current.value,
+      priority: type.current.value,
+      description: description.current.value,
+      imageurl: imageUrl
+    }).then(res => {
+      if (res.status === 200) {
+        alert('Ticket Created');
+        push(`/home/tickets/${res.data.id}`);
+      } else {
+        alert('Unable to create the ticket');
+      }
+    });
   };
 
   return (
@@ -109,26 +86,18 @@ const NewTicket = () => {
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
           <Form.Label>Name</Form.Label>
-          <Form.Control
-            value={name}
-            onChange={e => setName(toTitleCase(e.target.value))}
-            type="text"
-          />
+          <Form.Control ref={name} type="text" />
         </Form.Group>
         <Form.Group>
           <Form.Label>Select the project</Form.Label>
-          {!projectsLoaded ? (
+          {response === null ? (
             <Form.Control as="select" disabled>
               <option>Loading Projects</option>
             </Form.Control>
           ) : (
-            <Form.Control
-              as="select"
-              value={project}
-              onChange={e => setProject(e.target.value)}
-            >
+            <Form.Control as="select" ref={project}>
               <option value="0">Select project</option>
-              {projectList.map(({ id, name }) => (
+              {response.data.map(({ id, name }) => (
                 <option value={id} key={id}>
                   {name}
                 </option>
@@ -140,24 +109,17 @@ const NewTicket = () => {
           <Col xs={6}>
             <Form.Group>
               <Form.Label>Type</Form.Label>
-              <Form.Control
-                as="select"
-                value={type}
-                onChange={e => setType(e.target.value)}
-              >
+              <Form.Control as="select" ref={type}>
                 <option value="bug">Bug</option>
                 <option value="error">Error</option>
+                <option value="feature">Feature</option>
               </Form.Control>
             </Form.Group>
           </Col>
           <Col xs={6}>
             <Form.Group>
               <Form.Label>Priority</Form.Label>
-              <Form.Control
-                as="select"
-                value={priority}
-                onChange={e => setPriority(e.target.value)}
-              >
+              <Form.Control as="select" ref={priority}>
                 <option value="low">Low</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
@@ -195,12 +157,7 @@ const NewTicket = () => {
         {imageUrl !== null && <Image src={imageUrl} fluid />}
         <Form.Group>
           <Form.Label>Description</Form.Label>
-          <Form.Control
-            value={description}
-            onChange={e => setDescription(toTitleCase(e.target.value))}
-            as="textarea"
-            rows="2"
-          />
+          <Form.Control ref={description} as="textarea" rows="2" />
         </Form.Group>
         {isLoading ? (
           <Button variant="info" disabled>
