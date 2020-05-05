@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -19,10 +19,14 @@ import AuthContext from '../../Context/AuthContext';
 import CreateUser from '../Users/CreateUser';
 import UserDetail from '../Users/UserDetail';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import api from '../../utils/api';
 
 const Homepage = ({ match }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const { push } = useHistory();
-  const { signIn, api, user } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
 
   useEffect(() => {
     const localToken = localStorage.getItem('token');
@@ -36,26 +40,39 @@ const Homepage = ({ match }) => {
         .then(res => {
           if (res.status === 200) {
             signIn(res.data, localStorage.getItem('token'));
+            setIsLoading(false);
           } else {
-            push('/signin');
             alert('You need to sign in');
+            setIsLoading(false);
+            push('/signin');
           }
         })
         .catch(err => {
+          alert(err);
           console.log(err);
+          setError(err);
+          setIsLoading(false);
         });
     } else {
       alert('You need to sign in');
+      setIsLoading(false);
       push('/signin');
     }
     // eslint-disable-next-line
   }, []);
 
-  if (user === null)
+  if (isLoading)
     return (
       <Container>
         <LoadingSpinner />
       </Container>
+    );
+
+  if (error)
+    return (
+      <h4 className="display-4">
+        Unable to connect to the server. Try refreshing the page
+      </h4>
     );
 
   return (
