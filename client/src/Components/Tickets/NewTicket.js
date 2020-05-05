@@ -65,7 +65,7 @@ const NewTicket = () => {
       name: toTitleCase(name.current.value),
       project_id: project.current.value,
       type: type.current.value,
-      priority: type.current.value,
+      priority: priority.current.value,
       description: description.current.value,
       imageurl: imageUrl
     }).then(res => {
