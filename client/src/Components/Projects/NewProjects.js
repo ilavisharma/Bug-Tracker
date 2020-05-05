@@ -6,6 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 import { toTitleCase } from '../../utils/helpers';
 import usePost from '../../hooks/usePost';
+import ProjectSchema from '../../schema/project';
 
 const NewProjects = () => {
   const name = createRef();
@@ -17,17 +18,24 @@ const NewProjects = () => {
 
   const onFormSubmit = async e => {
     e.preventDefault();
-    post({
-      name: toTitleCase(name.current.value),
-      description: description.current.value
-    }).then(res => {
-      if (res.status === 200) {
-        alert('Project Created');
-        push(`/home/projects/${res.data.id}`);
-      } else {
-        alert('Unable to create the project');
-      }
+    const { value, error } = ProjectSchema.validate({
+      name: toTitleCase(name.current.value)
     });
+    if (error) {
+      alert(error);
+    } else {
+      post({
+        ...value,
+        description: description.current.value
+      }).then(res => {
+        if (res.status === 200) {
+          alert('Project Created');
+          push(`/home/projects/${res.data.id}`);
+        } else {
+          alert('Unable to create the project');
+        }
+      });
+    }
   };
 
   return (
@@ -42,10 +50,11 @@ const NewProjects = () => {
             ref={name}
             type="text"
             placeholder="My Awesome Project"
+            required
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Project Description</Form.Label>
+          <Form.Label>Project Description (Optional)</Form.Label>
           <Form.Control
             ref={description}
             as="textarea"

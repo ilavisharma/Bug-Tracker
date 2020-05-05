@@ -10,6 +10,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { toTitleCase } from '../../utils/helpers';
 import AuthContext from '../../Context/AuthContext';
 import usePost from '../../hooks/usePost';
+import UserSchema from '../../schema/user';
 
 const CreateUser = () => {
   const name = createRef();
@@ -55,24 +56,32 @@ const CreateUser = () => {
 
   const onFormSubmit = e => {
     e.preventDefault();
-    post({
+    const { value, error } = UserSchema.validate({
       name: toTitleCase(name.current.value),
       email: email.current.value,
-      password: password.current.value,
-      photourl
-    })
-      .then(res => {
-        if (res.data.message === 'user created') {
-          alert(toTitleCase(res.data.message));
-          push(`/home/users/${res.data.user.id}`);
-        } else if (res.data.message === 'user already exists') {
-          alert(toTitleCase(res.data.message));
-        }
+      password: password.current.value
+    });
+
+    if (error) {
+      alert(toTitleCase(error.details[0].message));
+    } else {
+      post({
+        ...value,
+        photourl
       })
-      .catch(err => {
-        console.log({ err });
-        alert(err);
-      });
+        .then(res => {
+          if (res.data.message === 'user created') {
+            alert(toTitleCase(res.data.message));
+            push(`/home/users/${res.data.user.id}`);
+          } else if (res.data.message === 'user already exists') {
+            alert(toTitleCase(res.data.message));
+          }
+        })
+        .catch(err => {
+          console.log({ err });
+          alert(err);
+        });
+    }
   };
 
   return (
@@ -82,7 +91,7 @@ const CreateUser = () => {
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
           <Form.Label>Name</Form.Label>
-          <Form.Control ref={name} type="text" />
+          <Form.Control ref={name} type="text" required />
         </Form.Group>
         <div
           {...getRootProps()}
@@ -114,11 +123,11 @@ const CreateUser = () => {
         {photourl !== null && <Image src={photourl} fluid />}
         <Form.Group>
           <Form.Label>Email</Form.Label>
-          <Form.Control ref={email} type="email" />
+          <Form.Control ref={email} type="email" required />
         </Form.Group>
         <Form.Group>
           <Form.Label>Password</Form.Label>
-          <Form.Control ref={password} type="password" />
+          <Form.Control ref={password} type="password" required />
         </Form.Group>
 
         {isLoading ? (
