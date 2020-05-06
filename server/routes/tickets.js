@@ -29,6 +29,38 @@ router.get('/', async (_, res) => {
   }
 });
 
+router.get('/chart/priority', async (req, res) => {
+  // const {
+  //   currentUser: { role }
+  // } = req;
+  // if (role==='admin') {
+  const query = await db('tickets')
+    .count('*')
+    .select('priority')
+    .groupBy('priority');
+  res.json({
+    labels: query.map(l => l.priority),
+    data: query.map(d => Number(d.count))
+  });
+  // }
+});
+
+router.get('/chart/type', async (req, res) => {
+  // const {
+  //   currentUser: { role }
+  // } = req;
+  // if (role==='admin') {
+  const query = await db('tickets')
+    .count('*')
+    .select('type')
+    .groupBy('type');
+  res.json({
+    labels: query.map(l => l.type),
+    data: query.map(d => Number(d.count))
+  });
+  // }
+});
+
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
