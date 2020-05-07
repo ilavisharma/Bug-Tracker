@@ -1,55 +1,39 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import useGet from '../../hooks/useGet';
-import LoadingSpinner from '../../utils/LoadingSpinner';
+import BeatSpinner from '../../utils/BeatSpinner';
+import { toTitleCase } from '../../utils/helpers';
 
 const TicketsByType = () => {
   const { isLoading, response, error } = useGet('tickets/chart/type');
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <BeatSpinner />;
   else if (error) {
     console.log(error);
     return <p>There was some error</p>;
   } else {
     const { data } = response;
     const chartData = {
-      labels: data.labels,
+      labels: data.labels.map(d => toTitleCase(d)),
       datasets: [
         {
           data: data.data,
-          label: 'Tickets by Type',
           responsive: true,
-          //   backgroundColor: 'rgba(255,99,132,0.2)',
-          //   borderColor: 'rgba(255,99,132,1)',
-          //   borderWidth: 1,
-          //   hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-          //   hoverBorderColor: 'rgba(255,99,132,1)',
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(153, 102, 255, 0.2)'
-          ]
+          backgroundColor: ['#67E6DC', '#F0DF87', '#758AA2']
         }
       ]
     };
     const options = {
-      scales: {
-        xAxes: [
-          {
-            display: true
-          }
-        ],
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              display: false
-            }
-          }
-        ]
+      title: {
+        display: true,
+        text: 'Ticket type',
+        fontSize: 18
+      },
+      legend: {
+        display: false
       }
     };
-    return <Doughnut data={chartData} />;
+    return <Doughnut data={chartData} options={options} />;
   }
 };
 

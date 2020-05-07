@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { v4: uuid } = require('uuid');
 const db = require('../utils/db');
+const { getMonthName } = require('../utils/helpers');
 
 router.get('/', async (_, res) => {
   try {
@@ -31,6 +32,7 @@ router.post('/new', async (req, res) => {
         .insert({
           id: uuid(),
           user_id: currentUser.id,
+          dateadded: db.fn.now(),
           ...req.body
         })
         .returning('id');
@@ -47,6 +49,41 @@ router.post('/new', async (req, res) => {
   } else {
     res.sendStatus(403);
   }
+});
+
+router.get('/chart', async (req, res) => {
+  const query = await db.raw(
+    "SELECT date_trunc('month', dateadded) AS month, count(*) FROM projects GROUP BY 1"
+  );
+  const rows = query.rows
+    .map(r => {
+      return {
+        count: Number(r.count),
+        month: new Date(r.month).getMonth() + 1
+      };
+    })
+    .sort((f, s) => f.month - s.month);
+
+  res.json(
+    Array.from(
+      Array(12).keys(),
+      month =>
+        rows.find(row => +row.month === month + 1) || {
+          month: Number(('0' + (month + 1)).substr(-2)),
+          count: 0
+        }
+    ).map(x => x.count)
+  );
+
+  /*
+      only count
+      if there is a count for that month  
+          use from the data
+      else
+          set it zero
+    */
+
+  // res.json(rows);
 });
 
 router.get('/:id', async (req, res) => {

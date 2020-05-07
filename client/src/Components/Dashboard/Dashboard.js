@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TicketsByPriority from './TicketsByPriority';
 import TicketsByType from './TicketsByType';
+import TicketByMonth from './TicketByMonth';
 
 const Dashboard = () => {
   return (
@@ -14,6 +15,11 @@ const Dashboard = () => {
         </Col>
         <Col xs={6}>
           <TicketsByType />
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={6}>
+          <TicketByMonth />
         </Col>
       </Row>
     </Container>

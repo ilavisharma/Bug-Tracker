@@ -31,4 +31,24 @@ const signToken = user =>
 
 const verifyToken = token => jwt.verify(token, 'rpmgetingear');
 
-module.exports = { uploadImage, signToken, verifyToken };
+const getMonthName = dateString => {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
+  const d = new Date(dateString);
+  return monthNames[d.getMonth()];
+};
+
+module.exports = { uploadImage, signToken, verifyToken, getMonthName };
