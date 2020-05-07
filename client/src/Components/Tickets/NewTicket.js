@@ -113,6 +113,7 @@ const NewTicket = () => {
                 <option value="bug">Bug</option>
                 <option value="error">Error</option>
                 <option value="feature">Feature</option>
+                <option value="issue">Issue</option>
               </Form.Control>
             </Form.Group>
           </Col>
