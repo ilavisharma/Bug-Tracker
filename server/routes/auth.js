@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const { v4: uuid } = require('uuid');
 const db = require('../utils/db');
 const { uploadImage } = require('../utils/helpers');
 const { signToken } = require('../utils/helpers');
@@ -63,7 +62,6 @@ router.post('/signup', async (req, res) => {
     photourl = '/defaultUser.png';
   }
   const newUser = {
-    id: uuid(),
     name,
     email,
     password: bcrypt.hashSync(password, 10),

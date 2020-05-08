@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { v4: uuid } = require('uuid');
 const db = require('../utils/db');
 const { uploadImage } = require('../utils/helpers');
 
@@ -97,8 +96,6 @@ router.post('/new', async (req, res) => {
     try {
       const query = await db('tickets')
         .insert({
-          id: uuid(),
-          dateadded: db.fn.now(),
           ...req.body,
           user_id: currentUser.id
         })

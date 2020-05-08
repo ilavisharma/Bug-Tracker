@@ -1,7 +1,5 @@
 const router = require('express').Router();
-const { v4: uuid } = require('uuid');
 const db = require('../utils/db');
-const { getMonthName } = require('../utils/helpers');
 
 router.get('/', async (_, res) => {
   try {
@@ -30,9 +28,7 @@ router.post('/new', async (req, res) => {
     try {
       const query = await db('projects')
         .insert({
-          id: uuid(),
           user_id: currentUser.id,
-          dateadded: db.fn.now(),
           ...req.body
         })
         .returning('id');
