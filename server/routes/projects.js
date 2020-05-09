@@ -37,6 +37,10 @@ router.post('/new', async (req, res) => {
         manager_id: null,
         project_id: query[0]
       });
+      await db('project_timeline').insert({
+        project_id: query[0],
+        event: `${currentUser.name} created the project`
+      });
       res.json({ id: query[0] }).status(201);
     } catch (err) {
       console.log(err);
@@ -70,16 +74,6 @@ router.get('/chart', async (req, res) => {
         }
     ).map(x => x.count)
   );
-
-  /*
-      only count
-      if there is a count for that month  
-          use from the data
-      else
-          set it zero
-    */
-
-  // res.json(rows);
 });
 
 router.get('/:id', async (req, res) => {
@@ -94,21 +88,31 @@ router.get('/:id', async (req, res) => {
         'project_managers.project_id'
       )
       .where({ id });
-    // TODO: fetch the project manager details
     const managerQuery = await db('users')
       .select('name', 'email')
       .where({ id: query[0].manager_id });
-
     if (query.length === 0) {
       res.sendStatus(204);
     } else {
       if (managerQuery.length === 0) res.send({ ...query[0], manager: null });
-      else res.send({ ...query[0], manager: managerQuery[0] });
+      else
+        res.send({
+          ...query[0],
+          manager: managerQuery[0]
+        });
     }
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
   }
+});
+
+router.get('/:id/timeline', async (req, res) => {
+  const { id } = req.params;
+  const query = await db('project_timeline')
+    .select('*')
+    .where({ project_id: id });
+  res.json(query);
 });
 
 router.delete('/:id', (req, res) => {
@@ -129,9 +133,16 @@ router.put('/assignManager', async (req, res) => {
   const { currentUser } = req;
   if ((currentUser.role = 'admin' || currentUser.role === 'manager')) {
     try {
-      const query = await db('project_managers')
+      await db('project_managers')
         .update({ manager_id })
         .where({ project_id });
+      const query = await db('users')
+        .select('name')
+        .where({ id: manager_id });
+      await db('project_timeline').insert({
+        project_id,
+        event: `${query[0].name} was assigned as manager by ${currentUser.name}`
+      });
       res.sendStatus(200);
     } catch (err) {
       console.log(err);

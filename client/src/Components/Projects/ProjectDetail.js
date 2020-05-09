@@ -13,10 +13,12 @@ import usePut from '../../hooks/usePut';
 import useDelete from '../../hooks/useDelete';
 import Spinner from 'react-bootstrap/Spinner';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import ProjectTimelineModal from './ProjectTimelineModal';
 
 const ProjectDetail = () => {
   const [showModal, setshowModal] = useState(false);
   const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
+  const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [copyText, setCopyText] = useState('Click to copy');
 
   const { user } = useContext(AuthContext);
@@ -77,7 +79,6 @@ const ProjectDetail = () => {
     return <h4 className="display-4">Project does not exist</h4>;
   else {
     const { data: project } = response;
-    // document.title = project.name + ' | Bug Tracker';
     return (
       <>
         <Col xs={11}>
@@ -181,6 +182,13 @@ const ProjectDetail = () => {
                 <Button variant="light" disabled={true} className="mx-1">
                   Remove developers
                 </Button>
+                <Button
+                  variant="dark"
+                  className="float-right"
+                  onClick={() => setShowTimelineModal(true)}
+                >
+                  View Timeline
+                </Button>
               </>
             )}
           </div>
@@ -190,6 +198,11 @@ const ProjectDetail = () => {
           handleClose={() => setshowModal(false)}
           handleEdit={handleEdit}
           project={project}
+        />
+        <ProjectTimelineModal
+          show={showTimelineModal}
+          closeModal={() => setShowTimelineModal(false)}
+          projectId={id}
         />
       </>
     );
