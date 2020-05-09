@@ -119,7 +119,7 @@ const UserDetail = () => {
               width="171"
               height="180"
               style={{ cursor: 'pointer' }}
-              alt={`${user.name} photo`}
+              alt={`${user.name}`}
             />
           </TooltipComponent>
         </Col>
