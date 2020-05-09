@@ -27,6 +27,7 @@ const UserDetail = () => {
         const res = await api.get(`/auth/users/${id}`);
         setUser(res.data);
         setIsLoading(false);
+        document.title = res.data.name || 'Users';
       } catch (err) {
         setIsLoading(false);
         alert(err);
@@ -118,7 +119,7 @@ const UserDetail = () => {
               width="171"
               height="180"
               style={{ cursor: 'pointer' }}
-              alt="Click to change"
+              alt={`${user.name} photo`}
             />
           </TooltipComponent>
         </Col>

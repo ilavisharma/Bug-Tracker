@@ -8,6 +8,7 @@ import AuthContext from '../../Context/AuthContext';
 import ScreenshotModal from './ScreenshotModal';
 import useGet from '../../hooks/useGet';
 import useDelete from '../../hooks/useDelete';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const TicketDetail = () => {
   const [showScreenshot, setShowScreenshot] = useState(false);
@@ -19,6 +20,12 @@ const TicketDetail = () => {
   const { isLoading, response, error } = useGet(`/tickets/${id}`);
   const { delete: deleteTicket, isLoading: isDeleting } = useDelete(
     `/tickets/${id}`
+  );
+
+  useDocumentTitle(
+    response && response.data.name
+      ? response.data.name + ' | Bug Tracker'
+      : 'Ticket'
   );
 
   const onDeleteClick = async name => {

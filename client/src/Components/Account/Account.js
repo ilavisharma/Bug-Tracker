@@ -5,9 +5,11 @@ import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
 import TooltipComponent from '../../utils/TooltipComponent';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Account = () => {
   const { user } = useContext(AuthContext);
+  useDocumentTitle(user.name || 'Account');
 
   if (user === null) return <LoadingSpinner />;
 

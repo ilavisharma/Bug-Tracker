@@ -12,6 +12,7 @@ import useGet from '../../hooks/useGet';
 import usePut from '../../hooks/usePut';
 import useDelete from '../../hooks/useDelete';
 import Spinner from 'react-bootstrap/Spinner';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const ProjectDetail = () => {
   const [showModal, setshowModal] = useState(false);
@@ -24,6 +25,12 @@ const ProjectDetail = () => {
 
   const { response, isLoading, refetch: refetchProject } = useGet(
     `/projects/${id}`
+  );
+
+  useDocumentTitle(
+    response && response.data
+      ? response.data.name + ' | Bug Tracker'
+      : 'Projects'
   );
 
   const { delete: deleteProject, isLoading: isDeleting } = useDelete(
@@ -70,6 +77,7 @@ const ProjectDetail = () => {
     return <h4 className="display-4">Project does not exist</h4>;
   else {
     const { data: project } = response;
+    // document.title = project.name + ' | Bug Tracker';
     return (
       <>
         <Col xs={11}>

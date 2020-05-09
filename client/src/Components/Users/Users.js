@@ -3,9 +3,12 @@ import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AllUsers from './AllUsers';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Users = () => {
   const { push } = useHistory();
+
+  useDocumentTitle('Users & Roles');
 
   return (
     <Col>

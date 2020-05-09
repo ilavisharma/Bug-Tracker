@@ -5,8 +5,11 @@ import Col from 'react-bootstrap/Col';
 import TicketsByPriority from './TicketsByPriority';
 import TicketsByType from './TicketsByType';
 import TicketByMonth from './TicketByMonth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Dashboard = () => {
+  useDocumentTitle('Dashboard | Bug Tracker');
+
   return (
     <Container>
       <Row>

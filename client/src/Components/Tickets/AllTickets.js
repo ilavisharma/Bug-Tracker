@@ -4,10 +4,13 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import useGet from '../../hooks/useGet';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Tickets = () => {
   const { push } = useHistory();
   const { isLoading, response, error } = useGet(`/tickets`);
+
+  useDocumentTitle('Tickets');
 
   if (isLoading) return <LoadingSpinner />;
   else if (error) return <h4 className="display-4">There was some error</h4>;
