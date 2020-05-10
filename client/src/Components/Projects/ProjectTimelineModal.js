@@ -1,13 +1,14 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import ListGroup from 'react-bootstrap/ListGroup';
 import useGet from '../../hooks/useGet';
+import { Timeline, TimelineEvent } from 'react-event-timeline';
 
 const ProjectTimelineModal = ({ projectId, show, closeModal }) => {
   const { error, response } = useGet(`/projects/${projectId}/timeline`);
 
   if (error) return alert(error);
-  else if (response !== null)
+  else if (response !== null) {
+    const data = response.data.reverse();
     return (
       <Modal size="lg" show={show} onHide={closeModal}>
         <Modal.Header closeButton>
@@ -16,20 +17,20 @@ const ProjectTimelineModal = ({ projectId, show, closeModal }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup>
-            {response.data.reverse().map(e => (
-              <ListGroup.Item key={e.id} action={true}>
-                {e.event}{' '}
-                <span className="float-right">
-                  {new Date(e.date).toDateString()}
-                </span>
-              </ListGroup.Item>
+          {/* <Timeline data={response.data.reverse()} /> */}
+          <Timeline style={{ fontSize: '1.3em', fontWeight: '500' }}>
+            {data.map(e => (
+              <TimelineEvent
+                key={e.id}
+                title={e.event}
+                createdAt={new Date(e.date).toDateString()}
+              />
             ))}
-          </ListGroup>
+          </Timeline>
         </Modal.Body>
       </Modal>
     );
-  else return null;
+  } else return null;
 };
 
 export default ProjectTimelineModal;
