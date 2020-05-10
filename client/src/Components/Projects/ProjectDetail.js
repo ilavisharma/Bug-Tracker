@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -20,6 +20,8 @@ const ProjectDetail = () => {
   const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [copyText, setCopyText] = useState('Click to copy');
+
+  const timelineModalRef = useRef();
 
   const { user } = useContext(AuthContext);
   const { push } = useHistory();
@@ -60,6 +62,7 @@ const ProjectDetail = () => {
         alert('Project Updated');
         refetchProject();
         setshowModal(false);
+        timelineModalRef.current.refetch();
       } else {
         alert('Unable to update the project');
       }
@@ -135,6 +138,12 @@ const ProjectDetail = () => {
                   Assign this project
                 </Button>
               )}
+              <Button
+                variant="success"
+                onClick={() => setShowTimelineModal(true)}
+              >
+                View Project Timeline
+              </Button>
             </Col>
           </Row>
           <AssignProjectManagerModal
@@ -182,13 +191,6 @@ const ProjectDetail = () => {
                 <Button variant="light" disabled={true} className="mx-1">
                   Remove developers
                 </Button>
-                <Button
-                  variant="dark"
-                  className="float-right"
-                  onClick={() => setShowTimelineModal(true)}
-                >
-                  View Timeline
-                </Button>
               </>
             )}
           </div>
@@ -203,6 +205,7 @@ const ProjectDetail = () => {
           show={showTimelineModal}
           closeModal={() => setShowTimelineModal(false)}
           projectId={id}
+          ref={timelineModalRef}
         />
       </>
     );
