@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
-import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const Sidebar = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuthContext();
 
   if (user === null) return <LoadingSpinner />;
 

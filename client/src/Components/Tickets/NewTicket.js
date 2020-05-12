@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import Form from 'react-bootstrap/Form';
@@ -9,10 +9,10 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import { toTitleCase } from '../../utils/helpers';
-import AuthContext from '../../Context/AuthContext';
 import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import { createRef } from 'react';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const NewTicket = () => {
   const name = createRef();
@@ -25,7 +25,7 @@ const NewTicket = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { push } = useHistory();
-  const { api } = useContext(AuthContext);
+  const { api } = useAuthContext();
 
   const onDrop = useCallback(
     async files => {

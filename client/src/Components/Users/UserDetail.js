@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import Row from 'react-bootstrap/Row';
@@ -6,10 +6,10 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import EditRoleModal from './EditRoleModal';
 import { toTitleCase } from '../../utils/helpers';
-import AuthContext from '../../Context/AuthContext';
 import TooltipComponent from '../../utils/TooltipComponent';
 import Spinner from 'react-bootstrap/Spinner';
 import ListGroup from 'react-bootstrap/ListGroup';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +18,7 @@ const UserDetail = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { id } = useParams();
-  const { api, user: currentUser } = useContext(AuthContext);
+  const { api, user: currentUser } = useAuthContext();
   const { goBack, push } = useHistory();
 
   const useFetchUser = () => {
@@ -119,7 +119,7 @@ const UserDetail = () => {
               width="171"
               height="180"
               style={{ cursor: 'pointer' }}
-              alt={`${user.name} photo`}
+              alt={`${user.name}`}
             />
           </TooltipComponent>
         </Col>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, createRef } from 'react';
+import React, { useState, useCallback, createRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
@@ -8,9 +8,9 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import { toTitleCase } from '../../utils/helpers';
-import AuthContext from '../../Context/AuthContext';
 import usePost from '../../hooks/usePost';
 import UserSchema from '../../schema/user';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const CreateUser = () => {
   const name = createRef();
@@ -21,7 +21,7 @@ const CreateUser = () => {
   const [showProgress, setShowProgress] = useState(false);
 
   const { push } = useHistory();
-  const { api } = useContext(AuthContext);
+  const { api } = useAuthContext();
 
   const onDrop = useCallback(
     async files => {

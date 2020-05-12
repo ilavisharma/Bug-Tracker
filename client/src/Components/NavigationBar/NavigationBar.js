@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
-import AuthContext from '../../Context/AuthContext';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const NavigationBar = () => {
-  const { user, signOut } = useContext(AuthContext);
+  const { user, signOut } = useAuthContext();
   const { push } = useHistory();
 
   if (user === null)

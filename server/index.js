@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const YAML = require('yamljs');
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const helmet = require('helmet');
 
 const swagYml = readFileSync(join(__dirname, 'swagger.yaml'), 'utf8');
 const swaggerDocument = YAML.parse(swagYml);
@@ -35,6 +36,8 @@ app.use((req, _, next) => {
   }
   next();
 });
+
+app.use(helmet());
 
 app.use('/static', express.static('public'));
 app.use('/projects', projectRoutes);

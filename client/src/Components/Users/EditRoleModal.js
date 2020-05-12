@@ -1,15 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import AuthContext from '../../Context/AuthContext';
 import ListGroup from 'react-bootstrap/ListGroup';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
   const [role, setRole] = useState(user.role === null ? '' : user.role);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { api } = useContext(AuthContext);
+  const { api } = useAuthContext();
 
   const handleRoleUpdate = async role => {
     try {
