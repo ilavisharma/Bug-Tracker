@@ -1,5 +1,11 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  Switch,
+  Route,
+  useHistory,
+  useLocation,
+  useRouteMatch
+} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,18 +21,21 @@ import Error404 from '../../utils/Error404';
 import ProjectDetail from '../Projects/ProjectDetail';
 import NewTicket from '../Tickets/NewTicket';
 import TicketDetail from '../Tickets/TicketDetail';
-import AuthContext from '../../Context/AuthContext';
 import CreateUser from '../Users/CreateUser';
 import UserDetail from '../Users/UserDetail';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
+import useAuthContext from '../../hooks/useAuthContext';
 
-const Homepage = ({ match }) => {
+const Homepage = () => {
+  const { url } = useRouteMatch();
+  const { pathname } = useLocation();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { push } = useHistory();
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuthContext();
 
   useEffect(() => {
     const localToken = localStorage.getItem('token');
@@ -44,7 +53,7 @@ const Homepage = ({ match }) => {
           } else {
             alert('You need to sign in');
             setIsLoading(false);
-            push('/signin');
+            push(`/signin?redirect=${pathname}`);
           }
         })
         .catch(err => {
@@ -56,7 +65,7 @@ const Homepage = ({ match }) => {
     } else {
       alert('You need to sign in');
       setIsLoading(false);
-      push('/signin');
+      push(`/signin?redirect=${pathname}`);
     }
     // eslint-disable-next-line
   }, []);
@@ -85,45 +94,29 @@ const Homepage = ({ match }) => {
           </Col>
           <Col xs={10}>
             <Switch>
-              <Route exact path={match.url} component={Dashboard} />
+              <Route exact path={url} component={Dashboard} />
               <Route
                 exact
-                path={`${match.url}/projects/new`}
+                path={`${url}/projects/new`}
                 component={NewProjects}
               />
+              <Route exact path={`${url}/projects`} component={Projects} />
               <Route
                 exact
-                path={`${match.url}/projects`}
-                component={Projects}
-              />
-              <Route
-                exact
-                path={`${match.url}/projects/:id`}
+                path={`${url}/projects/:id`}
                 component={ProjectDetail}
               />
+              <Route exact path={`${url}/tickets/new`} component={NewTicket} />
+              <Route exact path={`${url}/tickets`} component={Tickets} />
               <Route
                 exact
-                path={`${match.url}/tickets/new`}
-                component={NewTicket}
-              />
-              <Route exact path={`${match.url}/tickets`} component={Tickets} />
-              <Route
-                exact
-                path={`${match.url}/tickets/:id`}
+                path={`${url}/tickets/:id`}
                 component={TicketDetail}
               />
-              <Route
-                exact
-                path={`${match.url}/users/new`}
-                component={CreateUser}
-              />
-              <Route exact path={`${match.url}/users`} component={Users} />
-              <Route
-                exact
-                path={`${match.url}/users/:id`}
-                component={UserDetail}
-              />
-              <Route path={`${match.url}/account`} component={Account} />
+              <Route exact path={`${url}/users/new`} component={CreateUser} />
+              <Route exact path={`${url}/users`} component={Users} />
+              <Route exact path={`${url}/users/:id`} component={UserDetail} />
+              <Route path={`${url}/account`} component={Account} />
               <Route component={Error404} />
             </Switch>
           </Col>

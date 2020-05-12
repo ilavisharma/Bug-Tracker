@@ -1,11 +1,10 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import EditProjectModal from './EditProjectModal';
-import AuthContext from '../../Context/AuthContext';
 import AssignProjectManagerModal from './AssignProjectManagerModal';
 import TooltipComponent from '../../utils/TooltipComponent';
 import useGet from '../../hooks/useGet';
@@ -14,6 +13,7 @@ import useDelete from '../../hooks/useDelete';
 import Spinner from 'react-bootstrap/Spinner';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ProjectTimelineModal from './ProjectTimelineModal';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const ProjectDetail = () => {
   const [showModal, setshowModal] = useState(false);
@@ -23,7 +23,7 @@ const ProjectDetail = () => {
 
   const timelineModalRef = useRef();
 
-  const { user } = useContext(AuthContext);
+  const { user } = useAuthContext();
   const { push } = useHistory();
   const { id } = useParams();
 

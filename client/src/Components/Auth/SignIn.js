@@ -1,22 +1,23 @@
-import React, { useState, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { useLastLocation } from 'react-router-last-location';
+import React, { useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import api from '../../utils/api';
-import AuthContext from '../../Context/AuthContext';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { push, goBack } = useHistory();
-  const { signIn } = useContext(AuthContext);
-  const last = useLastLocation();
+  const { push } = useHistory();
+  const { signIn } = useAuthContext();
+  const { search } = useLocation();
+
+  const queryParams = new URLSearchParams(search);
 
   const onFormSubmit = async e => {
     e.preventDefault();
@@ -29,9 +30,7 @@ const SignIn = () => {
         const { user, token } = res.data;
         signIn(user, token);
         // redirect
-        if (last.pathname === '/') push('/home');
-        else goBack();
-        push('/home');
+        push(queryParams.get('redirect'));
       }
       // TODO: check other status codes
     } catch (err) {

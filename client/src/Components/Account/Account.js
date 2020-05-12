@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import AuthContext from '../../Context/AuthContext';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
 import TooltipComponent from '../../utils/TooltipComponent';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const Account = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuthContext();
   useDocumentTitle(user.name || 'Account');
 
   if (user === null) return <LoadingSpinner />;

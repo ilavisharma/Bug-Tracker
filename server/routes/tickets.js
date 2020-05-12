@@ -90,6 +90,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id/timeline', async (req, res) => {
+  const { id } = req.params;
+  const query = await db('ticket_timeline')
+    .select('*')
+    .where({ ticket_id: id })
+    .orderBy('date', 'desc');
+  res.json(query);
+});
+
 router.post('/new', async (req, res) => {
   const { currentUser } = req;
   if (currentUser) {
@@ -100,7 +109,18 @@ router.post('/new', async (req, res) => {
           user_id: currentUser.id
         })
         .returning('id');
+      // add new event to ticket timeline
+      await db('ticket_timeline').insert({
+        ticket_id: query[0],
+        event: `Ticket created by ${currentUser.name}`
+      });
+      // send response
       res.json({ id: query[0] });
+      // add this event to project timeline also
+      await db('project_timeline').insert({
+        project_id: req.body.project_id,
+        event: `Ticket created by ${currentUser.name}`
+      });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);

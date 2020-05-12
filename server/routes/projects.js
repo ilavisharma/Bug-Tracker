@@ -155,11 +155,18 @@ router.put('/assignManager', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
+  const {
+    currentUser: { name }
+  } = req;
   try {
-    db('projects')
+    await db('projects')
       .where({ id })
-      .update(req.body)
-      .then(() => res.status(200).send('Success'));
+      .update(req.body);
+    res.sendStatus(200);
+    await db('project_timeline').insert({
+      project_id: id,
+      event: `${name} updated the project details`
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
