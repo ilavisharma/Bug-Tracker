@@ -1,0 +1,37 @@
+@import 'bootstrap/scss/bootstrap';
+
+body,
+.tooltip-inner {
+  font-family: 'sofia-pro', 'Helvetica' !important;
+}
+
+.nav-pills {
+  .nav-link {
+    font-size: 1.2em;
+    color: black;
+  }
+}
+
+.navbar {
+  font-size: 1.2em;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: gray;
+}
+
+.table {
+  font-size: 1.1em;
+}
+
+.btn,
+.tooltip-inner {
+  font-size: 1.1em;
+}
+
+.arrow,
+.tooltip-inner {
+  margin: 10px;
+}

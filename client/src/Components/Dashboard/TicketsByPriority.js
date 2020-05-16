@@ -44,7 +44,8 @@ const TicketsByPriority = () => {
         display: true,
         text:
           'Tickets by Priority (' + data.data.reduce((a, b) => a + b, 0) + ')',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'sofia-pro'
       },
       legend: {
         display: false

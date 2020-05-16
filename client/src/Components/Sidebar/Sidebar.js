@@ -16,20 +16,21 @@ const Sidebar = () => {
         fill
         className="flex-column"
         style={{ height: '60vh' }}
+        // activeKey=""
       >
-        <LinkContainer exact to="/home">
+        <LinkContainer activeClassName="sidebar-active" exact to="/home">
           <Nav.Link>Dashboard</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/projects">
+        <LinkContainer activeClassName="sidebar-active" to="/home/projects">
           <Nav.Link>All Projects</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/tickets">
+        <LinkContainer activeClassName="sidebar-active" to="/home/tickets">
           <Nav.Link>All Tickets</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/users">
+        <LinkContainer activeClassName="sidebar-active" to="/home/users">
           <Nav.Link>Users/Roles</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/account">
+        <LinkContainer activeClassName="sidebar-active" to="/home/account">
           <Nav.Link>My Account</Nav.Link>
         </LinkContainer>
       </Nav>

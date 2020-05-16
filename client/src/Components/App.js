@@ -1,9 +1,9 @@
 import React, { useMemo, Suspense, lazy } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from './Landing/LandingPage';
 import GlobalState from './GlobalState';
 import LoadingSpinner from '../utils/LoadingSpinner';
+import '../styles/bootstrap.scss';
 
 const DemoUserSignIn = lazy(() => import('./Auth/DemoUserSignIn'));
 const Homepage = lazy(() => import('./Homepage/Homepage'));

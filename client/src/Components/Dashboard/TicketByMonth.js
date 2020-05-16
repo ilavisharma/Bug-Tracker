@@ -69,7 +69,8 @@ const TicketByMonth = () => {
       title: {
         display: true,
         text: 'Projects Timeline',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'sofia-pro'
       },
       legend: {
         display: false

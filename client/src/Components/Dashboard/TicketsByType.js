@@ -27,7 +27,8 @@ const TicketsByType = () => {
       title: {
         display: true,
         text: 'Ticket type',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'sofia-pro'
       },
       legend: {
         display: false
