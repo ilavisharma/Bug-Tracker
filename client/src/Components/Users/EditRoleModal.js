@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import ListGroup from 'react-bootstrap/ListGroup';
 import useAuthContext from '../../hooks/useAuthContext';
+import { SuccessAlert, ErrorAlert } from '../../alerts';
 
 const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
   const [role, setRole] = useState(user.role === null ? '' : user.role);
@@ -20,16 +21,16 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
       });
       setIsLoading(false);
       if (res.status === 200) {
-        alert('User role updated');
+        SuccessAlert('User role updated');
         updateRoleInUI(role);
         handleClose();
       } else {
-        alert('Failed to update user role');
+        ErrorAlert('Failed to update user role');
         console.log(res);
       }
     } catch (err) {
       setIsLoading(false);
-      alert(err);
+      ErrorAlert(err);
     }
   };
 

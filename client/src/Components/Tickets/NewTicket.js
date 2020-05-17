@@ -13,6 +13,7 @@ import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import { createRef } from 'react';
 import useAuthContext from '../../hooks/useAuthContext';
+import { SuccessAlert, ErrorAlert } from '../../alerts';
 
 const NewTicket = () => {
   const name = createRef();
@@ -70,10 +71,10 @@ const NewTicket = () => {
       imageurl: imageUrl
     }).then(res => {
       if (res.status === 200) {
-        alert('Ticket Created');
+        SuccessAlert('Ticket Created');
         push(`/home/tickets/${res.data.id}`);
       } else {
-        alert('Unable to create the ticket');
+        ErrorAlert('Unable to create the ticket');
       }
     });
   };

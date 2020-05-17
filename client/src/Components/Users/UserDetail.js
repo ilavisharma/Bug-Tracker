@@ -10,6 +10,7 @@ import TooltipComponent from '../../utils/TooltipComponent';
 import Spinner from 'react-bootstrap/Spinner';
 import ListGroup from 'react-bootstrap/ListGroup';
 import useAuthContext from '../../hooks/useAuthContext';
+import { ErrorAlert, ConfirmAlert, SuccessAlert } from '../../alerts';
 
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,7 @@ const UserDetail = () => {
         document.title = res.data.name || 'Users';
       } catch (err) {
         setIsLoading(false);
-        alert(err);
+        ErrorAlert(err);
       }
     }, []);
     return { callback };
@@ -39,7 +40,7 @@ const UserDetail = () => {
 
   useEffect(() => {
     if (currentUser.role !== 'admin') {
-      alert('This action is not allowed!');
+      ErrorAlert('This action is not allowed!');
       goBack();
     } else {
       callback();
@@ -48,7 +49,7 @@ const UserDetail = () => {
 
   const onEditClick = () => {
     if (!user.projects || user.projects.length > 0) {
-      alert(
+      ErrorAlert(
         `${user.name} has projects assigned. Please remove the assigned projects first.`
       );
     } else setShowEditRoleModal(true);
@@ -61,23 +62,25 @@ const UserDetail = () => {
 
   const onDeleteClick = async () => {
     if (!user.projects || user.projects.length > 0) {
-      alert(
+      ErrorAlert(
         `${user.name} has been assigned to ${user.projects.length} projects. Please remove the assigned projects first.`
       );
     } else {
-      const confirmDelete = window.confirm(
-        `Are you sure you want to delete ${user.name} ?`
+      const confirmDelete = ConfirmAlert(
+        'Are you sure',
+        `Are you sure you want to delete ${user.name} ?`,
+        'Yes'
       );
-      if (confirmDelete) {
+      if (confirmDelete.value) {
         setIsDeleting(true);
         const res = await api.delete(`/auth/${user.id}`);
         if (res.status === 200) {
           setIsDeleting(false);
-          alert(`Succesfully Deleted user: ${user.name}`);
+          SuccessAlert(`Succesfully Deleted user: ${user.name}`);
           push('/home/users');
         } else {
           setIsDeleting(false);
-          alert('There was some error');
+          ErrorAlert('There was some error');
           console.log(res);
         }
       }

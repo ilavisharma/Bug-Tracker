@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import useGet from '../../hooks/useGet';
 import { Timeline, TimelineEvent } from 'react-event-timeline';
+import { ErrorAlert } from '../../alerts';
 
 const ProjectTimelineModal = forwardRef(
   ({ projectId, show, closeModal }, ref) => {
@@ -13,8 +14,10 @@ const ProjectTimelineModal = forwardRef(
       refetch
     }));
 
-    if (error) return alert(error);
-    else if (response !== null) {
+    if (error) {
+      console.log(error);
+      return ErrorAlert('Error fetching project timeline');
+    } else if (response !== null) {
       const data = response.data.reverse();
       return (
         <Modal size="lg" show={show} onHide={closeModal}>

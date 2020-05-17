@@ -14,6 +14,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ProjectTimelineModal from './ProjectTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
+import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
 
 const ProjectDetail = () => {
   const [showModal, setshowModal] = useState(false);
@@ -42,14 +43,19 @@ const ProjectDetail = () => {
   );
 
   const handleDeleteClick = async name => {
-    const confirm = window.confirm(`Delete the project: ${name} ?`);
-    if (confirm) {
+    const result = await ConfirmAlert(
+      'Are you sure?',
+      `Delete the project ${name} ?`,
+      'Yes, delete it!'
+    );
+
+    if (result.value) {
       deleteProject().then(res => {
         if (res.status === 200) {
-          alert('Project Deleted');
+          SuccessAlert('The project was deleted');
           push('/home/projects');
         } else {
-          alert('Unable to delete the project');
+          ErrorAlert();
         }
       });
     }
@@ -59,12 +65,12 @@ const ProjectDetail = () => {
   const handleEdit = (name, description) => {
     put({ name, description }).then(res => {
       if (res.status === 200) {
-        alert('Project Updated');
+        SuccessAlert('Project was updated');
         refetchProject();
         setshowModal(false);
         timelineModalRef.current.refetch();
       } else {
-        alert('Unable to update the project');
+        ErrorAlert('Unable to update the project');
       }
     });
   };

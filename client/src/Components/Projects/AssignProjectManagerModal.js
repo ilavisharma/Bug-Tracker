@@ -5,6 +5,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
 import usePut from '../../hooks/usePut';
 import useGet from '../../hooks/useGet';
+import { SuccessAlert, ErrorAlert } from '../../alerts';
 
 const AssignProjectManagerModal = ({
   showModal,
@@ -25,15 +26,15 @@ const AssignProjectManagerModal = ({
       manager_id: selected
     }).then(res => {
       if (res.status === 200) {
-        alert('Project assigned');
+        SuccessAlert('Project assigned');
       } else {
-        alert('Request failed');
+        ErrorAlert();
       }
       refetch();
       closeModal();
       if (error) {
         console.log(error);
-        alert('error');
+        ErrorAlert();
       }
     });
   };

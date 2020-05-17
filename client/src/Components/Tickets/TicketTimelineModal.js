@@ -2,12 +2,15 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import useGet from '../../hooks/useGet';
 import { Timeline, TimelineEvent } from 'react-event-timeline';
+import { ErrorAlert } from '../../alerts';
 
 const ProjectTimelineModal = ({ ticketId, show, closeModal }) => {
   const { error, response } = useGet(`/tickets/${ticketId}/timeline`);
 
-  if (error) return alert(error);
-  else if (response !== null) {
+  if (error) {
+    console.log(error);
+    return ErrorAlert('Error fetching project timeline');
+  } else if (response !== null) {
     const data = response.data.reverse();
     return (
       <Modal size="lg" show={show} onHide={closeModal}>

@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import { toTitleCase } from '../../utils/helpers';
 import usePost from '../../hooks/usePost';
 import ProjectSchema from '../../schema/project';
+import { ErrorAlert, SuccessAlert } from '../../alerts';
 
 const NewProjects = () => {
   const name = createRef();
@@ -22,17 +23,17 @@ const NewProjects = () => {
       name: toTitleCase(name.current.value)
     });
     if (error) {
-      alert(error);
+      ErrorAlert(error);
     } else {
       post({
         ...value,
         description: description.current.value
       }).then(res => {
         if (res.status === 200) {
-          alert('Project Created');
+          SuccessAlert('Project Created');
           push(`/home/projects/${res.data.id}`);
         } else {
-          alert('Unable to create the project');
+          ErrorAlert('Unable to create the project');
         }
       });
     }

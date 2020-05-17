@@ -26,6 +26,7 @@ import UserDetail from '../Users/UserDetail';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
+import { ErrorAlert } from '../../alerts';
 
 const Homepage = () => {
   const { url } = useRouteMatch();
@@ -51,19 +52,19 @@ const Homepage = () => {
             signIn(res.data, localStorage.getItem('token'));
             setIsLoading(false);
           } else {
-            alert('You need to sign in');
+            ErrorAlert('You need to sign in');
             setIsLoading(false);
             push(`/signin?redirect=${pathname}`);
           }
         })
         .catch(err => {
-          alert(err);
+          ErrorAlert(err);
           console.log(err);
           setError(err);
           setIsLoading(false);
         });
     } else {
-      alert('You need to sign in');
+      ErrorAlert('You need to sign in');
       setIsLoading(false);
       push(`/signin?redirect=${pathname}`);
     }

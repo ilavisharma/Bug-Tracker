@@ -11,6 +11,7 @@ import { toTitleCase } from '../../utils/helpers';
 import usePost from '../../hooks/usePost';
 import UserSchema from '../../schema/user';
 import useAuthContext from '../../hooks/useAuthContext';
+import { ErrorAlert, SuccessAlert } from '../../alerts';
 
 const CreateUser = () => {
   const name = createRef();
@@ -63,7 +64,7 @@ const CreateUser = () => {
     });
 
     if (error) {
-      alert(toTitleCase(error.details[0].message));
+      ErrorAlert(toTitleCase(error.details[0].message));
     } else {
       post({
         ...value,
@@ -71,15 +72,15 @@ const CreateUser = () => {
       })
         .then(res => {
           if (res.data.message === 'user created') {
-            alert(toTitleCase(res.data.message));
+            SuccessAlert(toTitleCase(res.data.message));
             push(`/home/users/${res.data.user.id}`);
           } else if (res.data.message === 'user already exists') {
-            alert(toTitleCase(res.data.message));
+            ErrorAlert(toTitleCase(res.data.message));
           }
         })
         .catch(err => {
           console.log({ err });
-          alert(err);
+          ErrorAlert('There was some error!');
         });
     }
   };

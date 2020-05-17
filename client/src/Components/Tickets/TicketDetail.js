@@ -11,6 +11,7 @@ import useDelete from '../../hooks/useDelete';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import TicketTimelineModal from './TicketTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
+import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
 
 const TicketDetail = () => {
   const [showScreenshot, setShowScreenshot] = useState(false);
@@ -32,14 +33,19 @@ const TicketDetail = () => {
   );
 
   const onDeleteClick = async name => {
-    const confirm = window.confirm(`Delete the ticket: ${name} ?`);
-    if (confirm) {
+    // const confirm = window.confirm(`Delete the ticket: ${name} ?`);
+    const result = await ConfirmAlert(
+      'Are you sure',
+      `Delete the ticket: ${name} ?`,
+      'Yupp!'
+    );
+    if (result.value) {
       deleteTicket().then(res => {
         if (res.status === 200) {
-          alert('Ticket Deleted');
+          SuccessAlert('Ticket Deleted');
           push('/home/tickets');
         } else {
-          alert('Unable to delete the ticket');
+          ErrorAlert('Unable to delete the ticket');
         }
       });
     }
