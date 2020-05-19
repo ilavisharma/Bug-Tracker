@@ -44,7 +44,6 @@ const ProjectDetail = () => {
 
   const handleDeleteClick = async name => {
     const result = await ConfirmAlert(
-      'Are you sure?',
       `Delete the project ${name} ?`,
       'Yes, delete it!'
     );

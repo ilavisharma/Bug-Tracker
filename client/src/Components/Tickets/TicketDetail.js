@@ -33,12 +33,7 @@ const TicketDetail = () => {
   );
 
   const onDeleteClick = async name => {
-    // const confirm = window.confirm(`Delete the ticket: ${name} ?`);
-    const result = await ConfirmAlert(
-      'Are you sure',
-      `Delete the ticket: ${name} ?`,
-      'Yupp!'
-    );
+    const result = await ConfirmAlert(`Delete the ticket: ${name} ?`, 'Yupp!');
     if (result.value) {
       deleteTicket().then(res => {
         if (res.status === 200) {

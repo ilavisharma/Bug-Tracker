@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
+import './style.scss';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');

@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 
-export const ConfirmAlert = (title, text, confirmButtonText) =>
+export const ConfirmAlert = (text, confirmButtonText) =>
   Swal.fire({
-    title,
+    title: 'Are you sure',
     text,
     showCancelButton: true,
     confirmButtonColor: '#d33',

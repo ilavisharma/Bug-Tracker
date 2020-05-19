@@ -66,9 +66,8 @@ const UserDetail = () => {
         `${user.name} has been assigned to ${user.projects.length} projects. Please remove the assigned projects first.`
       );
     } else {
-      const confirmDelete = ConfirmAlert(
-        'Are you sure',
-        `Are you sure you want to delete ${user.name} ?`,
+      const confirmDelete = await ConfirmAlert(
+        `Delete the user: ${user.name} ?`,
         'Yes'
       );
       if (confirmDelete.value) {
