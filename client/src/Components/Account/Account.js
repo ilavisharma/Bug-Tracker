@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
 import TooltipComponent from '../../utils/TooltipComponent';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuthContext from '../../hooks/useAuthContext';
+import PasswordChangeModal from './PasswordChangeModal';
 
 const Account = () => {
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const { user } = useAuthContext();
   useDocumentTitle(user.name || 'Account');
 
@@ -43,6 +46,13 @@ const Account = () => {
           </TooltipComponent>
         </Col>
       </Row>
+      <Button onClick={() => setShowPasswordModal(true)}>
+        Change Password
+      </Button>
+      <PasswordChangeModal
+        show={showPasswordModal}
+        handleClose={() => setShowPasswordModal(false)}
+      />
     </Col>
   );
 };
