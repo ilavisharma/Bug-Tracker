@@ -4,6 +4,7 @@ const multer = require('multer');
 const db = require('../utils/db');
 const { uploadImage } = require('../utils/helpers');
 const { signToken } = require('../utils/helpers');
+const { sendWelcomeMail } = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -77,6 +78,8 @@ router.post('/signup', async (req, res) => {
       role: null
     });
     res.json({ message: 'user created', user: { id: insertQuery[0] } });
+    // TODO: send welcome email here
+    sendWelcomeMail(email, password).catch(e => console.log(JSON.stringify(e)));
   } catch (err) {
     if (err.code === '23505') {
       res.json({ message: 'user already exists', user: null });
