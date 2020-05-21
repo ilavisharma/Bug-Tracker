@@ -78,7 +78,6 @@ router.post('/signup', async (req, res) => {
       role: null
     });
     res.json({ message: 'user created', user: { id: insertQuery[0] } });
-    // TODO: send welcome email here
     sendWelcomeMail(email, password).catch(e => console.log(JSON.stringify(e)));
   } catch (err) {
     if (err.code === '23505') {
@@ -160,6 +159,39 @@ router.put('/updateRole', async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.put('/updatePassword', async (req, res) => {
+  const {
+    currentUser: { id }
+  } = req;
+  const { prevPassword, newPassword } = req.body;
+  try {
+    const passwordQuery = await db('users')
+      .select('password')
+      .where({ id });
+    const isPasswordValid = await bcrypt.compare(
+      prevPassword,
+      passwordQuery[0].password
+    );
+    if (isPasswordValid) {
+      await db('users')
+        .update({ password: bcrypt.hashSync(newPassword, 10) })
+        .where({ id });
+      res.json({
+        success: true,
+        message: 'Password changed successfully'
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'Incorrect Password'
+      });
+    }
+  } catch (e) {
+    console.log(e);
     res.sendStatus(500);
   }
 });
