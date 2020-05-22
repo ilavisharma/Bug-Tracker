@@ -41,17 +41,20 @@ const TicketsByPriority = () => {
         ]
       },
       title: {
-        display: true,
-        text:
-          'Tickets by Priority (' + data.data.reduce((a, b) => a + b, 0) + ')',
-        fontSize: 18,
-        fontFamily: 'sofia-pro'
+        display: false
       },
       legend: {
         display: false
       }
     };
-    return <Bar data={chartData} options={options} />;
+    return (
+      <>
+        <h5 className="text-center">
+          {'Tickets by Priority (' + data.data.reduce((a, b) => a + b, 0) + ')'}
+        </h5>
+        <Bar data={chartData} options={options} />{' '}
+      </>
+    );
   }
 };
 

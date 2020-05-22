@@ -25,16 +25,18 @@ const TicketsByType = () => {
     };
     const options = {
       title: {
-        display: true,
-        text: 'Ticket type',
-        fontSize: 18,
-        fontFamily: 'sofia-pro'
+        display: false
       },
       legend: {
         display: false
       }
     };
-    return <Doughnut data={chartData} options={options} />;
+    return (
+      <>
+        <h5 className="text-center">Ticket type</h5>
+        <Doughnut data={chartData} options={options} />{' '}
+      </>
+    );
   }
 };
 

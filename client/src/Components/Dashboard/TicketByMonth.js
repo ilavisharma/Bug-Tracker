@@ -67,16 +67,18 @@ const TicketByMonth = () => {
         ]
       },
       title: {
-        display: true,
-        text: 'Projects Timeline',
-        fontSize: 18,
-        fontFamily: 'sofia-pro'
+        display: false
       },
       legend: {
         display: false
       }
     };
-    return <Line data={chartData} options={options} />;
+    return (
+      <>
+        <h5 className="text-center">Projects Timeline</h5>
+        <Line data={chartData} options={options} />{' '}
+      </>
+    );
   }
 };
 

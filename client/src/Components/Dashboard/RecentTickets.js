@@ -19,27 +19,30 @@ const RecentTickets = () => {
   else {
     const { data: tickets } = response;
     return (
-      <ListGroup>
-        {tickets.map(({ id, name, type, priority }) => (
-          <ListGroup.Item key={id}>
-            {name}
-            <Badge
-              className="float-right"
-              pill={true}
-              variant={ticketBadge(type)}
-            >
-              {type}
-            </Badge>
-            <Badge
-              className="float-right"
-              pill={true}
-              variant={ticketBadge(priority)}
-            >
-              {priority}
-            </Badge>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+      <>
+        <h5 className="text-center">Recent Tickets</h5>
+        <ListGroup>
+          {tickets.map(({ id, name, type, priority }) => (
+            <ListGroup.Item key={id}>
+              {name}
+              <Badge
+                className="float-right"
+                pill={true}
+                variant={ticketBadge(type)}
+              >
+                {type}
+              </Badge>
+              <Badge
+                className="float-right"
+                pill={true}
+                variant={ticketBadge(priority)}
+              >
+                {priority}
+              </Badge>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </>
     );
   }
 };
