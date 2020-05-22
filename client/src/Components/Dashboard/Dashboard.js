@@ -6,6 +6,7 @@ import TicketsByPriority from './TicketsByPriority';
 import TicketsByType from './TicketsByType';
 import TicketByMonth from './TicketByMonth';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import RecentTickets from './RecentTickets';
 
 const Dashboard = () => {
   useDocumentTitle('Dashboard | Bug Tracker');
@@ -23,6 +24,9 @@ const Dashboard = () => {
       <Row>
         <Col xs={6}>
           <TicketByMonth />
+        </Col>
+        <Col xs={6}>
+          <RecentTickets />
         </Col>
       </Row>
     </Container>

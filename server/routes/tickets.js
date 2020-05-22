@@ -6,7 +6,7 @@ const { uploadImage } = require('../utils/helpers');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/', async (_, res) => {
+router.get('/', async (_req, res) => {
   try {
     const query = await db('tickets')
       .select(
@@ -28,11 +28,15 @@ router.get('/', async (_, res) => {
   }
 });
 
-router.get('/chart/priority', async (req, res) => {
-  // const {
-  //   currentUser: { role }
-  // } = req;
-  // if (role==='admin') {
+router.get('/recent', async (_req, res) => {
+  const query = await db('tickets')
+    .select('id', 'name', 'type', 'priority')
+    .orderBy('dateadded', 'desc')
+    .limit(5);
+  res.json(query);
+});
+
+router.get('/chart/priority', async (_req, res) => {
   const query = await db('tickets')
     .count('*')
     .select('priority')
@@ -41,14 +45,9 @@ router.get('/chart/priority', async (req, res) => {
     labels: query.map(l => l.priority),
     data: query.map(d => Number(d.count))
   });
-  // }
 });
 
-router.get('/chart/type', async (req, res) => {
-  // const {
-  //   currentUser: { role }
-  // } = req;
-  // if (role==='admin') {
+router.get('/chart/type', async (_req, res) => {
   const query = await db('tickets')
     .count('*')
     .select('type')
@@ -57,7 +56,6 @@ router.get('/chart/type', async (req, res) => {
     labels: query.map(l => l.type),
     data: query.map(d => Number(d.count))
   });
-  // }
 });
 
 router.get('/:id', async (req, res) => {
