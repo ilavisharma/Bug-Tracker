@@ -31,7 +31,9 @@ const SignIn = () => {
         const { user, token } = res.data;
         signIn(user, token);
         // redirect
-        push(queryParams.get('redirect'));
+        const redirect = queryParams.get('redirect');
+        if (redirect) push(redirect);
+        else push('/home');
       }
       // TODO: check other status codes
     } catch (err) {
