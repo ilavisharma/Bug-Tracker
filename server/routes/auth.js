@@ -4,7 +4,7 @@ const multer = require('multer');
 const db = require('../utils/db');
 const { uploadImage } = require('../utils/helpers');
 const { signToken } = require('../utils/helpers');
-const { sendWelcomeMail } = require('../utils/sendGrid');
+const { sendWelcomeMail, sendRoleChange } = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -151,12 +151,21 @@ router.get('/users/:id', async (req, res) => {
 
 router.put('/updateRole', async (req, res) => {
   const { id, role } = req.body;
+  const {
+    currentUser: { name: changer }
+  } = req;
   try {
     await db('roles')
       .where({ user_id: id })
-      .update({ role })
-      .returning('*');
+      .update({ role });
     res.sendStatus(200);
+    db('users')
+      .select('name', 'email')
+      .where({ id })
+      .then(result => {
+        const [{ name, email }] = result;
+        sendRoleChange(email, name, role, changer);
+      });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

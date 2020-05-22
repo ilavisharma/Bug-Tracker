@@ -11,7 +11,7 @@ const AssignProjectManagerModal = ({
   showModal,
   closeModal,
   refetch,
-  project: { id }
+  project: { id, name }
 }) => {
   const [selected, setSelected] = useState(null);
 
@@ -23,7 +23,8 @@ const AssignProjectManagerModal = ({
   const handleAssign = () => {
     put({
       project_id: id,
-      manager_id: selected
+      manager_id: selected,
+      project_name: name
     }).then(res => {
       if (res.status === 200) {
         SuccessAlert('Project assigned');

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const db = require('../utils/db');
+const { sendToNewManager } = require('../utils/sendGrid');
 
 router.get('/', async (_, res) => {
   try {
@@ -129,7 +130,7 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/assignManager', async (req, res) => {
-  const { manager_id, project_id } = req.body;
+  const { manager_id, project_id, project_name } = req.body;
   const { currentUser } = req;
   if ((currentUser.role = 'admin' || currentUser.role === 'manager')) {
     try {
@@ -137,13 +138,20 @@ router.put('/assignManager', async (req, res) => {
         .update({ manager_id })
         .where({ project_id });
       const query = await db('users')
-        .select('name')
+        .select('name', 'email')
         .where({ id: manager_id });
       await db('project_timeline').insert({
         project_id,
         event: `${query[0].name} was assigned as manager by ${currentUser.name}`
       });
       res.sendStatus(200);
+      await sendToNewManager(
+        query[0].email,
+        query[0].name,
+        project_name,
+        currentUser.name,
+        project_id
+      ).catch(e => JSON.stringify(e));
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
