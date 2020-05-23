@@ -1,8 +1,14 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
-import { toTitleCase } from '../../utils/helpers';
 
 const TicketsByPriority = () => {
   const { isLoading, response, error } = useGet('tickets/chart/priority');
@@ -13,46 +19,20 @@ const TicketsByPriority = () => {
     return <p>There was some error</p>;
   } else {
     const { data } = response;
-    const chartData = {
-      labels: data.labels.map(d => toTitleCase(d)),
-      datasets: [
-        {
-          data: data.data,
-          responsive: true,
-          backgroundColor: ['#E74292', '#FBD28B', '#EAF0F1'],
-          barThickness: 50
-        }
-      ]
-    };
-    const options = {
-      scales: {
-        xAxes: [
-          {
-            display: true
-          }
-        ],
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              display: false
-            }
-          }
-        ]
-      },
-      title: {
-        display: false
-      },
-      legend: {
-        display: false
-      }
-    };
     return (
       <>
-        <h5 className="text-center">
-          {'Tickets by Priority (' + data.data.reduce((a, b) => a + b, 0) + ')'}
-        </h5>
-        <Bar data={chartData} options={options} />{' '}
+        <h5 className="text-center">Tickets Priority</h5>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart
+            data={data}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="priority" />
+            <Tooltip />
+            <Bar barSize={40} dataKey="count" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
       </>
     );
   }

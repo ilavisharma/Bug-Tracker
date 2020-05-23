@@ -1,5 +1,12 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
+import {
+  Line,
+  XAxis,
+  LineChart,
+  ResponsiveContainer,
+  CartesianGrid,
+  Tooltip
+} from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
 
@@ -12,71 +19,22 @@ const TicketByMonth = () => {
     return <p>There was some error</p>;
   } else {
     const { data } = response;
-    const chartData = {
-      labels: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ],
-      datasets: [
-        {
-          data: data,
-          responsive: true,
-          backgroundColor: 'rgba(75,192,192,0.4)',
-          borderColor: 'rgba(75,192,192,1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(75,192,192,1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          fill: false
-        }
-      ]
-    };
-    const options = {
-      scales: {
-        xAxes: [
-          {
-            display: true
-          }
-        ],
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              display: false
-            }
-          }
-        ]
-      },
-      title: {
-        display: false
-      },
-      legend: {
-        display: false
-      }
-    };
     return (
       <>
         <h5 className="text-center">Projects Timeline</h5>
-        <Line data={chartData} options={options} />{' '}
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={data}>
+            <XAxis dataKey="month" interval={0} angle={30} dx={20} />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Line
+              type="monotone"
+              dataKey="count"
+              strokeWidth={3}
+              stroke="#ffc107"
+            />
+            <Tooltip />
+          </LineChart>
+        </ResponsiveContainer>
       </>
     );
   }

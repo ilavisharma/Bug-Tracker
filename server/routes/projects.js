@@ -64,7 +64,20 @@ router.get('/chart', async (req, res) => {
       };
     })
     .sort((f, s) => f.month - s.month);
-
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
   res.json(
     Array.from(
       Array(12).keys(),
@@ -73,7 +86,10 @@ router.get('/chart', async (req, res) => {
           month: Number(('0' + (month + 1)).substr(-2)),
           count: 0
         }
-    ).map(x => x.count)
+    ).map(({ month, count }) => ({
+      count,
+      month: months[month - 1]
+    }))
   );
 });
 

@@ -41,10 +41,12 @@ router.get('/chart/priority', async (_req, res) => {
     .count('*')
     .select('priority')
     .groupBy('priority');
-  res.json({
-    labels: query.map(l => l.priority),
-    data: query.map(d => Number(d.count))
-  });
+  res.json(
+    query.map(row => ({
+      ...row,
+      count: Number(row.count)
+    }))
+  );
 });
 
 router.get('/chart/type', async (_req, res) => {
@@ -52,10 +54,12 @@ router.get('/chart/type', async (_req, res) => {
     .count('*')
     .select('type')
     .groupBy('type');
-  res.json({
-    labels: query.map(l => l.type),
-    data: query.map(d => Number(d.count))
-  });
+  res.json(
+    query.map(({ count, type }) => ({
+      type: type + 's',
+      count: Number(count)
+    }))
+  );
 });
 
 router.get('/:id', async (req, res) => {

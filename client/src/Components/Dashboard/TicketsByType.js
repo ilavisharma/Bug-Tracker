@@ -1,8 +1,7 @@
 import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
+import { PieChart, Pie, Tooltip, ResponsiveContainer } from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
-import { toTitleCase } from '../../utils/helpers';
 
 const TicketsByType = () => {
   const { isLoading, response, error } = useGet('tickets/chart/type');
@@ -13,28 +12,22 @@ const TicketsByType = () => {
     return <p>There was some error</p>;
   } else {
     const { data } = response;
-    const chartData = {
-      labels: data.labels.map(d => toTitleCase(d)),
-      datasets: [
-        {
-          data: data.data,
-          responsive: true,
-          backgroundColor: ['#67E6DC', '#F0DF87', '#758AA2']
-        }
-      ]
-    };
-    const options = {
-      title: {
-        display: false
-      },
-      legend: {
-        display: false
-      }
-    };
     return (
       <>
         <h5 className="text-center">Ticket type</h5>
-        <Doughnut data={chartData} options={options} />{' '}
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie
+              dataKey="count"
+              data={data}
+              innerRadius={40}
+              outerRadius={100}
+              fill="#82ca9d"
+              nameKey="type"
+            />
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
       </>
     );
   }
