@@ -8,11 +8,13 @@ import Spinner from 'react-bootstrap/Spinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
 import './style.scss';
+import ForgotPasswordModal from '../Users/ForgotPasswordModal';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   const { push } = useHistory();
   const { signIn } = useAuthContext();
@@ -76,25 +78,27 @@ const SignIn = () => {
                 />
                 Hang On!
               </Button>
-              <hr />
-              <Link
-                className="btn btn-outline-success disabled"
-                to="/signin/demo"
-              >
-                Login as Demo user
-              </Link>
             </>
           ) : (
-            <>
-              <Button variant="primary" type="submit">
-                Continue
-              </Button>
-              <hr />
-              <Link className="btn btn-outline-success" to="/signin/demo">
-                Login as Demo user
-              </Link>
-            </>
+            <Button variant="primary" type="submit">
+              Continue
+            </Button>
           )}
+          <hr />
+          <Link className="btn btn-outline-success" to="/signin/demo">
+            Login as Demo user
+          </Link>
+          <Button
+            onClick={() => setShowForgotModal(true)}
+            className="float-right"
+            variant="warning"
+          >
+            Forgot Password
+          </Button>
+          <ForgotPasswordModal
+            show={showForgotModal}
+            handleClose={() => setShowForgotModal(false)}
+          />
         </Form>
       </Col>
     </Container>
