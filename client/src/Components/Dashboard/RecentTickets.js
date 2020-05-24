@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import BeatSpinner from '../../utils/BeatSpinner';
@@ -12,6 +13,8 @@ const ticketBadge = badge => {
 };
 
 const RecentTickets = () => {
+  const { push } = useHistory();
+
   const { isLoading, response, error } = useGet(`/tickets/recent`);
 
   if (isLoading) return <BeatSpinner />;
@@ -23,7 +26,11 @@ const RecentTickets = () => {
         <h5 className="text-center">Recent Tickets</h5>
         <ListGroup>
           {tickets.map(({ id, name, type, priority }) => (
-            <ListGroup.Item key={id}>
+            <ListGroup.Item
+              action={true}
+              onClick={() => push(`/home/tickets/${id}`)}
+              key={id}
+            >
               {name}
               <Badge
                 className="float-right"
