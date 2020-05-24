@@ -1,5 +1,6 @@
 import React, { useMemo, Suspense, lazy } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { hot } from 'react-hot-loader';
 import LandingPage from './Landing/LandingPage';
 import GlobalState from './GlobalState';
 import LoadingSpinner from '../utils/LoadingSpinner';
@@ -36,4 +37,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default hot(module)(App);
