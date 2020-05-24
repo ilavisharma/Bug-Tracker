@@ -1,10 +1,12 @@
 import React from 'react';
-import { PieChart, Pie, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
 
 const TicketsByType = () => {
   const { isLoading, response, error } = useGet('tickets/chart/type');
+
+  const colors = ['#9df3c4', '#07689f', '#a2d5f2', '#fdffab'];
 
   if (isLoading) return <BeatSpinner />;
   else if (error) {
@@ -20,11 +22,14 @@ const TicketsByType = () => {
             <Pie
               dataKey="count"
               data={data}
-              innerRadius={40}
+              innerRadius={50}
               outerRadius={100}
-              fill="#82ca9d"
               nameKey="type"
-            />
+            >
+              {data.map((_, i) => (
+                <Cell fill={colors[i % colors.length]} />
+              ))}
+            </Pie>
             <Tooltip />
           </PieChart>
         </ResponsiveContainer>

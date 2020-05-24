@@ -30,7 +30,7 @@ const TicketByMonth = () => {
               type="monotone"
               dataKey="count"
               strokeWidth={3}
-              stroke="#ffc107"
+              stroke="#1fab89"
             />
             <Tooltip />
           </LineChart>

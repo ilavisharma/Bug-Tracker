@@ -5,13 +5,16 @@ import {
   XAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Cell
 } from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
 
 const TicketsByPriority = () => {
   const { isLoading, response, error } = useGet('tickets/chart/priority');
+
+  const colors = ['#384259', '#f73859', '#7ac7c4'];
 
   if (isLoading) return <BeatSpinner />;
   else if (error) {
@@ -30,7 +33,11 @@ const TicketsByPriority = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="priority" />
             <Tooltip />
-            <Bar barSize={40} dataKey="count" fill="#8884d8" />
+            <Bar barSize={40} dataKey="count">
+              {data.map((_, i) => (
+                <Cell fill={colors[i % colors.length]} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </>
