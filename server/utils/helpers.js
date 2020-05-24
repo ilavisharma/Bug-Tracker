@@ -31,4 +31,15 @@ const signToken = user =>
 
 const verifyToken = token => jwt.verify(token, 'rpmgetingear');
 
-module.exports = { uploadImage, signToken, verifyToken };
+const randomPassword = (length = 12) => {
+  var chars =
+    'abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890';
+  var pass = '';
+  for (var x = 0; x < length; x++) {
+    var i = Math.floor(Math.random() * chars.length);
+    pass += chars.charAt(i);
+  }
+  return pass;
+};
+
+module.exports = { uploadImage, signToken, verifyToken, randomPassword };

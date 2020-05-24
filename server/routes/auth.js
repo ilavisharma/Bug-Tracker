@@ -2,8 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const db = require('../utils/db');
-const { uploadImage } = require('../utils/helpers');
-const { signToken } = require('../utils/helpers');
+const { uploadImage, signToken, randomPassword } = require('../utils/helpers');
 const { sendWelcomeMail, sendRoleChange } = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
@@ -58,10 +57,11 @@ router.post('/signin', async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-  let { name, email, password, photourl } = req.body;
+  let { name, email, photourl } = req.body;
   if (photourl === null) {
     photourl = '/defaultUser.png';
   }
+  const password = randomPassword();
   const newUser = {
     name,
     email,
