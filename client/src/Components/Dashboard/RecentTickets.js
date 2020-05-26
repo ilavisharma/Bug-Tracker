@@ -23,7 +23,7 @@ const RecentTickets = () => {
     const { data: tickets } = response;
     return (
       <>
-        <h5 className="text-center">Recent Tickets</h5>
+        <h5 className="text-center">Recently created Tickets</h5>
         <ListGroup>
           {tickets.map(({ id, name, type, priority }) => (
             <ListGroup.Item
