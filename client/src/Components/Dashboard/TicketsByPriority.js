@@ -24,7 +24,7 @@ const TicketsByPriority = () => {
     const { data } = response;
     return (
       <>
-        <h5 className="text-center">Tickets Priority</h5>
+        <h5 className="text-center">Tickets by Priority ({data.length})</h5>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={data}
@@ -35,7 +35,7 @@ const TicketsByPriority = () => {
             <Tooltip />
             <Bar barSize={40} dataKey="count">
               {data.map((_, i) => (
-                <Cell fill={colors[i % colors.length]} />
+                <Cell key={i} fill={colors[i % colors.length]} />
               ))}
             </Bar>
           </BarChart>

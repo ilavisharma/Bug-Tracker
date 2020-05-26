@@ -2,8 +2,17 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const db = require('../utils/db');
-const { uploadImage, signToken, randomPassword } = require('../utils/helpers');
-const { sendWelcomeMail, sendRoleChange } = require('../utils/sendGrid');
+const {
+  uploadImage,
+  signToken,
+  randomPassword,
+  verifyToken
+} = require('../utils/helpers');
+const {
+  sendWelcomeMail,
+  sendRoleChange,
+  sendForgotPassword
+} = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -86,6 +95,41 @@ router.post('/signup', async (req, res) => {
       console.log(err);
       res.sendStatus(500);
     }
+  }
+});
+
+router.post('/forgotPassword', async (req, res) => {
+  const { origin } = req.headers;
+  const { email } = req.body;
+  const query = await db('users')
+    .select('name', 'email', 'id')
+    .where({ email });
+  if (query.length === 0) {
+    res.json({ status: false });
+  } else {
+    const [user] = query;
+    const token = signToken(user);
+    const forgotLink = `${origin}/resetPassword?token=${token}`;
+    await sendForgotPassword(email, forgotLink, name);
+    res.json({ status: true });
+  }
+});
+
+router.post('/resetPassword', async (req, res) => {
+  const { password, token } = req.body;
+  try {
+    const data = verifyToken(token);
+    await db('users')
+      .update({ password: bcrypt.hashSync(password, 10) })
+      .where({ id: data.id })
+      .then(() => res.json({ success: true }))
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, message: 'Invalid Token' }).status(406);
   }
 });
 

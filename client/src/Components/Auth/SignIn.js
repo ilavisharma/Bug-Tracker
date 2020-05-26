@@ -8,7 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
 import './style.scss';
-import ForgotPasswordModal from '../Users/ForgotPasswordModal';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -66,21 +66,19 @@ const SignIn = () => {
           </Form.Group>
 
           {isLoading ? (
-            <>
-              <Button variant="primary" disabled>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="mx-1"
-                />
-                Hang On!
-              </Button>
-            </>
+            <Button variant="primary" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="mx-1"
+              />
+              Hang On!
+            </Button>
           ) : (
-            <Button variant="primary" type="submit">
+            <Button disabled={showForgotModal} variant="primary" type="submit">
               Continue
             </Button>
           )}

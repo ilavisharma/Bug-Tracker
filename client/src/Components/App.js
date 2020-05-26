@@ -10,6 +10,7 @@ const DemoUserSignIn = lazy(() => import('./Auth/DemoUserSignIn'));
 const Homepage = lazy(() => import('./Homepage/Homepage'));
 const Error404 = lazy(() => import('../utils/Error404'));
 const SignIn = lazy(() => import('./Auth/SignIn'));
+const ResetPassword = lazy(() => import('./Auth/ResetPassword'));
 
 const MemoRouter = () =>
   useMemo(
@@ -20,6 +21,7 @@ const MemoRouter = () =>
             <Route exact path="/" component={LandingPage} />
             <Route path="/home" component={Homepage} />
             <Route exact path="/signin" component={SignIn} />
+            <Route exact path="/resetPassword" component={ResetPassword} />
             <Route exact path="/signin/demo" component={DemoUserSignIn} />
             <Route component={Error404} />
           </Switch>

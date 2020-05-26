@@ -16,7 +16,7 @@ const TicketsByType = () => {
     const { data } = response;
     return (
       <>
-        <h5 className="text-center">Ticket type</h5>
+        <h5 className="text-center">Ticket types</h5>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
@@ -27,7 +27,7 @@ const TicketsByType = () => {
               nameKey="type"
             >
               {data.map((_, i) => (
-                <Cell fill={colors[i % colors.length]} />
+                <Cell key={i} fill={colors[i % colors.length]} />
               ))}
             </Pie>
             <Tooltip />
