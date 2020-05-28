@@ -10,11 +10,9 @@
     "add": "^2.0.6",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
-    "chart.js": "^2.9.3",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0-beta.17",
-    "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
     "react-dropzone": "^10.2.2",
     "react-event-timeline": "^1.6.3",
@@ -22,12 +20,13 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-spinners": "^0.8.1",
+    "recharts": "1.8.2",
     "sweetalert2": "^9.10.13",
     "yarn": "^1.22.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,5 +44,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@hot-loader/react-dom": "^16.13.0",
+    "react-app-rewire-hot-loader": "^2.0.1",
+    "react-app-rewired": "^2.1.6",
+    "react-hot-loader": "^4.12.21"
   }
 }

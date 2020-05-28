@@ -2,9 +2,17 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const db = require('../utils/db');
-const { uploadImage } = require('../utils/helpers');
-const { signToken } = require('../utils/helpers');
-const { sendWelcomeMail, sendRoleChange } = require('../utils/sendGrid');
+const {
+  uploadImage,
+  signToken,
+  randomPassword,
+  verifyToken
+} = require('../utils/helpers');
+const {
+  sendWelcomeMail,
+  sendRoleChange,
+  sendForgotPassword
+} = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -22,22 +30,20 @@ router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   try {
     // fetch the user
-    const query = await db('users')
+    const [user] = await db('users')
       .select('*')
       .innerJoin('roles', 'users.id', 'roles.user_id')
       .where({ email });
-    if (query.length === 0) {
+    if (!user) {
       return res.sendStatus(204);
     }
     // user found
     const foundUser = {
-      id: query[0].id,
-      email: query[0].email,
-      name: query[0].name,
-      photourl: query[0].photourl
+      ...user,
+      password: undefined
     };
     // check password
-    const isCorrectPassword = await bcrypt.compare(password, query[0].password);
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
     if (!isCorrectPassword) {
       return res.sendStatus(401);
     }
@@ -58,10 +64,11 @@ router.post('/signin', async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-  let { name, email, password, photourl } = req.body;
+  let { name, email, photourl } = req.body;
   if (photourl === null) {
     photourl = '/defaultUser.png';
   }
+  const password = randomPassword();
   const newUser = {
     name,
     email,
@@ -70,14 +77,14 @@ router.post('/signup', async (req, res) => {
   };
 
   try {
-    const insertQuery = await db('users')
+    const [id] = await db('users')
       .insert(newUser)
       .returning('id');
     await db('roles').insert({
       user_id: insertQuery[0],
       role: null
     });
-    res.json({ message: 'user created', user: { id: insertQuery[0] } });
+    res.json({ message: 'user created', user: { id } });
     sendWelcomeMail(email, password).catch(e => console.log(JSON.stringify(e)));
   } catch (err) {
     if (err.code === '23505') {
@@ -86,6 +93,44 @@ router.post('/signup', async (req, res) => {
       console.log(err);
       res.sendStatus(500);
     }
+  }
+});
+
+router.post('/forgotPassword', async (req, res) => {
+  const { origin } = req.headers;
+  const { email } = req.body;
+  try {
+    const [user] = await db('users')
+      .select('name', 'email', 'id')
+      .where({ email });
+    if (!user) {
+      return res.json({ status: false });
+    }
+    const token = signToken(user);
+    const forgotLink = `${origin}/resetPassword?token=${token}`;
+    await sendForgotPassword(email, forgotLink, name);
+    res.json({ status: true });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post('/resetPassword', async (req, res) => {
+  const { password, token } = req.body;
+  try {
+    const { id } = verifyToken(token);
+    await db('users')
+      .update({ password: bcrypt.hashSync(password, 10) })
+      .where({ id })
+      .then(() => res.json({ success: true }))
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, message: 'Invalid Token' }).status(406);
   }
 });
 
@@ -108,36 +153,36 @@ router.get('/allUsers', async ({ currentUser }, res) => {
 router.get('/users/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const query = await db('users')
+    const [user] = await db('users')
       .select('*')
       .innerJoin('roles', 'users.id', 'roles.user_id')
       .where({ id });
-    if (query[0].role === 'manager') {
+    if (user.role === 'manager') {
       // fetch from managers table projects assigned to this user
       const managerQuery = await db('project_managers')
         .select('id', 'name')
         .innerJoin('projects', 'project_managers.project_id', 'projects.id')
         .where({ manager_id: id });
       res.json({
-        ...query[0],
+        ...user,
         password: undefined,
         user_id: undefined,
         projects: managerQuery
       });
-    } else if (query[0].role === 'developer') {
+    } else if (user.role === 'developer') {
       const managerQuery = await db('project_developers')
         .select('id', 'name')
         .innerJoin('projects', 'project_developers.project_id', 'projects.id')
         .where({ developer_id: id });
       res.json({
-        ...query[0],
+        ...user,
         password: undefined,
         user_id: undefined,
         projects: managerQuery
       });
     } else {
       res.json({
-        ...query[0],
+        ...user,
         password: undefined,
         user_id: undefined,
         projects: []
@@ -154,22 +199,19 @@ router.put('/updateRole', async (req, res) => {
   const {
     currentUser: { name: changer }
   } = req;
-  try {
-    await db('roles')
-      .where({ user_id: id })
-      .update({ role });
-    res.sendStatus(200);
-    db('users')
-      .select('name', 'email')
-      .where({ id })
-      .then(result => {
-        const [{ name, email }] = result;
-        sendRoleChange(email, name, role, changer);
-      });
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
+  await db('roles')
+    .where({ user_id: id })
+    .update({ role })
+    .catch(err => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+  res.sendStatus(200);
+  const [{ name, email }] = await db('users')
+    .select('name', 'email')
+    .where({ id })
+    .catch(err => console.log(err));
+  sendRoleChange(email, name, role, changer);
 });
 
 router.put('/updatePassword', async (req, res) => {
@@ -178,27 +220,23 @@ router.put('/updatePassword', async (req, res) => {
   } = req;
   const { prevPassword, newPassword } = req.body;
   try {
-    const passwordQuery = await db('users')
+    const [{ password }] = await db('users')
       .select('password')
       .where({ id });
-    const isPasswordValid = await bcrypt.compare(
-      prevPassword,
-      passwordQuery[0].password
-    );
-    if (isPasswordValid) {
-      await db('users')
-        .update({ password: bcrypt.hashSync(newPassword, 10) })
-        .where({ id });
-      res.json({
-        success: true,
-        message: 'Password changed successfully'
-      });
-    } else {
-      res.json({
+    const isPasswordValid = await bcrypt.compare(prevPassword, password);
+    if (!isPasswordValid) {
+      return res.json({
         success: false,
         message: 'Incorrect Password'
       });
     }
+    await db('users')
+      .update({ password: bcrypt.hashSync(newPassword, 10) })
+      .where({ id });
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -224,7 +262,11 @@ router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   await db('users')
     .where({ id })
-    .delete();
+    .delete()
+    .catch(err => {
+      console.log(err);
+      return res.sendStatus(500);
+    });
   res.sendStatus(200);
 });
 

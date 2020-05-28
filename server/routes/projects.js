@@ -27,7 +27,7 @@ router.post('/new', async (req, res) => {
   const { currentUser } = req;
   if (currentUser) {
     try {
-      const query = await db('projects')
+      const [id] = await db('projects')
         .insert({
           user_id: currentUser.id,
           ...req.body
@@ -36,13 +36,13 @@ router.post('/new', async (req, res) => {
       // aslo create a record in project_managers with manager as null
       await db('project_managers').insert({
         manager_id: null,
-        project_id: query[0]
+        project_id: id
       });
       await db('project_timeline').insert({
-        project_id: query[0],
+        project_id: id,
         event: `${currentUser.name} created the project`
       });
-      res.json({ id: query[0] }).status(201);
+      res.json({ id }).status(201);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
@@ -64,7 +64,20 @@ router.get('/chart', async (req, res) => {
       };
     })
     .sort((f, s) => f.month - s.month);
-
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
   res.json(
     Array.from(
       Array(12).keys(),
@@ -73,7 +86,10 @@ router.get('/chart', async (req, res) => {
           month: Number(('0' + (month + 1)).substr(-2)),
           count: 0
         }
-    ).map(x => x.count)
+    ).map(({ month, count }) => ({
+      count,
+      month: months[month - 1]
+    }))
   );
 });
 
@@ -116,17 +132,16 @@ router.get('/:id/timeline', async (req, res) => {
   res.json(query);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  try {
-    db('projects')
-      .where({ id })
-      .delete()
-      .then(() => res.status(200).send('Success'));
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
+  await db('projects')
+    .where({ id })
+    .delete()
+    .catch(err => {
+      console.log(err);
+      return res.sendStatus(500);
+    });
+  res.sendStatus(200);
 });
 
 router.put('/assignManager', async (req, res) => {
@@ -137,17 +152,17 @@ router.put('/assignManager', async (req, res) => {
       await db('project_managers')
         .update({ manager_id })
         .where({ project_id });
-      const query = await db('users')
+      const [user] = await db('users')
         .select('name', 'email')
         .where({ id: manager_id });
       await db('project_timeline').insert({
         project_id,
-        event: `${query[0].name} was assigned as manager by ${currentUser.name}`
+        event: `${user.name} was assigned as manager by ${currentUser.name}`
       });
       res.sendStatus(200);
       await sendToNewManager(
-        query[0].email,
-        query[0].name,
+        user.email,
+        user.name,
         project_name,
         currentUser.name,
         project_id

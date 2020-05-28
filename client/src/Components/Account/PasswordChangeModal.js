@@ -42,7 +42,7 @@ const PasswordChangeModal = ({ show, handleClose }) => {
         <Modal.Title>Change Password</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <Form.Group>
             <Form.Label>Old Password</Form.Label>
             <Form.Control

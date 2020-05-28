@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const { cloudinaryConfig } = require('./config');
+const { cloudinaryConfig, jwtSecret } = require('./config');
 
 cloudinary.config(cloudinaryConfig);
 
@@ -24,11 +24,22 @@ const uploadImage = (file, source, transformation = null) =>
     streamifier.createReadStream(buffer).pipe(cld_upload_stream);
   });
 
-const signToken = user =>
-  jwt.sign(user, 'rpmgetingear', {
-    expiresIn: '1d'
+const signToken = (data, expiresIn = '1d') =>
+  jwt.sign(data, jwtSecret, {
+    expiresIn
   });
 
-const verifyToken = token => jwt.verify(token, 'rpmgetingear');
+const verifyToken = token => jwt.verify(token, jwtSecret);
 
-module.exports = { uploadImage, signToken, verifyToken };
+const randomPassword = (length = 12) => {
+  var chars =
+    'abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890';
+  var pass = '';
+  for (var x = 0; x < length; x++) {
+    var i = Math.floor(Math.random() * chars.length);
+    pass += chars.charAt(i);
+  }
+  return pass;
+};
+
+module.exports = { uploadImage, signToken, verifyToken, randomPassword };

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import useGet from '../../hooks/useGet';
 import BeatSpinner from '../../utils/BeatSpinner';
-import { toTitleCase } from '../../utils/helpers';
 
 const TicketsByType = () => {
   const { isLoading, response, error } = useGet('tickets/chart/type');
+
+  const colors = ['#9df3c4', '#07689f', '#a2d5f2', '#fdffab'];
 
   if (isLoading) return <BeatSpinner />;
   else if (error) {
@@ -13,28 +14,25 @@ const TicketsByType = () => {
     return <p>There was some error</p>;
   } else {
     const { data } = response;
-    const chartData = {
-      labels: data.labels.map(d => toTitleCase(d)),
-      datasets: [
-        {
-          data: data.data,
-          responsive: true,
-          backgroundColor: ['#67E6DC', '#F0DF87', '#758AA2']
-        }
-      ]
-    };
-    const options = {
-      title: {
-        display: false
-      },
-      legend: {
-        display: false
-      }
-    };
     return (
       <>
-        <h5 className="text-center">Ticket type</h5>
-        <Doughnut data={chartData} options={options} />{' '}
+        <h5 className="text-center">Ticket types</h5>
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie
+              dataKey="count"
+              data={data}
+              innerRadius={50}
+              outerRadius={100}
+              nameKey="type"
+            >
+              {data.map((_, i) => (
+                <Cell key={i} fill={colors[i % colors.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
       </>
     );
   }

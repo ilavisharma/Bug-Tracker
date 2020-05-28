@@ -12,14 +12,11 @@ import usePost from '../../hooks/usePost';
 import UserSchema from '../../schema/user';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ErrorAlert, SuccessAlert } from '../../alerts';
-import randomPassword from '../../utils/randomPassword';
 
 const CreateUser = () => {
   const name = createRef();
   const email = createRef();
-  const [password, setPassword] = useState(randomPassword());
   const [photourl, setPhotourl] = useState(null);
-  const [passwordFieldType, setPasswordFieldType] = useState('password');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
 
@@ -61,8 +58,7 @@ const CreateUser = () => {
     e.preventDefault();
     const { value, error } = UserSchema.validate({
       name: toTitleCase(name.current.value),
-      email: email.current.value,
-      password
+      email: email.current.value
     });
 
     if (error) {
@@ -107,11 +103,13 @@ const CreateUser = () => {
         >
           <input {...getInputProps()} />
           {isDragActive ? (
-            <p className="lead">Drop the file here ...</p>
+            <center>
+              <p className="lead">Drop the file here ...</p>
+            </center>
           ) : (
             <center>
               <p className="lead">
-                Drag 'n' drop the profile image here, or click to select images
+                Drop the profile image here, or click to select images
               </p>
             </center>
           )}
@@ -128,36 +126,6 @@ const CreateUser = () => {
           <Form.Label>Email</Form.Label>
           <Form.Control ref={email} type="email" required />
         </Form.Group>
-        <Form.Group>
-          <Form.Label>
-            Password{' '}
-            <span
-              role="img"
-              aria-label="generate"
-              onClick={() => setPassword(randomPassword())}
-            >
-              🔁
-            </span>
-          </Form.Label>
-          <div style={{ display: 'flex' }}>
-            <Form.Control
-              value={password}
-              type={passwordFieldType}
-              required
-              onChange={e => setPassword(e.target.value)}
-            />
-            <span
-              aria-label="view"
-              role="img"
-              onMouseEnter={() => setPasswordFieldType('text')}
-              onMouseLeave={() => setPasswordFieldType('password')}
-              style={{ margin: 'auto 3px' }}
-            >
-              👀
-            </span>
-          </div>
-        </Form.Group>
-
         {isLoading ? (
           <Button variant="warning" disabled>
             <Spinner

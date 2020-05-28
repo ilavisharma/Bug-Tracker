@@ -57,4 +57,33 @@ const sendToNewManager = (to, name, projectName, assignedBy, projectId) =>
     }
   });
 
-module.exports = { sendWelcomeMail, sendRoleChange, sendToNewManager };
+const sendForgotPassword = (to, link, name) =>
+  sgMail.send({
+    from,
+    to,
+    templateId: sendGrid.templateId_forgotPassword,
+    dynamicTemplateData: {
+      subject: 'Reset Bug Tracker password',
+      user_name: name,
+      reset_link: link
+    }
+  });
+
+const sendGenericMail = (to, subject, message) =>
+  sgMail.send({
+    from,
+    to,
+    templateId: sendGrid.templateId_generic,
+    dynamicTemplateData: {
+      subject,
+      message
+    }
+  });
+
+module.exports = {
+  sendWelcomeMail,
+  sendRoleChange,
+  sendToNewManager,
+  sendForgotPassword,
+  sendGenericMail
+};
