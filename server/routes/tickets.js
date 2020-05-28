@@ -29,43 +29,58 @@ router.get('/', async (_req, res) => {
 });
 
 router.get('/recent', async (_req, res) => {
-  const query = await db('tickets')
-    .select('id', 'name', 'type', 'priority')
-    .orderBy('dateadded', 'desc')
-    .limit(5);
-  res.json(query);
+  try {
+    const query = await db('tickets')
+      .select('id', 'name', 'type', 'priority')
+      .orderBy('dateadded', 'desc')
+      .limit(5);
+    res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.get('/chart/priority', async (_req, res) => {
-  const query = await db('tickets')
-    .count('*')
-    .select('priority')
-    .groupBy('priority');
-  res.json(
-    query.map(row => ({
-      ...row,
-      count: Number(row.count)
-    }))
-  );
+  try {
+    const query = await db('tickets')
+      .count('*')
+      .select('priority')
+      .groupBy('priority');
+    res.json(
+      query.map(row => ({
+        ...row,
+        count: Number(row.count)
+      }))
+    );
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.get('/chart/type', async (_req, res) => {
-  const query = await db('tickets')
-    .count('*')
-    .select('type')
-    .groupBy('type');
-  res.json(
-    query.map(({ count, type }) => ({
-      type: type + 's',
-      count: Number(count)
-    }))
-  );
+  try {
+    const query = await db('tickets')
+      .count('*')
+      .select('type')
+      .groupBy('type');
+    res.json(
+      query.map(({ count, type }) => ({
+        type: type + 's',
+        count: Number(count)
+      }))
+    );
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const query = await db('tickets')
+    const [ticket] = await db('tickets')
       .select(
         'tickets.id as id',
         'tickets.name as name',
@@ -81,11 +96,10 @@ router.get('/:id', async (req, res) => {
       .innerJoin('projects', 'tickets.project_id', 'projects.id')
       .innerJoin('users', 'tickets.user_id', 'users.id')
       .where('tickets.id', '=', id);
-    if (query.length === 0) {
-      res.sendStatus(204);
-    } else {
-      res.json(query[0]);
+    if (!ticket) {
+      return res.sendStatus(204);
     }
+    res.json(ticket);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -105,7 +119,7 @@ router.post('/new', async (req, res) => {
   const { currentUser } = req;
   if (currentUser) {
     try {
-      const query = await db('tickets')
+      const [newTicket] = await db('tickets')
         .insert({
           ...req.body,
           user_id: currentUser.id
@@ -113,11 +127,11 @@ router.post('/new', async (req, res) => {
         .returning('id');
       // add new event to ticket timeline
       await db('ticket_timeline').insert({
-        ticket_id: query[0],
+        ticket_id: newTicket,
         event: `Ticket created by ${currentUser.name}`
       });
       // send response
-      res.json({ id: query[0] });
+      res.json({ id: newTicket });
       // add this event to project timeline also
       await db('project_timeline').insert({
         project_id: req.body.project_id,
@@ -135,10 +149,10 @@ router.post('/new', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    db('tickets')
+    await db('tickets')
       .where({ id })
-      .delete()
-      .then(() => res.status(200).send('Success'));
+      .delete();
+    res.status(200).send('Success');
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
