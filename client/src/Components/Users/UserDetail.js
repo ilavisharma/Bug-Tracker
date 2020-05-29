@@ -102,7 +102,7 @@ const UserDetail = () => {
               variant="outline-dark"
               onClick={onEditClick}
             >
-              Edit
+              Change
             </Button>
           </h5>
           <h5>
