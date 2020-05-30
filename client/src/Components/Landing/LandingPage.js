@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 const LandingPage = () => {
   return (
     <>
-      <Navbar bg="dark" variant="dark">
+      <Navbar bg="dark" variant="dark" fixed="top">
         <Navbar.Text>Welcome</Navbar.Text>
       </Navbar>
       <Container>
