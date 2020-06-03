@@ -1,3 +1,6 @@
+$primary: #2475b0;
+$success: #26ae60;
+
 @import 'bootstrap/scss/_functions';
 @import 'bootstrap/scss/_variables';
 @import 'bootstrap/scss/_mixins';
@@ -64,4 +67,14 @@ body,
 
 .swal2-title {
   font-size: 2.2em;
+}
+
+.gg-trash {
+  margin: auto;
+  margin-top: 90%;
+  color: gray;
+}
+
+.gg-trash:hover {
+  color: red;
 }
