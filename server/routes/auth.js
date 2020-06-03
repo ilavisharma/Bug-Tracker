@@ -81,7 +81,7 @@ router.post('/signup', async (req, res) => {
       .insert(newUser)
       .returning('id');
     await db('roles').insert({
-      user_id: insertQuery[0],
+      user_id: id,
       role: null
     });
     res.json({ message: 'user created', user: { id } });

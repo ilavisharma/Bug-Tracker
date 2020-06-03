@@ -13,13 +13,15 @@ const NavigationBar = () => {
 
   if (user === null)
     return (
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Brand>Bug Tracker</Navbar.Brand>
+      <Navbar bg="dark" variant="dark" fixed="top">
+        <LinkContainer to="/">
+          <Navbar.Brand>Bug Tracker</Navbar.Brand>
+        </LinkContainer>
       </Navbar>
     );
 
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" fixed="top">
       <LinkContainer to="/">
         <Navbar.Brand>Bug Tracker</Navbar.Brand>
       </LinkContainer>

@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 const ScreenshotModal = ({ url, show, handleClose }) => {
   return (
-    <Modal centered size="lg" show={show} onHide={handleClose} animation={true}>
+    <Modal size="lg" show={show} onHide={handleClose} animation={true}>
       <Modal.Header closeButton>
         <Modal.Title>Attached Screenshot</Modal.Title>
       </Modal.Header>

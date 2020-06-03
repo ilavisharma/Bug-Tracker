@@ -12,6 +12,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import TicketTimelineModal from './TicketTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
+import TicketComments from './TicketComments';
 
 const TicketDetail = () => {
   const [showScreenshot, setShowScreenshot] = useState(false);
@@ -118,6 +119,8 @@ const TicketDetail = () => {
           show={showTimelineModal}
           closeModal={() => setShowTimelineModal(false)}
         />
+        <hr />
+        <TicketComments ticketId={id} />
       </Col>
     );
   }

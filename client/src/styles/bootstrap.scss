@@ -1,4 +1,31 @@
-@import 'bootstrap/scss/bootstrap';
+$primary: #2475b0;
+$success: #26ae60;
+
+@import 'bootstrap/scss/_functions';
+@import 'bootstrap/scss/_variables';
+@import 'bootstrap/scss/_mixins';
+
+@import 'node_modules/bootstrap/scss/_reboot';
+@import 'node_modules/bootstrap/scss/_type';
+@import 'node_modules/bootstrap/scss/_images';
+@import 'node_modules/bootstrap/scss/_grid';
+@import 'node_modules/bootstrap/scss/_nav';
+@import 'node_modules/bootstrap/scss/_navbar';
+@import 'node_modules/bootstrap/scss/_modal';
+@import 'node_modules/bootstrap/scss/_tooltip';
+@import 'node_modules/bootstrap/scss/_buttons';
+@import 'node_modules/bootstrap/scss/_forms';
+@import 'node_modules/bootstrap/scss/_utilities';
+@import 'node_modules/bootstrap/scss/_tables';
+@import 'node_modules/bootstrap/scss/_dropdown';
+@import 'node_modules/bootstrap/scss/_list-group';
+@import 'node_modules/bootstrap/scss/_badge';
+@import 'node_modules/bootstrap/scss/_close';
+
+body {
+  margin-top: 70px;
+}
+
 body,
 .tooltip-inner {
   font-family: 'Rubik', sans-serif;
@@ -25,7 +52,10 @@ body,
   font-size: 1.1em;
 }
 
-.btn,
+.btn {
+  font-size: 1.01em;
+}
+
 .tooltip-inner {
   font-size: 1.1em;
 }
@@ -37,4 +67,14 @@ body,
 
 .swal2-title {
   font-size: 2.2em;
+}
+
+.gg-trash {
+  margin: auto;
+  margin-top: 90%;
+  color: gray;
+}
+
+.gg-trash:hover {
+  color: red;
 }

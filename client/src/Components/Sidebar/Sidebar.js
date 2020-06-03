@@ -15,7 +15,7 @@ const Sidebar = () => {
         variant="pills"
         fill
         className="flex-column"
-        style={{ height: '60vh' }}
+        style={{ height: '60vh', position: 'fixed' }}
       >
         <LinkContainer exact to="/home">
           <Nav.Link>Dashboard</Nav.Link>

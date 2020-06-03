@@ -9,6 +9,8 @@ import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
 import './style.scss';
 import ForgotPasswordModal from './ForgotPasswordModal';
+import Schema from '../../schema/signIn';
+import { ErrorAlert } from '../../alerts';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -24,9 +26,13 @@ const SignIn = () => {
 
   const onFormSubmit = async e => {
     e.preventDefault();
+    const { value, error } = Schema.validate({ email, password });
+    if (error) {
+      return ErrorAlert(error.details[0].message);
+    }
     setIsLoading(true);
     try {
-      const res = await api.post('/auth/signin', { email, password });
+      const res = await api.post('/auth/signin', value);
       setIsLoading(false);
       if (res.status === 200) {
         // correct
@@ -45,7 +51,7 @@ const SignIn = () => {
 
   return (
     <Container>
-      <Col xs={6}>
+      <Col className="form-signup" xs={6}>
         <h3 className="display-3">Sign In</h3>
         <Form onSubmit={onFormSubmit}>
           <Form.Group>
@@ -54,6 +60,7 @@ const SignIn = () => {
               value={email}
               onChange={e => setEmail(e.target.value)}
               type="email"
+              required
             />
           </Form.Group>
           <Form.Group>
@@ -62,6 +69,7 @@ const SignIn = () => {
               value={password}
               onChange={e => setPassword(e.target.value)}
               type="password"
+              required
             />
           </Form.Group>
 
