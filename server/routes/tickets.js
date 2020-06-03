@@ -106,13 +106,70 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id/comments', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = await db('ticket_comments')
+      .select(
+        'ticket_comments.content',
+        'ticket_comments.id as id',
+        'users.photourl',
+        'users.name',
+        'ticket_comments.dateadded',
+        'users.id as user_id'
+      )
+      .innerJoin('users', 'users.id', 'ticket_comments.user_id')
+      .where({ ticket_id: id })
+      .orderBy('ticket_comments.dateadded', 'desc');
+    res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post('/:id/comments/new', async (req, res) => {
+  const { id: ticket_id } = req.params;
+  const { content } = req.body;
+  const { id: user_id } = req.currentUser;
+  try {
+    await db('ticket_comments').insert({
+      ticket_id,
+      content,
+      user_id
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.delete('/comments/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db('ticket_comments')
+      .where({ id })
+      .delete();
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.get('/:id/timeline', async (req, res) => {
   const { id } = req.params;
-  const query = await db('ticket_timeline')
-    .select('*')
-    .where({ ticket_id: id })
-    .orderBy('date', 'desc');
-  res.json(query);
+  try {
+    const query = await db('ticket_timeline')
+      .select('*')
+      .where({ ticket_id: id })
+      .orderBy('date', 'desc');
+    res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.post('/new', async (req, res) => {

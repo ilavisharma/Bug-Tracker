@@ -120,7 +120,7 @@ const TicketDetail = () => {
           closeModal={() => setShowTimelineModal(false)}
         />
         <hr />
-        <TicketComments />
+        <TicketComments ticketId={id} />
       </Col>
     );
   }
