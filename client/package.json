@@ -19,6 +19,7 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "react-select": "^3.1.0",
     "react-spinners": "^0.8.1",
     "recharts": "1.8.2",
     "sweetalert2": "^9.10.13",
