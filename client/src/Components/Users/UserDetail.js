@@ -11,6 +11,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import ListGroup from 'react-bootstrap/ListGroup';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ErrorAlert, ConfirmAlert, SuccessAlert } from '../../alerts';
+import api from '../../utils/api';
 
 const UserDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +20,7 @@ const UserDetail = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { id } = useParams();
-  const { api, user: currentUser } = useAuthContext();
+  const { user: currentUser } = useAuthContext();
   const { goBack, push } = useHistory();
 
   const useFetchUser = () => {
@@ -31,7 +32,7 @@ const UserDetail = () => {
         document.title = res.data.name || 'Users';
       } catch (err) {
         setIsLoading(false);
-        ErrorAlert(err);
+        ErrorAlert(err.message);
       }
     }, []);
     return { callback };
@@ -72,7 +73,11 @@ const UserDetail = () => {
       );
       if (confirmDelete.value) {
         setIsDeleting(true);
-        const res = await api.delete(`/auth/${user.id}`);
+        const res = await api.delete(`/auth/${user.id}`, {
+          headers: {
+            authorization: localStorage.getItem('token')
+          }
+        });
         if (res.status === 200) {
           setIsDeleting(false);
           SuccessAlert(`Succesfully Deleted user: ${user.name}`);
