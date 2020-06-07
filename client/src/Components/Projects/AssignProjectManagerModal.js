@@ -11,9 +11,10 @@ const AssignProjectManagerModal = ({
   showModal,
   closeModal,
   refetch,
+  manager,
   project: { id, name }
 }) => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(manager || null);
 
   const { response: managersResponse, isLoading: loadingManagers } = useGet(
     '/auth/allManagers'
@@ -44,16 +45,9 @@ const AssignProjectManagerModal = ({
   else {
     const { data: managers } = managersResponse;
     return (
-      <Modal
-        size="lg"
-        show={showModal}
-        onHide={closeModal}
-        aria-labelledby="example-modal-sizes-title-lg"
-      >
+      <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
-          <Modal.Title id="example-modal-sizes-title-lg">
-            Asign this project to
-          </Modal.Title>
+          <Modal.Title>Assign this project to</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
@@ -86,7 +80,7 @@ const AssignProjectManagerModal = ({
             </Button>
           ) : (
             <Button
-              disabled={selected === null}
+              disabled={selected === manager || selected === null}
               onClick={handleAssign}
               variant="warning"
             >

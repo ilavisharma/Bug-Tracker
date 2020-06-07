@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import Select from 'react-select';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -17,7 +18,7 @@ import { SuccessAlert, ErrorAlert } from '../../alerts';
 
 const NewTicket = () => {
   const name = createRef();
-  const project = createRef();
+  const [projectId, setProjectId] = useState('');
   const type = createRef();
   const priority = createRef();
   const description = createRef();
@@ -64,7 +65,7 @@ const NewTicket = () => {
     e.preventDefault();
     post({
       name: toTitleCase(name.current.value),
-      project_id: project.current.value,
+      project_id: projectId,
       type: type.current.value,
       priority: priority.current.value,
       description: description.current.value,
@@ -96,14 +97,14 @@ const NewTicket = () => {
               <option>Loading Projects</option>
             </Form.Control>
           ) : (
-            <Form.Control as="select" ref={project}>
-              <option value="0">Select project</option>
-              {response.data.map(({ id, name }) => (
-                <option value={id} key={id}>
-                  {name}
-                </option>
-              ))}
-            </Form.Control>
+            <Select
+              options={response.data.map(p => ({
+                value: p.id,
+                label: p.name
+              }))}
+              onChange={e => setProjectId(e.value)}
+              placeholder="Project"
+            />
           )}
         </Form.Group>
         <Row>
