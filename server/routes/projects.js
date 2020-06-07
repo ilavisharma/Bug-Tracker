@@ -8,7 +8,8 @@ router.get('/', async (_, res) => {
       .select(
         'projects.id as id',
         'projects.name as name',
-        'users.name as manager'
+        'users.name as manager',
+        'projects.dateadded as dateadded'
       )
       .innerJoin(
         'project_managers',
@@ -30,17 +31,17 @@ router.post('/new', async (req, res) => {
       const [id] = await db('projects')
         .insert({
           user_id: currentUser.id,
-          ...req.body
+          ...req.body,
         })
         .returning('id');
       // aslo create a record in project_managers with manager as null
       await db('project_managers').insert({
         manager_id: null,
-        project_id: id
+        project_id: id,
       });
       await db('project_timeline').insert({
         project_id: id,
-        event: `${currentUser.name} created the project`
+        event: `${currentUser.name} created the project`,
       });
       res.json({ id }).status(201);
     } catch (err) {
@@ -52,15 +53,26 @@ router.post('/new', async (req, res) => {
   }
 });
 
-router.get('/chart', async (req, res) => {
+router.post('/deleteMultiple', async (req, res) => {
+  const { ids } = req.body;
+  try {
+    await db('projects').whereIn('id', ids).delete();
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.get('/chart', async (_req, res) => {
   const query = await db.raw(
     "SELECT date_trunc('month', dateadded) AS month, count(*) FROM projects GROUP BY 1"
   );
   const rows = query.rows
-    .map(r => {
+    .map((r) => {
       return {
         count: Number(r.count),
-        month: new Date(r.month).getMonth() + 1
+        month: new Date(r.month).getMonth() + 1,
       };
     })
     .sort((f, s) => f.month - s.month);
@@ -76,19 +88,19 @@ router.get('/chart', async (req, res) => {
     'September',
     'October',
     'November',
-    'December'
+    'December',
   ];
   res.json(
     Array.from(
       Array(12).keys(),
-      month =>
-        rows.find(row => +row.month === month + 1) || {
+      (month) =>
+        rows.find((row) => +row.month === month + 1) || {
           month: Number(('0' + (month + 1)).substr(-2)),
-          count: 0
+          count: 0,
         }
     ).map(({ month, count }) => ({
       count,
-      month: months[month - 1]
+      month: months[month - 1],
     }))
   );
 });
@@ -115,7 +127,7 @@ router.get('/:id', async (req, res) => {
       else
         res.send({
           ...query[0],
-          manager: managerQuery[0]
+          manager: managerQuery[0],
         });
     }
   } catch (err) {
@@ -137,7 +149,7 @@ router.delete('/:id', async (req, res) => {
   await db('projects')
     .where({ id })
     .delete()
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return res.sendStatus(500);
     });
@@ -149,15 +161,13 @@ router.put('/assignManager', async (req, res) => {
   const { currentUser } = req;
   if ((currentUser.role = 'admin' || currentUser.role === 'manager')) {
     try {
-      await db('project_managers')
-        .update({ manager_id })
-        .where({ project_id });
+      await db('project_managers').update({ manager_id }).where({ project_id });
       const [user] = await db('users')
         .select('name', 'email')
         .where({ id: manager_id });
       await db('project_timeline').insert({
         project_id,
-        event: `${user.name} was assigned as manager by ${currentUser.name}`
+        event: `${user.name} was assigned as manager by ${currentUser.name}`,
       });
       res.sendStatus(200);
       await sendToNewManager(
@@ -166,7 +176,7 @@ router.put('/assignManager', async (req, res) => {
         project_name,
         currentUser.name,
         project_id
-      ).catch(e => JSON.stringify(e));
+      ).catch((e) => JSON.stringify(e));
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
@@ -179,16 +189,14 @@ router.put('/assignManager', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const {
-    currentUser: { name }
+    currentUser: { name },
   } = req;
   try {
-    await db('projects')
-      .where({ id })
-      .update(req.body);
+    await db('projects').where({ id }).update(req.body);
     res.sendStatus(200);
     await db('project_timeline').insert({
       project_id: id,
-      event: `${name} updated the project details`
+      event: `${name} updated the project details`,
     });
   } catch (err) {
     console.log(err);
