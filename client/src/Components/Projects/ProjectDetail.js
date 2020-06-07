@@ -156,6 +156,7 @@ const ProjectDetail = () => {
             closeModal={() => setShowAssignManagerModal(false)}
             project={project}
             refetch={refetchProject}
+            manager={project.manager_id}
           />
           <hr />
           <div className="my-3">
