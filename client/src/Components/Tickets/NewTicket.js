@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import CKEditor from 'ckeditor4-react';
 import Select from 'react-select';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -9,53 +10,49 @@ import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
-import { toTitleCase } from '../../utils/helpers';
 import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import { createRef } from 'react';
-import useAuthContext from '../../hooks/useAuthContext';
 import { SuccessAlert, ErrorAlert } from '../../alerts';
+import api from '../../utils/api';
 
 const NewTicket = () => {
   const name = createRef();
   const [projectId, setProjectId] = useState('');
   const type = createRef();
   const priority = createRef();
-  const description = createRef();
+  const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { push } = useHistory();
-  const { api } = useAuthContext();
 
-  const onDrop = useCallback(
-    async files => {
-      const data = new FormData();
-      data.append('file', files[0]);
-      const res = await api.post('/tickets/uploadImage', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: progress => {
-          setShowProgress(true);
-          setUploadProgress(
-            parseInt(Math.round((progress.loaded * 100) / progress.total))
-          );
-          setTimeout(() => {
-            setUploadProgress(0);
-            setShowProgress(false);
-          }, 500);
-        }
-      });
-      setImageUrl(res.data.url);
-    },
-    [api]
-  );
+  const onDrop = useCallback(async files => {
+    const data = new FormData();
+    data.append('file', files[0]);
+    const res = await api.post('/tickets/uploadImage', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        authorization: localStorage.getItem('token'),
+      },
+      onUploadProgress: progress => {
+        setShowProgress(true);
+        setUploadProgress(
+          parseInt(Math.round((progress.loaded * 100) / progress.total))
+        );
+        setTimeout(() => {
+          setUploadProgress(0);
+          setShowProgress(false);
+        }, 500);
+      },
+    });
+    setImageUrl(res.data.url);
+  }, []);
 
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: 'image/*',
-    onDrop
+    onDrop,
   });
 
   const { response } = useGet('/projects');
@@ -64,12 +61,12 @@ const NewTicket = () => {
   const onFormSubmit = async e => {
     e.preventDefault();
     post({
-      name: toTitleCase(name.current.value),
+      name: name.current.value,
       project_id: projectId,
       type: type.current.value,
       priority: priority.current.value,
-      description: description.current.value,
-      imageurl: imageUrl
+      description,
+      imageurl: imageUrl,
     }).then(res => {
       if (res.status === 200) {
         SuccessAlert('Ticket Created');
@@ -100,7 +97,7 @@ const NewTicket = () => {
             <Select
               options={response.data.map(p => ({
                 value: p.id,
-                label: p.name
+                label: p.name,
               }))}
               onChange={e => setProjectId(e.value)}
               placeholder="Project"
@@ -135,7 +132,7 @@ const NewTicket = () => {
           style={{
             border: '2px dashed gray',
             cursor: 'pointer',
-            margin: 'auto'
+            margin: 'auto',
           }}
           className="my-3"
         >
@@ -160,7 +157,10 @@ const NewTicket = () => {
         {imageUrl !== null && <Image src={imageUrl} fluid />}
         <Form.Group>
           <Form.Label>Description</Form.Label>
-          <Form.Control ref={description} as="textarea" rows="2" />
+          <CKEditor
+            value={description}
+            onChange={evt => setDescription(evt.editor.getData())}
+          />
         </Form.Group>
         {isLoading ? (
           <Button variant="info" disabled>

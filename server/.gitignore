@@ -6,3 +6,4 @@ public/images
 firebase
 utils/config.js
 seed.js
+.vercel

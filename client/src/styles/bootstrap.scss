@@ -22,6 +22,7 @@ $success: #26ae60;
 @import 'node_modules/bootstrap/scss/_badge';
 @import 'node_modules/bootstrap/scss/_close';
 @import 'node_modules/bootstrap/scss/_spinners';
+@import 'node_modules/bootstrap/scss/_progress';
 
 body {
   margin-top: 70px;
@@ -78,4 +79,21 @@ body,
 
 .gg-trash:hover {
   color: red;
+}
+
+pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 90%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 90%;
+  background-color: #f6f8fa;
+  border-radius: 3px;
 }

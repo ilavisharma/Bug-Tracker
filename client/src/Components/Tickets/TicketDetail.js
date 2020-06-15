@@ -59,7 +59,8 @@ const TicketDetail = () => {
           <b>{ticket.creator}</b>
         </p>
         <hr />
-        <p className="lead">{ticket.description}</p>
+        <p dangerouslySetInnerHTML={{ __html: ticket.description }}></p>
+        <hr />
         <Row>
           <Col xs={6}>
             {ticket.imageurl !== null && (

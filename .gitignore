@@ -1,3 +1,4 @@
 startServers.bat
 *.rest
 .vscode
+client/debug.log
