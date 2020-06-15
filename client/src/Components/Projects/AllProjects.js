@@ -12,7 +12,8 @@ import { SuccessAlert, ErrorAlert, ConfirmAlert } from '../../alerts';
 
 const AllProjects = () => {
   const { push } = useHistory();
-  const [projects, setProjects] = useState(null);
+  const [search, setSearch] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,11 +22,12 @@ const AllProjects = () => {
   const fetchProjects = async () => {
     api
       .get('/projects')
-      .then((res) => {
+      .then(res => {
         setProjects(res.data);
+        setSearch(res.data);
         setIsLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         setError(err);
         setIsLoading(false);
@@ -36,9 +38,20 @@ const AllProjects = () => {
     fetchProjects();
   }, []);
 
-  const toggleSelected = (id) => {
+  const handleSearch = ({ target: { value } }) => {
+    if (value === '') return setSearch(projects);
+    setSearch(
+      projects.filter(
+        ({ name, manager }) =>
+          name.toLowerCase().includes(value) ||
+          (manager !== null && manager.toLowerCase().includes(value))
+      )
+    );
+  };
+
+  const toggleSelected = id => {
     if (!selected.includes(id)) setSelected([...selected, id]);
-    else setSelected(selected.filter((i) => i !== id));
+    else setSelected(selected.filter(i => i !== id));
   };
 
   const { isLoading: isDeleting, post } = usePost('projects/deleteMultiple');
@@ -52,14 +65,14 @@ const AllProjects = () => {
     post({
       ids: selected,
     })
-      .then((res) => {
+      .then(res => {
         if (res.status === 200) {
           setSelected([]);
           SuccessAlert('Projects were deleted');
         } else ErrorAlert(res.statusText);
         fetchProjects();
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         ErrorAlert(err.message || 'Unable to delete the projects');
       });
@@ -104,6 +117,13 @@ const AllProjects = () => {
           </>
         )}
       </div>
+      <Form.Group>
+        <Form.Control
+          onChange={handleSearch}
+          type="text"
+          placeholder="Search Project"
+        />
+      </Form.Group>
       <Table stripped="true" hover>
         <thead>
           <tr>
@@ -114,7 +134,7 @@ const AllProjects = () => {
           </tr>
         </thead>
         <tbody>
-          {projects.map(({ id, name, manager, dateadded }) => (
+          {search.map(({ id, name, manager, dateadded }) => (
             <tr style={{ cursor: 'pointer' }} key={id}>
               <td>
                 <Form.Check

@@ -144,6 +144,14 @@ router.get('/:id/timeline', async (req, res) => {
   res.json(query);
 });
 
+router.get('/:id/tickets', async(req,res)=>{
+  const {id}=req.params;
+  const query= await db('tickets')
+    .select('id','name','dateadded')
+    .where({project_id:id})
+  res.json(query);
+})
+
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   await db('projects')
