@@ -7,7 +7,22 @@ import useAuthContext from '../../hooks/useAuthContext';
 const Sidebar = () => {
   const { user } = useAuthContext();
 
-  if (user === null) return <LoadingSpinner />;
+  if (user === null)
+    return (
+      <Nav
+        variant="pills"
+        fill
+        className="flex-column"
+        style={{ height: '60vh', position: 'fixed' }}
+      >
+        <LinkContainer exact to="/home">
+          <Nav.Link>Dashboard</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/account">
+          <Nav.Link>My Account</Nav.Link>
+        </LinkContainer>
+      </Nav>
+    );
 
   if (user.role === 'admin') {
     return (
