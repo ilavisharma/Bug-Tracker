@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
+import Badge from 'react-bootstrap/Badge';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import ScreenshotModal from './ScreenshotModal';
 import useGet from '../../hooks/useGet';
@@ -13,6 +14,13 @@ import TicketTimelineModal from './TicketTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
 import TicketComments from './TicketComments';
+
+const ticketBadge = badge => {
+  if (badge === 'error' || badge === 'high') return 'danger';
+  if (badge === 'issue' || badge === 'medium') return 'warning';
+  if (badge === 'bug' || badge === 'low') return 'info';
+  if (badge === 'feature') return 'dark';
+};
 
 const TicketDetail = () => {
   const [showScreenshot, setShowScreenshot] = useState(false);
@@ -55,6 +63,20 @@ const TicketDetail = () => {
       <Col xs={11}>
         <h4 className="display-4">{ticket.name}</h4>
         <p className="lead">
+          <Badge
+            className="float-right"
+            pill={true}
+            variant={ticketBadge(ticket.priority)}
+          >
+            {ticket.priority}
+          </Badge>
+          <Badge
+            className="float-right"
+            pill={true}
+            variant={ticketBadge(ticket.type)}
+          >
+            {ticket.type}
+          </Badge>
           Created on {new Date(ticket.dateadded).toDateString()} by{' '}
           <b>{ticket.creator}</b>
         </p>
