@@ -34,7 +34,6 @@ const NewTicket = () => {
     const res = await api.post('/tickets/uploadImage', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        authorization: localStorage.getItem('token'),
       },
       onUploadProgress: progress => {
         setShowProgress(true);

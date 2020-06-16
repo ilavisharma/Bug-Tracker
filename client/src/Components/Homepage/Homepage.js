@@ -4,7 +4,7 @@ import {
   Route,
   useHistory,
   useLocation,
-  useRouteMatch
+  useRouteMatch,
 } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -42,11 +42,7 @@ const Homepage = () => {
     const localToken = localStorage.getItem('token');
     if (localToken) {
       api
-        .get('/auth/currentUser', {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        })
+        .get('/auth/currentUser')
         .then(res => {
           if (res.status === 200) {
             signIn(res.data, localStorage.getItem('token'));

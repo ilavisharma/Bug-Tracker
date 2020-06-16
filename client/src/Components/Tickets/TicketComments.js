@@ -24,11 +24,7 @@ const TicketComments = ({ ticketId }) => {
     const confirm = await ConfirmAlert('Delete this comment ?', 'Yeah');
     if (confirm.value) {
       api
-        .delete(`/tickets/comments/${id}`, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        })
+        .delete(`/tickets/comments/${id}`)
         .then(res => {
           if (res.status === 200) SuccessAlert('Comment was deleted');
           else ErrorAlert(res.statusText);

@@ -7,11 +7,7 @@ export default url => {
   const post = async data => {
     try {
       setIsLoading(true);
-      const res = await api.post(url, data, {
-        headers: {
-          authorization: localStorage.getItem('token')
-        }
-      });
+      const res = await api.post(url, data);
       setIsLoading(false);
       return res;
     } catch (err) {

@@ -73,11 +73,7 @@ const UserDetail = () => {
       );
       if (confirmDelete.value) {
         setIsDeleting(true);
-        const res = await api.delete(`/auth/${user.id}`, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        });
+        const res = await api.delete(`/auth/${user.id}`);
         if (res.status === 200) {
           setIsDeleting(false);
           SuccessAlert(`Succesfully Deleted user: ${user.name}`);

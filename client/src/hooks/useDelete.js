@@ -8,11 +8,7 @@ export default url => {
   const deleteRequest = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await api.delete(url, {
-        headers: {
-          authorization: localStorage.getItem('token')
-        }
-      });
+      const res = await api.delete(url);
       return res;
     } catch (err) {
       setError(err);
