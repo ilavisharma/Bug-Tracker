@@ -59,6 +59,7 @@ const NewTicket = () => {
 
   const onFormSubmit = async e => {
     e.preventDefault();
+    if (projectId === '') return ErrorAlert('Please selecta project');
     post({
       name: name.current.value,
       project_id: projectId,
