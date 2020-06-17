@@ -17,10 +17,12 @@ const {
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/currentUser', ({ currentUser }, res) => {
+router.get('/currentUser', async ({ currentUser }, res) => {
   if (currentUser) {
-    const { id, name, email, photourl, role } = currentUser;
-    res.json({ id, name, email, photourl, role });
+    const { id } = currentUser;
+    const query = await db('users').count('*').where({ id });
+    if (query.length === 0) return res.sendStatus(204);
+    res.json(currentUser);
   } else {
     res.sendStatus(204);
   }
