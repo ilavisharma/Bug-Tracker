@@ -50,7 +50,7 @@ router.get('/chart/priority', async (_req, res) => {
     res.json(
       query.map(row => ({
         ...row,
-        count: Number(row.count)
+        count: Number(row.count),
       }))
     );
   } catch (err) {
@@ -61,14 +61,11 @@ router.get('/chart/priority', async (_req, res) => {
 
 router.get('/chart/type', async (_req, res) => {
   try {
-    const query = await db('tickets')
-      .count('*')
-      .select('type')
-      .groupBy('type');
+    const query = await db('tickets').count('*').select('type').groupBy('type');
     res.json(
       query.map(({ count, type }) => ({
         type: type + 's',
-        count: Number(count)
+        count: Number(count),
       }))
     );
   } catch (err) {
@@ -128,6 +125,17 @@ router.get('/:id/comments', async (req, res) => {
   }
 });
 
+router.post('/deleteMultiple', async (req, res) => {
+  const { ids } = req.body;
+  try {
+    await db('tickets').whereIn('id', ids).delete();
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.post('/:id/comments/new', async (req, res) => {
   const { id: ticket_id } = req.params;
   const { content } = req.body;
@@ -136,7 +144,7 @@ router.post('/:id/comments/new', async (req, res) => {
     await db('ticket_comments').insert({
       ticket_id,
       content,
-      user_id
+      user_id,
     });
     res.sendStatus(200);
   } catch (err) {
@@ -148,9 +156,7 @@ router.post('/:id/comments/new', async (req, res) => {
 router.delete('/comments/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await db('ticket_comments')
-      .where({ id })
-      .delete();
+    await db('ticket_comments').where({ id }).delete();
     res.sendStatus(200);
   } catch (err) {
     console.log(err);
@@ -179,20 +185,20 @@ router.post('/new', async (req, res) => {
       const [newTicket] = await db('tickets')
         .insert({
           ...req.body,
-          user_id: currentUser.id
+          user_id: currentUser.id,
         })
         .returning('id');
       // add new event to ticket timeline
       await db('ticket_timeline').insert({
         ticket_id: newTicket,
-        event: `Ticket created by ${currentUser.name}`
+        event: `Ticket created by ${currentUser.name}`,
       });
       // send response
       res.json({ id: newTicket });
       // add this event to project timeline also
       await db('project_timeline').insert({
         project_id: req.body.project_id,
-        event: `Ticket created by ${currentUser.name}`
+        event: `Ticket created by ${currentUser.name}`,
       });
     } catch (err) {
       console.log(err);
@@ -206,9 +212,7 @@ router.post('/new', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await db('tickets')
-      .where({ id })
-      .delete();
+    await db('tickets').where({ id }).delete();
     res.status(200).send('Success');
   } catch (err) {
     console.log(err);

@@ -34,7 +34,6 @@ const NewTicket = () => {
     const res = await api.post('/tickets/uploadImage', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        authorization: localStorage.getItem('token'),
       },
       onUploadProgress: progress => {
         setShowProgress(true);
@@ -60,6 +59,7 @@ const NewTicket = () => {
 
   const onFormSubmit = async e => {
     e.preventDefault();
+    if (projectId === '') return ErrorAlert('Please selecta project');
     post({
       name: name.current.value,
       project_id: projectId,

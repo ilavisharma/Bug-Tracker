@@ -10,8 +10,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import { toTitleCase } from '../../utils/helpers';
 import usePost from '../../hooks/usePost';
 import UserSchema from '../../schema/user';
-import useAuthContext from '../../hooks/useAuthContext';
 import { ErrorAlert, SuccessAlert } from '../../alerts';
+import api from '../../utils/api';
 
 const CreateUser = () => {
   const name = createRef();
@@ -21,35 +21,31 @@ const CreateUser = () => {
   const [showProgress, setShowProgress] = useState(false);
 
   const { push } = useHistory();
-  const { api } = useAuthContext();
 
-  const onDrop = useCallback(
-    async files => {
-      const data = new FormData();
-      data.append('file', files[0]);
-      const res = await api.post('/auth/uploadImage', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: progress => {
-          setShowProgress(true);
-          setUploadProgress(
-            parseInt(Math.round((progress.loaded * 100) / progress.total))
-          );
-          setTimeout(() => {
-            setUploadProgress(0);
-            setShowProgress(false);
-          }, 250);
-        }
-      });
-      setPhotourl(res.data.url);
-    },
-    [api]
-  );
+  const onDrop = useCallback(async files => {
+    const data = new FormData();
+    data.append('file', files[0]);
+    const res = await api.post('/auth/uploadImage', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: progress => {
+        setShowProgress(true);
+        setUploadProgress(
+          parseInt(Math.round((progress.loaded * 100) / progress.total))
+        );
+        setTimeout(() => {
+          setUploadProgress(0);
+          setShowProgress(false);
+        }, 250);
+      },
+    });
+    setPhotourl(res.data.url);
+  }, []);
 
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: 'image/*',
-    onDrop
+    onDrop,
   });
 
   const { isLoading, post } = usePost('/auth/signup');
@@ -58,7 +54,7 @@ const CreateUser = () => {
     e.preventDefault();
     const { value, error } = UserSchema.validate({
       name: toTitleCase(name.current.value),
-      email: email.current.value
+      email: email.current.value,
     });
 
     if (error) {
@@ -66,7 +62,7 @@ const CreateUser = () => {
     } else {
       post({
         ...value,
-        photourl
+        photourl,
       })
         .then(res => {
           if (res.data.message === 'user created') {
@@ -97,7 +93,7 @@ const CreateUser = () => {
           style={{
             border: '2px dashed gray',
             cursor: 'pointer',
-            margin: 'auto'
+            margin: 'auto',
           }}
           className="my-3"
         >

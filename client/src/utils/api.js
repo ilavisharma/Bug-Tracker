@@ -6,5 +6,8 @@ const baseURL =
     : 'https://api.bugtracker.lavisharma.me';
 
 export default axios.create({
-  baseURL
+  baseURL,
+  headers: {
+    authorization: localStorage.getItem('token'),
+  },
 });

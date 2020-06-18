@@ -6,21 +6,36 @@ const {
   uploadImage,
   signToken,
   randomPassword,
-  verifyToken
+  verifyToken,
 } = require('../utils/helpers');
 const {
   sendWelcomeMail,
   sendRoleChange,
-  sendForgotPassword
+  sendForgotPassword,
 } = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/currentUser', ({ currentUser }, res) => {
+router.get('/currentUser', async ({ currentUser }, res) => {
   if (currentUser) {
-    const { id, name, email, photourl, role } = currentUser;
-    res.json({ id, name, email, photourl, role });
+    const { id } = currentUser;
+    const userQuery = await db('users').select('*').where({ id });
+    if (userQuery.length === 0) return res.sendStatus(204);
+    const foundUser = {
+      ...userQuery[0],
+      password: undefined,
+    };
+    const roleQuery = await db('roles')
+      .select('role')
+      .where({ user_id: foundUser.id });
+    const { role } = roleQuery[0];
+    res
+      .json({
+        token: signToken({ role, ...foundUser }),
+        user: { ...foundUser, role },
+      })
+      .status(200);
   } else {
     res.sendStatus(204);
   }
@@ -40,7 +55,7 @@ router.post('/signin', async (req, res) => {
     // user found
     const foundUser = {
       ...user,
-      password: undefined
+      password: undefined,
     };
     // check password
     const isCorrectPassword = await bcrypt.compare(password, user.password);
@@ -55,7 +70,6 @@ router.post('/signin', async (req, res) => {
     res.json({
       token: signToken({ role, ...foundUser }),
       user: foundUser,
-      role
     });
   } catch (err) {
     console.log(err);
@@ -73,16 +87,14 @@ router.post('/signup', async (req, res) => {
     name,
     email,
     password: bcrypt.hashSync(password, 10),
-    photourl
+    photourl,
   };
 
   try {
-    const [id] = await db('users')
-      .insert(newUser)
-      .returning('id');
+    const [id] = await db('users').insert(newUser).returning('id');
     await db('roles').insert({
       user_id: id,
-      role: null
+      role: null,
     });
     res.json({ message: 'user created', user: { id } });
     sendWelcomeMail(email, password).catch(e => console.log(JSON.stringify(e)));
@@ -108,7 +120,7 @@ router.post('/forgotPassword', async (req, res) => {
     }
     const token = signToken(user);
     const forgotLink = `${origin}/resetPassword?token=${token}`;
-    await sendForgotPassword(email, forgotLink, name);
+    await sendForgotPassword(email, forgotLink, user.name);
     res.json({ status: true });
   } catch (err) {
     console.log(err);
@@ -131,6 +143,24 @@ router.post('/resetPassword', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({ success: false, message: 'Invalid Token' }).status(406);
+  }
+});
+
+router.put('/updateProfile', async (req, res) => {
+  const { name, email } = req.body;
+  const { id } = req.currentUser;
+  try {
+    await db('users')
+      .update({ name, email })
+      .where({ id })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(204);
+      });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 
@@ -167,7 +197,7 @@ router.get('/users/:id', async (req, res) => {
         ...user,
         password: undefined,
         user_id: undefined,
-        projects: managerQuery
+        projects: managerQuery,
       });
     } else if (user.role === 'developer') {
       const managerQuery = await db('project_developers')
@@ -178,14 +208,14 @@ router.get('/users/:id', async (req, res) => {
         ...user,
         password: undefined,
         user_id: undefined,
-        projects: managerQuery
+        projects: managerQuery,
       });
     } else {
       res.json({
         ...user,
         password: undefined,
         user_id: undefined,
-        projects: []
+        projects: [],
       });
     }
   } catch (err) {
@@ -197,7 +227,7 @@ router.get('/users/:id', async (req, res) => {
 router.put('/updateRole', async (req, res) => {
   const { id, role } = req.body;
   const {
-    currentUser: { name: changer }
+    currentUser: { name: changer },
   } = req;
   await db('roles')
     .where({ user_id: id })
@@ -216,18 +246,16 @@ router.put('/updateRole', async (req, res) => {
 
 router.put('/updatePassword', async (req, res) => {
   const {
-    currentUser: { id }
+    currentUser: { id },
   } = req;
   const { prevPassword, newPassword } = req.body;
   try {
-    const [{ password }] = await db('users')
-      .select('password')
-      .where({ id });
+    const [{ password }] = await db('users').select('password').where({ id });
     const isPasswordValid = await bcrypt.compare(prevPassword, password);
     if (!isPasswordValid) {
       return res.json({
         success: false,
-        message: 'Incorrect Password'
+        message: 'Incorrect Password',
       });
     }
     await db('users')
@@ -235,7 +263,7 @@ router.put('/updatePassword', async (req, res) => {
       .where({ id });
     res.json({
       success: true,
-      message: 'Password changed successfully'
+      message: 'Password changed successfully',
     });
   } catch (e) {
     console.log(e);
@@ -249,7 +277,7 @@ router.post('/uploadImage', upload.single('file'), async (req, res) => {
       width: 250,
       height: 250,
       crop: 'fill',
-      gravity: 'face:auto'
+      gravity: 'face:auto',
     });
     res.json({ url });
   } catch (err) {

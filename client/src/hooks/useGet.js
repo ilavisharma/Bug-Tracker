@@ -8,11 +8,7 @@ export default url => {
 
   const fetch = useCallback(async () => {
     try {
-      const res = await api.get(url, {
-        headers: {
-          authorization: localStorage.getItem('token')
-        }
-      });
+      const res = await api.get(url);
       setResponse(res);
       setIsLoading(false);
     } catch (err) {

@@ -73,11 +73,7 @@ const UserDetail = () => {
       );
       if (confirmDelete.value) {
         setIsDeleting(true);
-        const res = await api.delete(`/auth/${user.id}`, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        });
+        const res = await api.delete(`/auth/${user.id}`);
         if (res.status === 200) {
           setIsDeleting(false);
           SuccessAlert(`Succesfully Deleted user: ${user.name}`);
@@ -100,19 +96,24 @@ const UserDetail = () => {
           <h4 className="display-4">{user.name}</h4>
           <hr />
           <h5>
-            <mark>Role:</mark>{' '}
+            <mark>Role:</mark>
             {user.role === null ? 'Not Assigned' : toTitleCase(user.role)}
-            <Button
-              className="ml-4"
-              variant="outline-dark"
-              onClick={onEditClick}
-            >
-              Change
-            </Button>
+            {(currentUser.role === 'admin' && user.role === 'admin') ||
+              ((currentUser.role === 'manager' ||
+                currentUser.role === 'admin') &&
+                currentUser.id !== user.id && (
+                  <Button
+                    className="ml-4"
+                    variant="outline-dark"
+                    onClick={onEditClick}
+                  >
+                    Change
+                  </Button>
+                ))}
           </h5>
           <h5>
             <mark>Email:</mark>
-            {' ' + user.email}
+            {user.email}
           </h5>
         </Col>
         <Col>
@@ -137,32 +138,36 @@ const UserDetail = () => {
         user={user}
         updateRoleInUI={updateRoleInUI}
       />
-      {isDeleting ? (
-        <Button variant="danger" disabled>
-          <Spinner
-            as="span"
-            animation="border"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          Deleting...
-        </Button>
-      ) : (
-        <Button
-          variant="danger"
-          className="mt-4"
-          onClick={onDeleteClick}
-          style={{ display: 'flex' }}
-        >
-          Delete
-          <i className="ml-2 gg-user-remove" />
-        </Button>
+      {id !== currentUser.id && (
+        <>
+          {isDeleting ? (
+            <Button variant="danger" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Deleting...
+            </Button>
+          ) : (
+            <Button
+              variant="danger"
+              className="mt-4"
+              onClick={onDeleteClick}
+              style={{ display: 'flex' }}
+            >
+              Delete
+              <i className="ml-2 gg-user-remove" />
+            </Button>
+          )}
+        </>
       )}
       <hr />
       {user.projects && (
         <>
-          <h4>Projects Assigned</h4>
+          <h4>Projects</h4>
           <Col xs={8}>
             <ListGroup className="my-4">
               {user.projects.map(({ id, name }) => (

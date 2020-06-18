@@ -9,11 +9,7 @@ export default url => {
     async data => {
       try {
         setIsLoading(true);
-        const res = await api.put(url, data, {
-          headers: {
-            authorization: localStorage.getItem('token')
-          }
-        });
+        const res = await api.put(url, data);
         setIsLoading(false);
         return res;
       } catch (err) {

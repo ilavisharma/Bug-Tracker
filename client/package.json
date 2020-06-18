@@ -7,7 +7,6 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "add": "^2.0.6",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "ckeditor4-react": "^1.1.0",
@@ -23,8 +22,7 @@
     "react-select": "^3.1.0",
     "react-spinners": "^0.8.1",
     "recharts": "1.8.2",
-    "sweetalert2": "^9.10.13",
-    "yarn": "^1.22.4"
+    "sweetalert2": "^9.10.13"
   },
   "scripts": {
     "start": "react-app-rewired start",
