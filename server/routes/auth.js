@@ -20,9 +20,22 @@ const upload = multer({ storage });
 router.get('/currentUser', async ({ currentUser }, res) => {
   if (currentUser) {
     const { id } = currentUser;
-    const query = await db('users').count('*').where({ id });
-    if (query.length === 0) return res.sendStatus(204);
-    res.json(currentUser);
+    const userQuery = await db('users').select('*').where({ id });
+    if (userQuery.length === 0) return res.sendStatus(204);
+    const foundUser = {
+      ...userQuery[0],
+      password: undefined,
+    };
+    const roleQuery = await db('roles')
+      .select('role')
+      .where({ user_id: foundUser.id });
+    const { role } = roleQuery[0];
+    res
+      .json({
+        token: signToken({ role, ...foundUser }),
+        user: { ...foundUser, role },
+      })
+      .status(200);
   } else {
     res.sendStatus(204);
   }
@@ -57,7 +70,6 @@ router.post('/signin', async (req, res) => {
     res.json({
       token: signToken({ role, ...foundUser }),
       user: foundUser,
-      role,
     });
   } catch (err) {
     console.log(err);
@@ -131,6 +143,24 @@ router.post('/resetPassword', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({ success: false, message: 'Invalid Token' }).status(406);
+  }
+});
+
+router.put('/updateProfile', async (req, res) => {
+  const { name, email } = req.body;
+  const { id } = req.currentUser;
+  try {
+    await db('users')
+      .update({ name, email })
+      .where({ id })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(204);
+      });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

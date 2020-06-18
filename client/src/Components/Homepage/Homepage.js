@@ -45,7 +45,7 @@ const Homepage = () => {
         .get('/auth/currentUser')
         .then(res => {
           if (res.status === 200) {
-            signIn(res.data, localStorage.getItem('token'));
+            signIn(res.data.user, res.data.token);
             setIsLoading(false);
           } else {
             ErrorAlert('You need to sign in');
