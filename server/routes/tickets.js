@@ -83,6 +83,7 @@ router.get('/:id', async (req, res) => {
         'tickets.name as name',
         'tickets.type',
         'tickets.priority',
+        'tickets.resolved',
         'tickets.description',
         'tickets.imageurl',
         'projects.name as projectName',
@@ -119,6 +120,18 @@ router.get('/:id/comments', async (req, res) => {
       .where({ ticket_id: id })
       .orderBy('ticket_comments.dateadded', 'desc');
     res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.put('/:id/changeStatus', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    await db('tickets').update({ resolved: status }).where({ id });
+    res.sendStatus(200);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

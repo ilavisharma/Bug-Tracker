@@ -14,6 +14,7 @@ import TicketTimelineModal from './TicketTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
 import TicketComments from './TicketComments';
+import usePut from '../../hooks/usePut';
 
 const ticketBadge = badge => {
   if (badge === 'error' || badge === 'high') return 'danger';
@@ -30,7 +31,7 @@ const TicketDetail = () => {
   const { push } = useHistory();
   const { id } = useParams();
 
-  const { isLoading, response, error } = useGet(`/tickets/${id}`);
+  const { isLoading, response, error, refetch } = useGet(`/tickets/${id}`);
   const { delete: deleteTicket, isLoading: isDeleting } = useDelete(
     `/tickets/${id}`
   );
@@ -55,13 +56,50 @@ const TicketDetail = () => {
     }
   };
 
+  const { isLoading: isChangingStatus, put } = usePut(
+    `/tickets/${id}/changeStatus`
+  );
+
+  const handleTicketResolve = async value => {
+    const result = await ConfirmAlert(
+      `Mark this ticket as ${!value ? 'resolved' : 'unresolved'} ?`,
+      'Yes'
+    );
+    if (result.value) {
+      put({ status: value })
+        .then(res => {
+          if (res.status === 200) {
+            SuccessAlert('Ticket Status updated');
+            refetch();
+          }
+        })
+        .catch(err => {
+          ErrorAlert(err);
+          console.log(err);
+        });
+    }
+  };
+
   if (isLoading) return <LoadingSpinner />;
   else if (error) return <h4 className="display-4">There was some error</h4>;
   else {
     const { data: ticket } = response;
     return (
       <Col xs={11}>
-        <h4 className="display-4">{ticket.name}</h4>
+        <div className="row">
+          <Col xs={11}>
+            <h4 className="display-4">{ticket.name}</h4>
+          </Col>
+          <Col xs={1}>
+            <h2>
+              {ticket.resolved ? (
+                <Badge variant="success">Resolved</Badge>
+              ) : (
+                <Badge variant="warning">Unresolved</Badge>
+              )}
+            </h2>
+          </Col>
+        </div>
         <p className="lead">
           <Badge
             className="float-right"
@@ -84,18 +122,22 @@ const TicketDetail = () => {
         <p dangerouslySetInnerHTML={{ __html: ticket.description }}></p>
         <hr />
         <Row>
-          <Col xs={6}>
+          <Col xs={9}>
             {ticket.imageurl !== null && (
               <Button
                 className="mr-1"
                 variant="secondary"
                 onClick={() => setShowScreenshot(true)}
+                style={{ display: 'inline-flex' }}
               >
+                <i className="gg-laptop" style={{ margin: '2px 6px 0 0' }} />
                 View Screenshot
               </Button>
             )}
 
-            {(user.id === ticket.user_id || user.role === 'admin') && (
+            {(user.id === ticket.user_id ||
+              user.role === 'developer' ||
+              user.role === 'admin') && (
               <>
                 {isDeleting ? (
                   <Button variant="danger" disabled>
@@ -112,22 +154,69 @@ const TicketDetail = () => {
                   <Button
                     variant="danger"
                     onClick={() => onDeleteClick(ticket.name)}
+                    style={{ display: 'inline-flex' }}
                   >
+                    <i
+                      style={{ margin: '10% 10px 0 0' }}
+                      className="gg-trash-empty"
+                    />
                     Delete
                   </Button>
                 )}
-
-                <Button variant="info" className="mx-1">
+                <Button
+                  variant="info"
+                  className="mx-2"
+                  style={{ display: 'inline-flex' }}
+                >
+                  <i className="gg-pen" style={{ margin: '8px 7px 0 0' }} />
                   Edit this ticket
                 </Button>
+                {isChangingStatus ? (
+                  <Button>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Updating...
+                  </Button>
+                ) : (
+                  <>
+                    {ticket.resolved ? (
+                      <Button
+                        onClick={() => handleTicketResolve(!ticket.resolved)}
+                        style={{ display: 'inline-flex' }}
+                        variant="warning"
+                      >
+                        <i
+                          className="gg-info"
+                          style={{ margin: '2px 6px 0 0' }}
+                        />
+                        Mark as Unresolved
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleTicketResolve(!ticket.resolved)}
+                        style={{ display: 'inline-flex' }}
+                        variant="success"
+                      >
+                        <i className="gg-check" />
+                        Mark as Resolved
+                      </Button>
+                    )}
+                  </>
+                )}
               </>
             )}
           </Col>
-          <Col xs={6}>
+          <Col xs={3}>
             <Button
-              variant="success"
               onClick={() => setShowTimelineModal(true)}
+              style={{ display: 'inline-flex' }}
             >
+              <i style={{ margin: '2px 10px 0 0' }} className="gg-time" />
               View Ticket Timeline
             </Button>
           </Col>

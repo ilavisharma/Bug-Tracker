@@ -1,8 +1,10 @@
 ## Features (these will be implemented)
 
-- [ ] Comments for tickets
-- [ ] project search
-- [ ] ticket search
-- [ ] ticket tags
-- [ ] projet timeline
-- [ ] ticket timeline
+- [x] Comments for tickets
+- [x] project search
+- [x] ticket search
+- [x] projet timeline
+- [x] ticket timeline
+- [ ] edit tickets
+- [ ] assign developers to projects
+- [ ] assign developers to tickets
