@@ -1,5 +1,6 @@
 import React, { createRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
@@ -20,14 +21,14 @@ const NewProjects = () => {
   const onFormSubmit = async e => {
     e.preventDefault();
     const { value, error } = ProjectSchema.validate({
-      name: toTitleCase(name.current.value)
+      name: toTitleCase(name.current.value),
     });
     if (error) {
       ErrorAlert(error);
     } else {
       post({
         ...value,
-        description: description.current.value
+        description: description.current.value,
       }).then(res => {
         if (res.status === 200) {
           SuccessAlert('Project Created');
@@ -41,9 +42,12 @@ const NewProjects = () => {
 
   return (
     <Col xs={9}>
+      <Helmet>
+        <title>New Project</title>
+        <meta name="description" content="Create new project" />
+      </Helmet>
       <h3 className="display-3">Create new Project</h3>
       <hr />
-
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
           <Form.Label>Project Name</Form.Label>

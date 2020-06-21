@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import { Helmet } from 'react-helmet';
 import CKEditor from 'ckeditor4-react';
 import Select from 'react-select';
 import Form from 'react-bootstrap/Form';
@@ -79,9 +80,11 @@ const NewTicket = () => {
 
   return (
     <Col xs={9}>
+      <Helmet>
+        <title>New Ticket</title>
+      </Helmet>
       <h3 className="display-3">New Ticket</h3>
       <hr />
-
       <Form onSubmit={onFormSubmit}>
         <Form.Group>
           <Form.Label>Name</Form.Label>

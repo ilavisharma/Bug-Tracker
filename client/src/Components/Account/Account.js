@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import LoadingSpinner from '../../utils/LoadingSpinner';
 import { toTitleCase } from '../../utils/helpers';
 import TooltipComponent from '../../utils/TooltipComponent';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuthContext from '../../hooks/useAuthContext';
 import PasswordChangeModal from './PasswordChangeModal';
 import EditProfileModal from './EditProfileModal';
@@ -14,12 +14,15 @@ const Account = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const { user } = useAuthContext();
-  useDocumentTitle(user.name || 'Account');
 
   if (user === null) return <LoadingSpinner />;
 
   return (
     <>
+      <Helmet>
+        <title>{user.name || 'Account'}</title>
+        <meta name="description" content="Account details" />
+      </Helmet>
       <Col xs={10}>
         <Row xs={10}>
           <Col>

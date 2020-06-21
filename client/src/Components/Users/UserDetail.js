@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import LoadingSpinner from '../../utils/LoadingSpinner';
+import { Helmet } from 'react-helmet';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import LoadingSpinner from '../../utils/LoadingSpinner';
 import EditRoleModal from './EditRoleModal';
 import { toTitleCase } from '../../utils/helpers';
 import TooltipComponent from '../../utils/TooltipComponent';
@@ -29,7 +30,6 @@ const UserDetail = () => {
         const res = await api.get(`/auth/users/${id}`);
         setUser(res.data);
         setIsLoading(false);
-        document.title = res.data.name || 'Users';
       } catch (err) {
         setIsLoading(false);
         ErrorAlert(err.message);
@@ -91,6 +91,9 @@ const UserDetail = () => {
 
   return (
     <Col xs={10}>
+      <Helmet>
+        <title>{user.name}</title>
+      </Helmet>
       <Row xs={10}>
         <Col>
           <h4 className="display-4">{user.name}</h4>

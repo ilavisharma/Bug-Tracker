@@ -1,17 +1,17 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AllUsers from './AllUsers';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Users = () => {
   const { push } = useHistory();
-
-  useDocumentTitle('Users & Roles');
-
   return (
     <Col>
+      <Helmet>
+        <title>Users</title>
+      </Helmet>
       <Button
         style={{ display: 'flex' }}
         onClick={() => push('/home/users/new')}

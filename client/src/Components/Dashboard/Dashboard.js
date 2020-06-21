@@ -1,18 +1,21 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TicketsByPriority from './TicketsByPriority';
 import TicketsByType from './TicketsByType';
 import TicketByMonth from './TicketByMonth';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import RecentTickets from './RecentTickets';
 
 const Dashboard = () => {
-  useDocumentTitle('Dashboard | Bug Tracker');
-
   return (
     <Container>
+      <Helmet>
+        <title>Dashboard</title>
+        <meta name="title" content="Dashboard" />
+        <meta name="description" content="Bug Tracker App dashboard" />
+      </Helmet>
       <Row>
         <Col xs={6}>
           <TicketsByPriority />

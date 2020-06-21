@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -11,7 +12,6 @@ import useGet from '../../hooks/useGet';
 import usePut from '../../hooks/usePut';
 import useDelete from '../../hooks/useDelete';
 import Spinner from 'react-bootstrap/Spinner';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ProjectTimelineModal from './ProjectTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
@@ -34,12 +34,6 @@ const ProjectDetail = () => {
   );
 
   const { response: ticketResponse } = useGet(`/projects/${id}/tickets`);
-
-  useDocumentTitle(
-    response && response.data
-      ? response.data.name + ' | Bug Tracker'
-      : 'Projects'
-  );
 
   const { delete: deleteProject, isLoading: isDeleting } = useDelete(
     `/projects/${id}`
@@ -92,6 +86,9 @@ const ProjectDetail = () => {
     const { data: project } = response;
     return (
       <>
+        <Helmet>
+          <title>{project.name}</title>
+        </Helmet>
         <Col xs={11}>
           <h4 className="display-4">{project.name}</h4>
           <hr />

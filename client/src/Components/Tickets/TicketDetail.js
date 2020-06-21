@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -9,7 +10,6 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import ScreenshotModal from './ScreenshotModal';
 import useGet from '../../hooks/useGet';
 import useDelete from '../../hooks/useDelete';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import TicketTimelineModal from './TicketTimelineModal';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
@@ -34,12 +34,6 @@ const TicketDetail = () => {
   const { isLoading, response, error, refetch } = useGet(`/tickets/${id}`);
   const { delete: deleteTicket, isLoading: isDeleting } = useDelete(
     `/tickets/${id}`
-  );
-
-  useDocumentTitle(
-    response && response.data.name
-      ? response.data.name + ' | Bug Tracker'
-      : 'Ticket'
   );
 
   const onDeleteClick = async name => {
@@ -81,11 +75,22 @@ const TicketDetail = () => {
   };
 
   if (isLoading) return <LoadingSpinner />;
-  else if (error) return <h4 className="display-4">There was some error</h4>;
+  else if (error)
+    return (
+      <h4 className="display-4">
+        <Helmet>
+          <title>Error fetching</title>
+        </Helmet>
+        There was some error
+      </h4>
+    );
   else {
     const { data: ticket } = response;
     return (
       <Col xs={11}>
+        <Helmet>
+          <title>{ticket.name}</title>
+        </Helmet>
         <div className="row">
           <Col xs={11}>
             <h4 className="display-4">{ticket.name}</h4>

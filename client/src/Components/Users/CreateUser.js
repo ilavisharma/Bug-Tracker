@@ -1,6 +1,7 @@
 import React, { useState, useCallback, createRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -81,6 +82,9 @@ const CreateUser = () => {
 
   return (
     <Col xs={8}>
+      <Helmet>
+        <title>New User</title>
+      </Helmet>
       <h3 className="display-3">Create new user</h3>
       <hr />
       <Form onSubmit={onFormSubmit}>

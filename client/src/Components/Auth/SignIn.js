@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -51,6 +52,9 @@ const SignIn = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>Sign In to your account</title>
+      </Helmet>
       <Col className="form-signup" xs={6}>
         <h3 className="display-3">Sign In</h3>
         <Form onSubmit={onFormSubmit}>
