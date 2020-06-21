@@ -1,27 +1,27 @@
-import React, { useState, useRef } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import LoadingSpinner from "../../utils/LoadingSpinner";
-import EditProjectModal from "./EditProjectModal";
-import AssignProjectManagerModal from "./AssignProjectManagerModal";
-import TooltipComponent from "../../utils/TooltipComponent";
-import useGet from "../../hooks/useGet";
-import usePut from "../../hooks/usePut";
-import useDelete from "../../hooks/useDelete";
-import Spinner from "react-bootstrap/Spinner";
-import useDocumentTitle from "../../hooks/useDocumentTitle";
-import ProjectTimelineModal from "./ProjectTimelineModal";
-import useAuthContext from "../../hooks/useAuthContext";
-import { ConfirmAlert, SuccessAlert, ErrorAlert } from "../../alerts";
-import ListGroup from "react-bootstrap/ListGroup";
+import React, { useState, useRef } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import LoadingSpinner from '../../utils/LoadingSpinner';
+import EditProjectModal from './EditProjectModal';
+import AssignProjectManagerModal from './AssignProjectManagerModal';
+import TooltipComponent from '../../utils/TooltipComponent';
+import useGet from '../../hooks/useGet';
+import usePut from '../../hooks/usePut';
+import useDelete from '../../hooks/useDelete';
+import Spinner from 'react-bootstrap/Spinner';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
+import ProjectTimelineModal from './ProjectTimelineModal';
+import useAuthContext from '../../hooks/useAuthContext';
+import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 const ProjectDetail = () => {
   const [showModal, setshowModal] = useState(false);
   const [showAssignManagerModal, setShowAssignManagerModal] = useState(false);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
-  const [copyText, setCopyText] = useState("Click to copy");
+  const [copyText, setCopyText] = useState('Click to copy');
 
   const timelineModalRef = useRef();
 
@@ -37,25 +37,25 @@ const ProjectDetail = () => {
 
   useDocumentTitle(
     response && response.data
-      ? response.data.name + " | Bug Tracker"
-      : "Projects"
+      ? response.data.name + ' | Bug Tracker'
+      : 'Projects'
   );
 
   const { delete: deleteProject, isLoading: isDeleting } = useDelete(
     `/projects/${id}`
   );
 
-  const handleDeleteClick = async (name) => {
+  const handleDeleteClick = async name => {
     const result = await ConfirmAlert(
       `Delete the project ${name} ?`,
-      "Yes, delete it!"
+      'Yes, delete it!'
     );
 
     if (result.value) {
-      deleteProject().then((res) => {
+      deleteProject().then(res => {
         if (res.status === 200) {
-          SuccessAlert("The project was deleted");
-          push("/home/projects");
+          SuccessAlert('The project was deleted');
+          push('/home/projects');
         } else {
           ErrorAlert();
         }
@@ -65,23 +65,23 @@ const ProjectDetail = () => {
 
   const { put } = usePut(`/projects/${id}`);
   const handleEdit = (name, description) => {
-    put({ name, description }).then((res) => {
+    put({ name, description }).then(res => {
       if (res.status === 200) {
-        SuccessAlert("Project was updated");
+        SuccessAlert('Project was updated');
         refetchProject();
         setshowModal(false);
         timelineModalRef.current.refetch();
       } else {
-        ErrorAlert("Unable to update the project");
+        ErrorAlert('Unable to update the project');
       }
     });
   };
 
-  const copyEmail = (email) => {
+  const copyEmail = email => {
     navigator.clipboard.writeText(email);
-    setCopyText("Copied!");
+    setCopyText('Copied!');
     setTimeout(() => {
-      setCopyText("Click to copy");
+      setCopyText('Click to copy');
     }, 500);
   };
 
@@ -100,7 +100,7 @@ const ProjectDetail = () => {
           <Row>
             <Col>
               {project.manager === null ? (
-                "This project is not assigned"
+                'This project is not assigned'
               ) : (
                 <>
                   <h5>
@@ -109,9 +109,9 @@ const ProjectDetail = () => {
                       className="mx-2"
                       onClick={() => copyEmail(project.manager.email)}
                     >
-                      {user.role === "admin" ? (
+                      {user.role === 'admin' ? (
                         <Link
-                          style={{ textDecoration: "none" }}
+                          style={{ textDecoration: 'none' }}
                           to={`/home/users/${project.manager_id}`}
                         >
                           {project.manager.name}
@@ -125,7 +125,7 @@ const ProjectDetail = () => {
                     <mark>Email:</mark>
                     <TooltipComponent placement="right" tooltipText={copyText}>
                       <span
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                         className="mx-2"
                         onClick={() => copyEmail(project.manager.email)}
                       >
@@ -137,19 +137,26 @@ const ProjectDetail = () => {
               )}
             </Col>
             <Col>
-              {(project.manager_id === user.id || user.role === "admin") && (
+              {(project.manager_id === user.id || user.role === 'admin') && (
                 <Button
                   variant="outline-dark"
                   onClick={() => setShowAssignManagerModal(true)}
                   className="float-right"
+                  style={{ display: 'inline-flex' }}
                 >
+                  <i
+                    style={{ margin: '6px 10px 0 0' }}
+                    className="gg-pentagon-up"
+                  />
                   Assign this project
                 </Button>
               )}
               <Button
                 variant="success"
                 onClick={() => setShowTimelineModal(true)}
+                style={{ display: 'inline-flex' }}
               >
+                <i style={{ margin: '2px 10px 0 0' }} className="gg-time" />
                 View Project Timeline
               </Button>
             </Col>
@@ -163,7 +170,7 @@ const ProjectDetail = () => {
           />
           <hr />
           <div className="my-3">
-            {(project.manager_id === user.id || user.role === "admin") && (
+            {(project.manager_id === user.id || user.role === 'admin') && (
               <>
                 {isDeleting ? (
                   <Button variant="danger" disabled>
@@ -180,19 +187,25 @@ const ProjectDetail = () => {
                   <Button
                     variant="danger"
                     onClick={() => handleDeleteClick(project.name)}
+                    style={{ display: 'inline-flex' }}
                   >
+                    <i
+                      style={{ margin: '7px 10px 0 0' }}
+                      className="gg-trash-empty"
+                    />
                     Delete Project
                   </Button>
                 )}
-
                 <Button
                   variant="info"
                   onClick={() => {
                     setshowModal(true);
                   }}
-                  className="mx-1"
+                  className="mx-3"
+                  style={{ display: 'inline-flex' }}
                 >
-                  Edit this project
+                  <i className="gg-pen" style={{ margin: '8px 7px 0 0' }} />
+                  Edit
                 </Button>
                 <Button variant="secondary" className="mx-1">
                   Add developers
@@ -215,6 +228,7 @@ const ProjectDetail = () => {
             projectId={id}
             ref={timelineModalRef}
           />
+          <hr />
         </Col>
         <Col xs={8}>
           <h3>Tickets</h3>
