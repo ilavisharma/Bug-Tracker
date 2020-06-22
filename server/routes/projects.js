@@ -69,7 +69,7 @@ router.get('/chart', async (_req, res) => {
     "SELECT date_trunc('month', dateadded) AS month, count(*) FROM projects GROUP BY 1"
   );
   const rows = query.rows
-    .map((r) => {
+    .map(r => {
       return {
         count: Number(r.count),
         month: new Date(r.month).getMonth() + 1,
@@ -93,8 +93,8 @@ router.get('/chart', async (_req, res) => {
   res.json(
     Array.from(
       Array(12).keys(),
-      (month) =>
-        rows.find((row) => +row.month === month + 1) || {
+      month =>
+        rows.find(row => +row.month === month + 1) || {
           month: Number(('0' + (month + 1)).substr(-2)),
           count: 0,
         }
@@ -144,20 +144,29 @@ router.get('/:id/timeline', async (req, res) => {
   res.json(query);
 });
 
-router.get('/:id/tickets', async(req,res)=>{
-  const {id}=req.params;
-  const query= await db('tickets')
-    .select('id','name','dateadded')
-    .where({project_id:id})
+router.get('/:id/tickets', async (req, res) => {
+  const { id } = req.params;
+  const query = await db('tickets')
+    .select('id', 'name', 'dateadded')
+    .where({ project_id: id });
   res.json(query);
-})
+});
+
+router.get('/:id/developers', async (req, res) => {
+  const { id } = req.params;
+  const query = await db('project_developers')
+    .select('users.id as user_id', 'users.photourl', 'users.name')
+    .innerJoin('users', 'users.id', 'project_developers.developer_id')
+    .where({ project_id: id });
+  res.json(query);
+});
 
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   await db('projects')
     .where({ id })
     .delete()
-    .catch((err) => {
+    .catch(err => {
       console.log(err);
       return res.sendStatus(500);
     });
@@ -184,13 +193,25 @@ router.put('/assignManager', async (req, res) => {
         project_name,
         currentUser.name,
         project_id
-      ).catch((e) => JSON.stringify(e));
+      ).catch(e => JSON.stringify(e));
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
     }
   } else {
     res.sendStatus(401);
+  }
+});
+
+router.put('/assignDeveloper', async (req, res) => {
+  const data = req.body;
+  try {
+    await db('project_developers').insert(data);
+    res.sendStatus(200);
+    // TODO: SEND EMAIL TO THE DEVELOPER
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

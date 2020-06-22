@@ -204,12 +204,12 @@ const ProjectDetail = () => {
                   <i className="gg-pen" style={{ margin: '8px 7px 0 0' }} />
                   Edit
                 </Button>
-                <Button variant="secondary" className="mx-1">
-                  Add developers
-                </Button>
-                <Button variant="light" disabled={true} className="mx-1">
-                  Remove developers
-                </Button>
+                <Link
+                  className="btn btn-secondary"
+                  to={`/home/projects/${id}/developers`}
+                >
+                  Developers
+                </Link>
               </>
             )}
           </div>

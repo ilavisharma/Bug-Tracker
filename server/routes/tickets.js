@@ -74,6 +74,24 @@ router.get('/chart/type', async (_req, res) => {
   }
 });
 
+router.get('/chart/status', async (_req, res) => {
+  try {
+    const query = await db('tickets')
+      .count('*')
+      .select('resolved as status')
+      .groupBy('resolved');
+    res.json(
+      query.map(({ count, status }) => ({
+        count: Number(count),
+        status: `${!status ? 'un' : ''}resolved`,
+      }))
+    );
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {

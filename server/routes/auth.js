@@ -316,4 +316,17 @@ router.get('/allManagers', async (req, res) => {
   }
 });
 
+router.get('/allDevelopers', async (_req, res) => {
+  try {
+    const query = await db('users')
+      .select('id', 'name', 'photourl')
+      .innerJoin('roles', 'users.id', 'roles.user_id')
+      .where({ role: 'developer' });
+    res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 module.exports = router;
