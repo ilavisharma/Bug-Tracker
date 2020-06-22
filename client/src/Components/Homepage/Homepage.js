@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import {
   Switch,
   Route,
@@ -27,6 +27,8 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ErrorAlert } from '../../alerts';
+
+const ProjectDevelopers = lazy(() => import('../Projects/ProjectDevelopers'));
 
 const Homepage = () => {
   const { url } = useRouteMatch();
@@ -90,32 +92,43 @@ const Homepage = () => {
             <Sidebar />
           </Col>
           <Col xs={10}>
-            <Switch>
-              <Route exact path={url} component={Dashboard} />
-              <Route
-                exact
-                path={`${url}/projects/new`}
-                component={NewProjects}
-              />
-              <Route exact path={`${url}/projects`} component={Projects} />
-              <Route
-                exact
-                path={`${url}/projects/:id`}
-                component={ProjectDetail}
-              />
-              <Route exact path={`${url}/tickets/new`} component={NewTicket} />
-              <Route exact path={`${url}/tickets`} component={Tickets} />
-              <Route
-                exact
-                path={`${url}/tickets/:id`}
-                component={TicketDetail}
-              />
-              <Route exact path={`${url}/users/new`} component={CreateUser} />
-              <Route exact path={`${url}/users`} component={Users} />
-              <Route exact path={`${url}/users/:id`} component={UserDetail} />
-              <Route path={`${url}/account`} component={Account} />
-              <Route component={Error404} />
-            </Switch>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Switch>
+                <Route exact path={url} component={Dashboard} />
+                <Route
+                  exact
+                  path={`${url}/projects/new`}
+                  component={NewProjects}
+                />
+                <Route exact path={`${url}/projects`} component={Projects} />
+                <Route
+                  exact
+                  path={`${url}/projects/:id`}
+                  component={ProjectDetail}
+                />
+                <Route
+                  exact
+                  path={`${url}/projects/:id/developers`}
+                  component={ProjectDevelopers}
+                />
+                <Route
+                  exact
+                  path={`${url}/tickets/new`}
+                  component={NewTicket}
+                />
+                <Route exact path={`${url}/tickets`} component={Tickets} />
+                <Route
+                  exact
+                  path={`${url}/tickets/:id`}
+                  component={TicketDetail}
+                />
+                <Route exact path={`${url}/users/new`} component={CreateUser} />
+                <Route exact path={`${url}/users`} component={Users} />
+                <Route exact path={`${url}/users/:id`} component={UserDetail} />
+                <Route path={`${url}/account`} component={Account} />
+                <Route component={Error404} />
+              </Switch>
+            </Suspense>
           </Col>
         </Row>
       </Container>
