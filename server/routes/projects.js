@@ -203,12 +203,24 @@ router.put('/assignManager', async (req, res) => {
   }
 });
 
-router.put('/assignDeveloper', async (req, res) => {
+router.put('/:id/assignDeveloper', async (req, res) => {
   const data = req.body;
   try {
     await db('project_developers').insert(data);
     res.sendStatus(200);
     // TODO: SEND EMAIL TO THE DEVELOPER
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.put('/:id/removeDevelopers', async (req, res) => {
+  const data = req.body;
+  try {
+    await db('project_developers').whereIn('developer_id', data).delete();
+    // TODO: send email to developer
+    res.sendStatus(200);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

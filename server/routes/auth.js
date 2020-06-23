@@ -13,6 +13,7 @@ const {
   sendRoleChange,
   sendForgotPassword,
 } = require('../utils/sendGrid');
+const { where } = require('../utils/db');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -316,12 +317,18 @@ router.get('/allManagers', async (req, res) => {
   }
 });
 
-router.get('/allDevelopers', async (_req, res) => {
+router.get('/availableDevelopers', async (_req, res) => {
   try {
     const query = await db('users')
-      .select('id', 'name', 'photourl')
-      .innerJoin('roles', 'users.id', 'roles.user_id')
-      .where({ role: 'developer' });
+      .select('users.id', 'users.name')
+      .leftJoin(
+        'project_developers',
+        'users.id',
+        'project_developers.developer_id'
+      )
+      .innerJoin('roles', 'roles.user_id', 'users.id')
+      .where({ role: 'developer' })
+      .whereNull('project_id');
     res.json(query);
   } catch (err) {
     console.log(err);

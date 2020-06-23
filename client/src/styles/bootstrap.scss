@@ -23,6 +23,7 @@ $success: #26ae60;
 @import 'node_modules/bootstrap/scss/_close';
 @import 'node_modules/bootstrap/scss/_spinners';
 @import 'node_modules/bootstrap/scss/_progress';
+@import 'node_modules/bootstrap/scss/_card';
 
 body {
   margin-top: 70px;
@@ -96,4 +97,18 @@ code {
   font-size: 90%;
   background-color: #f6f8fa;
   border-radius: 3px;
+}
+
+.developer-card {
+  padding: 10px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 70px;
+}
+
+.bg-dark {
+  color: white;
 }

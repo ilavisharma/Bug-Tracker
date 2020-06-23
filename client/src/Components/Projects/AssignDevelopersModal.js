@@ -3,6 +3,7 @@ import Select from 'react-select';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
 import usePut from '../../hooks/usePut';
 import useGet from '../../hooks/useGet';
 import { SuccessAlert, ErrorAlert } from '../../alerts';
@@ -10,8 +11,10 @@ import { SuccessAlert, ErrorAlert } from '../../alerts';
 const AssignDevelopersModal = ({ show, close, project_id, refetch }) => {
   const [selected, setSelected] = useState([]);
 
-  const { isLoading, response } = useGet('/auth/allDevelopers');
-  const { isLoading: isAssigning, put } = usePut('/projects/assignDeveloper');
+  const { isLoading, response } = useGet('/auth/availableDevelopers');
+  const { isLoading: isAssigning, put } = usePut(
+    `/projects/${project_id}/assignDeveloper`
+  );
 
   const handleAssign = () => {
     put(selected)
@@ -43,20 +46,22 @@ const AssignDevelopersModal = ({ show, close, project_id, refetch }) => {
         <Modal.Title>Assign this project to</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Select developers
-        {isLoading ? (
-          <Select placeholder="Loading..." />
-        ) : (
-          <Select
-            placeholder="Type to search"
-            options={response.data.map(({ id, name }) => ({
-              value: id,
-              label: name,
-            }))}
-            isMulti
-            onChange={handleSelect}
-          />
-        )}
+        <Form.Group>
+          <Form.Label>Select developers</Form.Label>
+          {isLoading ? (
+            <Select placeholder="Loading..." />
+          ) : (
+            <Select
+              placeholder="Type to search"
+              options={response.data.map(({ id, name }) => ({
+                value: id,
+                label: name,
+              }))}
+              isMulti
+              onChange={handleSelect}
+            />
+          )}
+        </Form.Group>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="dark" onClick={close}>
