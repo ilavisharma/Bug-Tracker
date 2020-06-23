@@ -75,7 +75,11 @@ const AllUsers = () => {
                 <td>{name}</td>
                 <td>{email}</td>
                 <td>
-                  {role === null ? <>Not Assigned</> : <>{toTitleCase(role)}</>}
+                  {role === null ? (
+                    <b>Not Assigned</b>
+                  ) : (
+                    <>{toTitleCase(role)}</>
+                  )}
                 </td>
               </tr>
             ))}
