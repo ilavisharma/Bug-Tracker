@@ -14,9 +14,9 @@ const LandingPage = () => {
         <Link to="/home" className="btn btn-success">
           Proceed to Dashboard
         </Link>
-        {/* <Link to="/signin" className="btn btn-info">
+        <Link to="/signin" className="btn btn-primary mx-3">
           Sign In
-        </Link> */}
+        </Link>
       </Container>
     </>
   );
