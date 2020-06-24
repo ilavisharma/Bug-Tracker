@@ -121,7 +121,7 @@ const ProjectDevelopers = () => {
           <span
             onClick={() => handleSelect(user_id)}
             key={user_id}
-            className={`border border-secondary flex-fill rounded developer-card mx-3 mb-3 ${
+            className={`border border-secondary rounded developer-card mx-3 mb-3 ${
               selected.includes(user_id) ? 'bg-dark' : ''
             }`}
           >
