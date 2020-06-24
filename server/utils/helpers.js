@@ -12,11 +12,12 @@ const uploadImage = (file, source, transformation = null) =>
       {
         folder: source,
         unique_filename: true,
-        transformation
+        transformation,
       },
       (error, result) => {
         if (error) reject(error);
         else {
+          console.log(result);
           resolve(result.secure_url);
         }
       }
@@ -26,7 +27,7 @@ const uploadImage = (file, source, transformation = null) =>
 
 const signToken = (data, expiresIn = '1d') =>
   jwt.sign(data, jwtSecret, {
-    expiresIn
+    expiresIn,
   });
 
 const verifyToken = token => jwt.verify(token, jwtSecret);
@@ -42,4 +43,40 @@ const randomPassword = (length = 12) => {
   return pass;
 };
 
-module.exports = { uploadImage, signToken, verifyToken, randomPassword };
+const extractName = url => {
+  if (url) {
+    var m = url.toString().match(/.*\/(.+?)\./);
+    if (m && m.length > 1) {
+      return m[1];
+    }
+  }
+  return '';
+};
+
+const deleteImage = async (link, folder) => {
+  if (link === '' || link === '/defaultUser.png') return;
+  const id = extractName(link);
+  const { result } = await cloudinary.uploader
+    .destroy(folder + '/' + id)
+    .catch(console.log);
+  if (result !== 'ok') console.log(result);
+};
+
+const deleteMultipleImages = async (links, folder) => {
+  links.forEach(async l => {
+    const id = extractName(l);
+    const { result } = await cloudinary.uploader
+      .destroy(folder + '/' + id)
+      .catch(console.log);
+    if (result !== 'ok') console.log(result);
+  });
+};
+
+module.exports = {
+  uploadImage,
+  signToken,
+  verifyToken,
+  randomPassword,
+  deleteImage,
+  deleteMultipleImages,
+};

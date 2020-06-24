@@ -1,7 +1,11 @@
 const router = require('express').Router();
 const multer = require('multer');
 const db = require('../utils/db');
-const { uploadImage } = require('../utils/helpers');
+const {
+  uploadImage,
+  deleteMultipleImages,
+  deleteImage,
+} = require('../utils/helpers');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -159,8 +163,18 @@ router.put('/:id/changeStatus', async (req, res) => {
 router.post('/deleteMultiple', async (req, res) => {
   const { ids } = req.body;
   try {
+    // delete the image assets
+    const assetQuery = await db('tickets')
+      .select('imageurl')
+      .whereIn('id', ids)
+      .whereNotNull('imageurl');
     await db('tickets').whereIn('id', ids).delete();
     res.sendStatus(200);
+    let links = [];
+    if (assetQuery.length !== 0) {
+      assetQuery.forEach(a => links.push(a.imageurl));
+      deleteMultipleImages(links, 'tickets');
+    }
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -243,8 +257,11 @@ router.post('/new', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
+    const [link] = await db('tickets').select('imageurl').where({ id });
     await db('tickets').where({ id }).delete();
+    console.log({ link });
     res.status(200).send('Success');
+    deleteImage(link.imageurl, 'tickets');
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

@@ -7,6 +7,7 @@ const {
   signToken,
   randomPassword,
   verifyToken,
+  deleteImage,
 } = require('../utils/helpers');
 const {
   sendWelcomeMail,
@@ -289,6 +290,7 @@ router.post('/uploadImage', upload.single('file'), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
+  const [link] = await db('users').select('photourl').where({ id });
   await db('users')
     .where({ id })
     .delete()
@@ -297,6 +299,7 @@ router.delete('/:id', async (req, res) => {
       return res.sendStatus(500);
     });
   res.sendStatus(200);
+  deleteImage(link.photourl, 'users');
 });
 
 router.get('/allManagers', async (req, res) => {
