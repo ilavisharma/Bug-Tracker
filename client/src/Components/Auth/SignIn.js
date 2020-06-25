@@ -76,7 +76,6 @@ const SignIn = () => {
               required
             />
           </Form.Group>
-
           {isLoading ? (
             <Button variant="primary" disabled>
               <Spinner
@@ -110,6 +109,46 @@ const SignIn = () => {
             handleClose={() => setShowForgotModal(false)}
           />
         </Form>
+      </Col>
+      <Col className="mt-4" xs={9}>
+        <details>
+          <summary style={{ fontSize: '1.5em' }}>FAQs (might help you)</summary>
+          <div className="mx-5 mt-3">
+            <details open="true">
+              <summary>Why is there no SignUp/Register ?</summary>
+              <div className="my-2">
+                It is becuase usually in these kind of apps users are
+                added/invited explicity by the organization/admins that is why
+                there is no signup here
+              </div>
+            </details>
+          </div>
+          <div className="mx-5 mt-3">
+            <details open="true">
+              <summary>Then how do i login?</summary>
+              <div className="my-2">
+                You can use these admin credentials to sign in as an admin
+                <div className="row">
+                  <div className="col-6">
+                    <mark>email:</mark> bugtracker@mailinator.com <br />
+                    <mark>password:</mark> bugtracker
+                  </div>
+                  <div className="col-6">
+                    <Button
+                      onClick={() => {
+                        setEmail('bugtracker@mailinator.com');
+                        setPassword('bugtracker');
+                      }}
+                      size="sm"
+                    >
+                      Fill these above
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </details>
       </Col>
     </Container>
   );
