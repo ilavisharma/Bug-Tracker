@@ -17,7 +17,6 @@ const uploadImage = (file, source, transformation = null) =>
       (error, result) => {
         if (error) reject(error);
         else {
-          console.log(result);
           resolve(result.secure_url);
         }
       }
