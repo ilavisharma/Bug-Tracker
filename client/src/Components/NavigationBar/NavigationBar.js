@@ -43,7 +43,7 @@ const NavigationBar = () => {
       </DropdownButton>
       <Navbar.Collapse className="justify-content-end">
         <Button
-          variant="warning"
+          variant="secondary"
           onClick={() => {
             signOut();
             push('/');

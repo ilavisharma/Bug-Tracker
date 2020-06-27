@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { Helmet } from 'react-helmet';
@@ -13,7 +13,6 @@ import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
-import { createRef } from 'react';
 import { SuccessAlert, ErrorAlert } from '../../alerts';
 import api from '../../utils/api';
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -56,7 +56,7 @@ const TicketDetail = () => {
 
   const handleTicketResolve = async value => {
     const result = await ConfirmAlert(
-      `Mark this ticket as ${!value ? 'resolved' : 'unresolved'} ?`,
+      `Mark this ticket as ${value ? 'resolved' : 'unresolved'} ?`,
       'Yes'
     );
     if (result.value) {
@@ -120,8 +120,8 @@ const TicketDetail = () => {
           >
             {ticket.type}
           </Badge>
-          Created on {new Date(ticket.dateadded).toDateString()} by{' '}
-          <b>{ticket.creator}</b>
+          <mark>{ticket.projectName}</mark> | Created on{' '}
+          {new Date(ticket.dateadded).toDateString()} by <b>{ticket.creator}</b>
         </p>
         <hr />
         <p dangerouslySetInnerHTML={{ __html: ticket.description }}></p>
@@ -168,14 +168,14 @@ const TicketDetail = () => {
                     Delete
                   </Button>
                 )}
-                <Button
-                  variant="info"
-                  className="mx-2"
+                <Link
+                  className="btn btn-info mx-2"
+                  to={`/home/tickets/${id}/edit`}
                   style={{ display: 'inline-flex' }}
                 >
                   <i className="gg-pen" style={{ margin: '8px 7px 0 0' }} />
                   Edit this ticket
-                </Button>
+                </Link>
                 {isChangingStatus ? (
                   <Button>
                     <Spinner

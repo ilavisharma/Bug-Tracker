@@ -27,6 +27,7 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
 import useAuthContext from '../../hooks/useAuthContext';
 import { ErrorAlert } from '../../alerts';
+import EditTicket from '../Tickets/EditTicket';
 
 const ProjectDevelopers = lazy(() => import('../Projects/ProjectDevelopers'));
 
@@ -121,6 +122,11 @@ const Homepage = () => {
                   exact
                   path={`${url}/tickets/:id`}
                   component={TicketDetail}
+                />
+                <Route
+                  exact
+                  path={`${url}/tickets/:id/edit`}
+                  component={EditTicket}
                 />
                 <Route exact path={`${url}/users/new`} component={CreateUser} />
                 <Route exact path={`${url}/users`} component={Users} />

@@ -254,6 +254,23 @@ router.post('/new', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { body, currentUser } = req;
+  try {
+    await db('tickets').update(body).where({ id });
+    // ADD TO TIMELINE
+    await db('ticket_timeline').insert({
+      ticket_id: id,
+      event: `Ticket updated by ${currentUser.name}`,
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
