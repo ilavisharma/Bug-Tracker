@@ -6,6 +6,7 @@ const {
   deleteMultipleImages,
   deleteImage,
 } = require('../utils/helpers');
+const { sendGenericMail } = require('../utils/sendGrid');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -99,7 +100,7 @@ router.get('/chart/status', async (_req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const [ticket] = await db('tickets')
+    let [ticket] = await db('tickets')
       .select(
         'tickets.id as id',
         'tickets.name as name',
@@ -109,15 +110,28 @@ router.get('/:id', async (req, res) => {
         'tickets.description',
         'tickets.imageurl',
         'projects.name as projectName',
+        'projects.id as project_id',
         'tickets.dateadded',
         'users.id as user_id',
-        'users.name as creator'
+        'users.name as creator',
+        'ticket_developers.developer_id as developer'
       )
       .innerJoin('projects', 'tickets.project_id', 'projects.id')
       .innerJoin('users', 'tickets.user_id', 'users.id')
+      .innerJoin(
+        'ticket_developers',
+        'tickets.id',
+        'ticket_developers.ticket_id'
+      )
       .where('tickets.id', '=', id);
     if (!ticket) {
       return res.sendStatus(204);
+    }
+    if (ticket.developer !== null) {
+      const devQuery = await db('users')
+        .select('id', 'name')
+        .where({ id: ticket.developer });
+      ticket = { ...ticket, developer: devQuery[0] };
     }
     res.json(ticket);
   } catch (err) {
@@ -198,6 +212,34 @@ router.post('/:id/comments/new', async (req, res) => {
   }
 });
 
+router.post('/:id/assignDeveloper', async (req, res) => {
+  const {
+    body: { developer_id, ticket_id, developerName, sendEmail },
+    currentUser: { name },
+  } = req;
+  try {
+    await db('ticket_developers').update({ developer_id }).where({ ticket_id });
+    await db('ticket_timeline').insert({
+      ticket_id,
+      event: `${developerName} was assigned to this ticket by ${name}`,
+    });
+    res.sendStatus(200);
+    if (sendEmail) {
+      const [user] = await db('users')
+        .select('email')
+        .where({ id: developer_id });
+      await sendGenericMail(
+        user.email,
+        'Assigned to ticket',
+        `You have been assigned to a ticket by ${name}`
+      );
+    }
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.delete('/comments/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -214,8 +256,7 @@ router.get('/:id/timeline', async (req, res) => {
   try {
     const query = await db('ticket_timeline')
       .select('*')
-      .where({ ticket_id: id })
-      .orderBy('date', 'desc');
+      .where({ ticket_id: id });
     res.json(query);
   } catch (err) {
     console.log(err);
@@ -245,6 +286,7 @@ router.post('/new', async (req, res) => {
         project_id: req.body.project_id,
         event: `Ticket created by ${currentUser.name}`,
       });
+      await db('ticket_developers').insert({ ticket_id: newTicket });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
