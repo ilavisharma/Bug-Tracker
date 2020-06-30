@@ -23,7 +23,7 @@ const AllUsers = () => {
       setSearch(res.data);
       setIsLoading(false);
     } catch (err) {
-      setError(err.message);
+      setError(err.response.statusText);
       ErrorAlert('Unable to fetch users');
       setIsLoading(false);
     }

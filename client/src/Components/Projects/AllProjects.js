@@ -9,6 +9,7 @@ import LoadingSpinner from '../../utils/LoadingSpinner';
 import api from '../../utils/api';
 import usePost from '../../hooks/usePost';
 import { SuccessAlert, ErrorAlert, ConfirmAlert } from '../../alerts';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const AllProjects = () => {
   const { push } = useHistory();
@@ -16,8 +17,9 @@ const AllProjects = () => {
   const [projects, setProjects] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const [selected, setSelected] = useState([]);
+
+  const { user } = useAuthContext();
 
   const fetchProjects = async () => {
     api
@@ -29,7 +31,7 @@ const AllProjects = () => {
       })
       .catch(err => {
         console.log(err);
-        setError(err);
+        setError(err.response.statusText);
         setIsLoading(false);
       });
   };
@@ -74,7 +76,7 @@ const AllProjects = () => {
       })
       .catch(err => {
         console.log(err);
-        ErrorAlert(err.message || 'Unable to delete the projects');
+        ErrorAlert(err.response.statusText || 'Unable to delete the projects');
       });
   };
 
@@ -89,9 +91,11 @@ const AllProjects = () => {
   return (
     <Col xs={9}>
       <div className="mb-3">
-        <Link to="/home/projects/new" className="btn btn-success">
-          New Project
-        </Link>
+        {user.role !== 'developer' && (
+          <Link to="/home/projects/new" className="btn btn-success">
+            + New Project
+          </Link>
+        )}
         {selected.length !== 0 && (
           <>
             {isDeleting ? (
@@ -110,7 +114,9 @@ const AllProjects = () => {
                 onClick={handleMultipleDelete}
                 variant="danger"
                 className="mx-5"
+                style={{ display: 'inline-flex' }}
               >
+                <i className="gg-trash-empty" style={{ marginRight: '6px' }} />
                 Delete
               </Button>
             )}

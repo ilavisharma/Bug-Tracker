@@ -45,7 +45,9 @@ const SignIn = () => {
         else push('/home');
       }
       // TODO: check other status codes
+      if (res.status === 204) ErrorAlert('User not found');
     } catch (err) {
+      if (err.response.status === 401) ErrorAlert('Incorrect Password');
       setIsLoading(false);
     }
   };

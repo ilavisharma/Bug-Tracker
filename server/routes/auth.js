@@ -167,18 +167,14 @@ router.put('/updateProfile', async (req, res) => {
 });
 
 router.get('/allUsers', async ({ currentUser }, res) => {
-  if (currentUser.role === 'admin') {
-    try {
-      const query = await db('users')
-        .select('id', 'name', 'email', 'role')
-        .innerJoin('roles', 'users.id', 'roles.user_id');
-      res.json(query);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    }
-  } else {
-    res.sendStatus(401);
+  try {
+    const query = await db('users')
+      .select('id', 'name', 'email', 'role')
+      .innerJoin('roles', 'users.id', 'roles.user_id');
+    res.json(query);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

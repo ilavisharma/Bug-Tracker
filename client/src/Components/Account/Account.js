@@ -9,6 +9,7 @@ import TooltipComponent from '../../utils/TooltipComponent';
 import useAuthContext from '../../hooks/useAuthContext';
 import PasswordChangeModal from './PasswordChangeModal';
 import EditProfileModal from './EditProfileModal';
+import MyProjects from './MyProjects';
 
 const Account = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -69,9 +70,12 @@ const Account = () => {
         />
       </Col>
       <hr />
-      <Col xs={10}>
-        <h4>Projects</h4>
-      </Col>
+      {user.role !== 'admin' && (
+        <Col xs={10}>
+          <h4>Projects</h4>
+          <MyProjects id={user.id} />
+        </Col>
+      )}
     </>
   );
 };

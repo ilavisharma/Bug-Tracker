@@ -9,7 +9,6 @@ const Projects = () => {
       <Helmet>
         <title>Projects</title>
       </Helmet>
-      <h4 className="display-4">All Projects</h4>
       <AllProjects />
     </Container>
   );

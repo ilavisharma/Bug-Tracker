@@ -22,7 +22,7 @@ const UserDetail = () => {
 
   const { id } = useParams();
   const { user: currentUser } = useAuthContext();
-  const { goBack, push } = useHistory();
+  const { push } = useHistory();
 
   const useFetchUser = () => {
     const callback = useCallback(async () => {
@@ -32,7 +32,7 @@ const UserDetail = () => {
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);
-        ErrorAlert(err.message);
+        ErrorAlert(err.response.statusText);
       }
     }, []);
     return { callback };
@@ -40,13 +40,8 @@ const UserDetail = () => {
   const { callback } = useFetchUser();
 
   useEffect(() => {
-    if (currentUser.role !== 'admin') {
-      ErrorAlert('This action is not allowed!');
-      goBack();
-    } else {
-      callback();
-    }
-  }, [callback, goBack, currentUser.role]);
+    callback();
+  }, [callback]);
 
   const onEditClick = () => {
     if (!user.projects || user.projects.length > 0) {
@@ -141,7 +136,7 @@ const UserDetail = () => {
         user={user}
         updateRoleInUI={updateRoleInUI}
       />
-      {id !== currentUser.id && (
+      {id !== currentUser.id && currentUser.role !== 'developer' && (
         <>
           {isDeleting ? (
             <Button variant="danger" disabled>

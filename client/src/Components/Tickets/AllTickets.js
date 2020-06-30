@@ -25,7 +25,7 @@ const Tickets = () => {
       setSearch(res.data);
       setIsLoading(false);
     } catch (e) {
-      setError(e.message);
+      setError(e.response.statusText);
       setIsLoading(false);
     }
   };
@@ -73,7 +73,7 @@ const Tickets = () => {
       })
       .catch(err => {
         console.log(err);
-        ErrorAlert(err.message || 'Unable to delete the projects');
+        ErrorAlert(err.response.statusText || 'Unable to delete the projects');
       });
   };
 
@@ -84,7 +84,7 @@ const Tickets = () => {
       <Col xs={11}>
         <div className="mb-3">
           <Link to="/home/tickets/new" className="btn btn-success">
-            New Ticket
+            + New Ticket
           </Link>
           {selected.length !== 0 && (
             <>
@@ -104,7 +104,12 @@ const Tickets = () => {
                   onClick={handleMultipleDelete}
                   variant="danger"
                   className="mx-5"
+                  style={{ display: 'inline-flex' }}
                 >
+                  <i
+                    className="gg-trash-empty"
+                    style={{ marginRight: '6px' }}
+                  />
                   Delete
                 </Button>
               )}

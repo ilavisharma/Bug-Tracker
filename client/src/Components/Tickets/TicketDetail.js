@@ -15,6 +15,7 @@ import useAuthContext from '../../hooks/useAuthContext';
 import { ConfirmAlert, SuccessAlert, ErrorAlert } from '../../alerts';
 import TicketComments from './TicketComments';
 import usePut from '../../hooks/usePut';
+import AssignDeveloperModal from './AssignDeveloperModal';
 
 const ticketBadge = badge => {
   if (badge === 'error' || badge === 'high') return 'danger';
@@ -26,6 +27,7 @@ const ticketBadge = badge => {
 const TicketDetail = () => {
   const [showScreenshot, setShowScreenshot] = useState(false);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
 
   const { user } = useAuthContext();
   const { push } = useHistory();
@@ -120,8 +122,15 @@ const TicketDetail = () => {
           >
             {ticket.type}
           </Badge>
-          <mark>{ticket.projectName}</mark> | Created on{' '}
-          {new Date(ticket.dateadded).toDateString()} by <b>{ticket.creator}</b>
+          <mark>
+            <Link to={`/home/projects/${ticket.project_id}`}>
+              {ticket.projectName}
+            </Link>
+          </mark>{' '}
+          | {new Date(ticket.dateadded).toDateString()} by{' '}
+          <b>{ticket.creator}</b>{' '}
+          {ticket.developer !== null &&
+            ` | Assigned to ${ticket.developer.name}`}
         </p>
         <hr />
         <p dangerouslySetInnerHTML={{ __html: ticket.description }}></p>
@@ -139,9 +148,8 @@ const TicketDetail = () => {
                 View Screenshot
               </Button>
             )}
-
             {(user.id === ticket.user_id ||
-              user.role === 'developer' ||
+              user.role === 'manager' ||
               user.role === 'admin') && (
               <>
                 {isDeleting ? (
@@ -176,42 +184,56 @@ const TicketDetail = () => {
                   <i className="gg-pen" style={{ margin: '8px 7px 0 0' }} />
                   Edit this ticket
                 </Link>
-                {isChangingStatus ? (
-                  <Button>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                    Updating...
+
+                <Button
+                  className="mx-3"
+                  variant="light"
+                  style={{ display: 'inline-flex' }}
+                  onClick={() => setShowAssignModal(true)}
+                >
+                  <i style={{ marginRight: '4px' }} className="gg-user-add" />
+                  Assign Developer
+                </Button>
+                <AssignDeveloperModal
+                  show={showAssignModal}
+                  handleClose={() => setShowAssignModal(false)}
+                  projectId={ticket.project_id}
+                  refetch={refetch}
+                  ticketId={id}
+                />
+              </>
+            )}
+            {isChangingStatus ? (
+              <Button>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                Updating...
+              </Button>
+            ) : (
+              <>
+                {ticket.resolved ? (
+                  <Button
+                    onClick={() => handleTicketResolve(!ticket.resolved)}
+                    style={{ display: 'inline-flex' }}
+                    variant="warning"
+                  >
+                    <i className="gg-info" style={{ margin: '2px 6px 0 0' }} />
+                    Mark as Unresolved
                   </Button>
                 ) : (
-                  <>
-                    {ticket.resolved ? (
-                      <Button
-                        onClick={() => handleTicketResolve(!ticket.resolved)}
-                        style={{ display: 'inline-flex' }}
-                        variant="warning"
-                      >
-                        <i
-                          className="gg-info"
-                          style={{ margin: '2px 6px 0 0' }}
-                        />
-                        Mark as Unresolved
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => handleTicketResolve(!ticket.resolved)}
-                        style={{ display: 'inline-flex' }}
-                        variant="success"
-                      >
-                        <i className="gg-check" />
-                        Mark as Resolved
-                      </Button>
-                    )}
-                  </>
+                  <Button
+                    onClick={() => handleTicketResolve(!ticket.resolved)}
+                    style={{ display: 'inline-flex' }}
+                    variant="success"
+                  >
+                    <i className="gg-check" />
+                    Mark as Resolved
+                  </Button>
                 )}
               </>
             )}

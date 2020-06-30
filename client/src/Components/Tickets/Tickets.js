@@ -9,7 +9,6 @@ const Tickets = () => {
       <Helmet>
         <title>Tickets</title>
       </Helmet>
-      <h3 className="display-3">These are tickets</h3>
       <AllTickets />
     </Container>
   );

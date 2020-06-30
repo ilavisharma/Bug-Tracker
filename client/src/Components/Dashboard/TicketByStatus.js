@@ -13,7 +13,6 @@ const TicketByStatus = () => {
     return <p>There was some error</p>;
   } else {
     const { data } = response;
-    console.log(data);
     return (
       <>
         <h5 className="text-center">Ticket Status</h5>

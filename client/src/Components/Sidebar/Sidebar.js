@@ -1,7 +1,6 @@
 import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
-import LoadingSpinner from '../../utils/LoadingSpinner';
 import useAuthContext from '../../hooks/useAuthContext';
 
 const Sidebar = () => {
@@ -62,18 +61,44 @@ const Sidebar = () => {
           <Nav.Link>Dashboard</Nav.Link>
         </LinkContainer>
         <LinkContainer to="/home/projects">
-          <Nav.Link>All Projects</Nav.Link>
+          <Nav.Link>Projects</Nav.Link>
         </LinkContainer>
         <LinkContainer to="/home/tickets">
           <Nav.Link>Tickets</Nav.Link>
         </LinkContainer>
+        <LinkContainer to="/home/users">
+          <Nav.Link>Users</Nav.Link>
+        </LinkContainer>
         <LinkContainer to="/home/account">
-          <Nav.Link>My Account</Nav.Link>
+          <Nav.Link>Account</Nav.Link>
         </LinkContainer>
       </Nav>
     );
   } else {
-    return <LoadingSpinner />;
+    return (
+      <Nav
+        variant="pills"
+        fill
+        className="flex-column"
+        style={{ height: '60vh' }}
+      >
+        <LinkContainer exact to="/home">
+          <Nav.Link>Dashboard</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/projects">
+          <Nav.Link>Projects</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/tickets">
+          <Nav.Link>Tickets</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/users">
+          <Nav.Link>Users</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/account">
+          <Nav.Link>Account</Nav.Link>
+        </LinkContainer>
+      </Nav>
+    );
   }
 };
 

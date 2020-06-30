@@ -1,9 +1,10 @@
 import React, { lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoadingSpinner from '../../utils/LoadingSpinner';
+import Head from './Head';
+import useAuthContext from '../../hooks/useAuthContext';
 
 const TicketsByPriority = lazy(() => import('./TicketsByPriority'));
 const TicketsByType = lazy(() => import('./TicketsByType'));
@@ -12,33 +13,85 @@ const TicketByStatus = lazy(() => import('./TicketByStatus'));
 const RecentTickets = lazy(() => import('./RecentTickets'));
 
 const Dashboard = () => {
-  return (
-    <Container>
-      <Helmet>
-        <title>Dashboard</title>
-        <meta name="title" content="Dashboard" />
-        <meta name="description" content="Bug Tracker App dashboard" />
-      </Helmet>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Row>
-          <Col xs={6}>
-            <TicketsByPriority />
-          </Col>
-          <Col xs={6}>
-            <TicketsByType />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={6}>
-            <TicketByStatus />
-          </Col>
-          <Col xs={6}>
-            <TicketByMonth />
-          </Col>
-        </Row>
-      </Suspense>
-    </Container>
-  );
+  const {
+    user: { role },
+  } = useAuthContext();
+
+  if (role === 'admin') {
+    return (
+      <Container>
+        <Head />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Row>
+            <Col xs={6}>
+              <TicketsByPriority />
+            </Col>
+            <Col xs={6}>
+              <TicketsByType />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <TicketByStatus />
+            </Col>
+            <Col xs={6}>
+              <TicketByMonth />
+            </Col>
+          </Row>
+        </Suspense>
+      </Container>
+    );
+  }
+  if (role === 'manager') {
+    return (
+      <Container>
+        <Head />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Row>
+            <Col xs={6}>
+              <TicketsByPriority />
+            </Col>
+            <Col xs={6}>
+              <TicketsByType />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <TicketByStatus />
+            </Col>
+            <Col xs={6}>
+              <RecentTickets />
+            </Col>
+          </Row>
+        </Suspense>
+      </Container>
+    );
+  }
+  if (role === 'developer') {
+    return (
+      <Container>
+        <Head />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Row>
+            <Col xs={6}>
+              <TicketsByPriority />
+            </Col>
+            <Col xs={6}>
+              <TicketsByType />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <TicketByStatus />
+            </Col>
+            <Col xs={6}>
+              <RecentTickets />
+            </Col>
+          </Row>
+        </Suspense>
+      </Container>
+    );
+  } else return <>Dash</>;
 };
 
 export default Dashboard;

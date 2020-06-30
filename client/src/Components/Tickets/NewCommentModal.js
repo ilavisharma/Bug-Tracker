@@ -14,11 +14,11 @@ const NewCommentModal = ({ show, handleClose, refetch, ticketId }) => {
   const handleSubmit = e => {
     e.preventDefault();
     post({
-      content: comment
+      content: comment,
     })
       .then(res => {
         if (res.status === 200) {
-          SuccessAlert('Done');
+          SuccessAlert('Comment created');
           setComment('');
           refetch();
           handleClose();

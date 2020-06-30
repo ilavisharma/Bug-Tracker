@@ -54,13 +54,6 @@ const EditRoleModal = ({ show, handleClose, user, updateRoleInUI }) => {
             Project Manager
           </ListGroup.Item>
           <ListGroup.Item
-            active={role === 'submitter'}
-            action={true}
-            onClick={() => setRole('submitter')}
-          >
-            Submitter
-          </ListGroup.Item>
-          <ListGroup.Item
             active={role === 'admin'}
             action={true}
             onClick={() => setRole('admin')}

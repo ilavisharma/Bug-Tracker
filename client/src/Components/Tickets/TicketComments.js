@@ -32,7 +32,7 @@ const TicketComments = ({ ticketId }) => {
         })
         .catch(err => {
           console.log(err);
-          ErrorAlert(err.message);
+          ErrorAlert(err.response.statusText);
         });
     }
   };
