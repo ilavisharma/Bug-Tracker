@@ -5,6 +5,6 @@
 - [x] ticket search
 - [x] projet timeline
 - [x] ticket timeline
-- [ ] edit tickets
-- [ ] assign developers to projects
-- [ ] assign developers to tickets
+- [x] edit tickets
+- [x] assign developers to projects
+- [x] assign developers to tickets
