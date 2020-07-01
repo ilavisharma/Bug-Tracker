@@ -5,6 +5,7 @@ import LandingPage from './Landing/LandingPage';
 import GlobalState from './GlobalState';
 import LoadingSpinner from '../utils/LoadingSpinner';
 import '../styles/bootstrap.scss';
+import About from './About';
 
 const DemoUserSignIn = lazy(() => import('./Auth/DemoUserSignIn'));
 const Homepage = lazy(() => import('./Homepage/Homepage'));
@@ -21,6 +22,7 @@ const MemoRouter = () =>
             <Route exact path="/" component={LandingPage} />
             <Route path="/home" component={Homepage} />
             <Route exact path="/signin" component={SignIn} />
+            <Route exact path="/about" component={About} />
             <Route exact path="/resetPassword" component={ResetPassword} />
             <Route exact path="/signin/demo" component={DemoUserSignIn} />
             <Route component={Error404} />

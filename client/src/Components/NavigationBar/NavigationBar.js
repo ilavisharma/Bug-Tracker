@@ -3,8 +3,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import useAuthContext from '../../hooks/useAuthContext';
 
 const NavigationBar = () => {
@@ -28,29 +26,35 @@ const NavigationBar = () => {
       <Navbar.Text>
         Signed in as: <Link to="/home/account">{user.name}</Link>
       </Navbar.Text>
-      <DropdownButton
-        variant="secondary"
-        size="sm"
-        className="mx-4"
-        title="New"
-      >
-        <LinkContainer to="/home/projects/new">
-          <Dropdown.Item>Project</Dropdown.Item>
-        </LinkContainer>
-        <LinkContainer to="/home/tickets/new">
-          <Dropdown.Item href="#">Ticket</Dropdown.Item>
-        </LinkContainer>
-      </DropdownButton>
       <Navbar.Collapse className="justify-content-end">
+        <a
+          href="https://github.com/ilavisharma/Bug-Tracker"
+          className="btn btn-secondary btn-outline mx-4"
+          style={{ display: 'inline-flex' }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i className="gg-git-pull mr-3 ml-1 mt-2" />
+          Github
+        </a>
+        <Link
+          className="nav-link btn btn-light mx-3"
+          to="/about"
+          style={{ display: 'inline-flex' }}
+        >
+          <i className="gg-info" style={{ margin: '4px 5px 0 0' }} />
+          About
+        </Link>
         <Button
           variant="secondary"
           onClick={() => {
             signOut();
             push('/');
           }}
-          style={{ display: 'flex' }}
+          style={{ display: 'inline-flex' }}
         >
-          Sign Out <i className="ml-2 mt-1 mr-1 gg-log-out"></i>
+          <i className="gg-log-out" style={{ margin: '5px 15px 0 0' }} />
+          Sign Out
         </Button>
       </Navbar.Collapse>
     </Navbar>

@@ -112,3 +112,16 @@ code {
 .bg-dark {
   color: white;
 }
+
+.about-images {
+  img {
+    width: 200px;
+  }
+  li {
+    font-size: 1.5em;
+  }
+  a {
+    margin-left: 20px;
+    text-decoration: none;
+  }
+}
