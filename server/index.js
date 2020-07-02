@@ -1,15 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const YAML = require('yamljs');
-const { readFileSync } = require('fs');
-const { join } = require('path');
 const helmet = require('helmet');
-
-const swagYml = readFileSync(join(__dirname, 'swagger.yaml'), 'utf8');
-const swaggerDocument = YAML.parse(swagYml);
-
-const generateHTML = require('./utils/redocHtml');
 
 const { verifyToken } = require('./utils/helpers');
 const db = require('./utils/db');
@@ -44,14 +36,7 @@ app.use('/projects', projectRoutes);
 app.use('/auth', authRoutes);
 app.use('/tickets', ticketRoutes);
 
-app.get('/', (req, res) => {
-  res.send(generateHTML(req.headers.host));
-});
-
-app.get('/swagger', (_, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerDocument);
-});
+app.get('/', (_req, res) => res.json({ status: 'active' }));
 
 app.on('ready', () => {
   app.listen(PORT, () =>
