@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Container from 'react-bootstrap/Container';
@@ -20,10 +20,14 @@ const SignIn = () => {
   const [showForgotModal, setShowForgotModal] = useState(false);
 
   const { push } = useHistory();
-  const { signIn } = useAuthContext();
+  const { signIn, user } = useAuthContext();
   const { search } = useLocation();
 
   const queryParams = new URLSearchParams(search);
+
+  useEffect(() => {
+    if (user !== null) push('/home');
+  }, [push, user]);
 
   const onFormSubmit = async e => {
     e.preventDefault();

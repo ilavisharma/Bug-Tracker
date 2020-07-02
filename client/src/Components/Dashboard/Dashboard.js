@@ -13,11 +13,11 @@ const TicketByStatus = lazy(() => import('./TicketByStatus'));
 const RecentTickets = lazy(() => import('./RecentTickets'));
 
 const Dashboard = () => {
-  const {
-    user: { role },
-  } = useAuthContext();
+  const { user } = useAuthContext();
 
-  if (role === 'admin') {
+  if (user === null) return <LoadingSpinner />;
+
+  if (user.role === 'admin') {
     return (
       <Container>
         <Head />
@@ -42,7 +42,7 @@ const Dashboard = () => {
       </Container>
     );
   }
-  if (role === 'manager') {
+  if (user.role === 'manager') {
     return (
       <Container>
         <Head />
@@ -67,7 +67,7 @@ const Dashboard = () => {
       </Container>
     );
   }
-  if (role === 'developer') {
+  if (user.role === 'developer') {
     return (
       <Container>
         <Head />
@@ -91,7 +91,7 @@ const Dashboard = () => {
         </Suspense>
       </Container>
     );
-  } else return <>Dash</>;
+  }
 };
 
 export default Dashboard;

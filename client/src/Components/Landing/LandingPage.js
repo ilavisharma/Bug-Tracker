@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import useAuthContext from '../../hooks/useAuthContext';
-import './style.scss';
+import api from '../../utils/api';
 
 const LandingPage = () => {
   const { user } = useAuthContext();
+
+  useEffect(() => {
+    (async function () {
+      await api.get('/');
+    })();
+  }, []);
 
   return (
     <>
